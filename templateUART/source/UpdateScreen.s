@@ -1,11 +1,34 @@
 ///This file is used to clear the screen.
 
 .section    .init
-.globl 		ClearScreen
+.globl 		UpdateScreen
     
 .section .text
 
+//input: The buffer to be displayed
+//return: null
+//effect: draw a new frame
+UpdateScreen:
+	push {r4-r10, fp, lr}
+
+	mov r4, r0
+
+	bl ClearScreen
+
+	//r4 contains reference to the buffer that should be drawn
+////////////////////////////////////////////////////////
+	//get each pixel to draw and then draw to the screen
+	///This is to be implemented
+//\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+	pop {r4-r10, fp, lr}
+	bx	lr
+
+//input: null
+//return: null
+//effect: makes every pixel on the screen black
 ClearScreen:
+	push {r4-r8, fp, lr}
 
 	mov	r4,	#0			//x value
 	mov	r5,	#0			//Y value
@@ -29,12 +52,17 @@ ClearScreen:
 		cmp	r5,	r8			//compare with height
 		blt	clearLooping
 
+	pop {r4-r8,fp,lr}
 	bx	lr
 
-
+//input: 
+	//int x value, 
+	//int y value, 
+	//hex? pixel colour
+//return: null
+//effect: draw an individual pixel
 DrawPixel:
 	push	{r4}
-
 
 	offset	.req	r4
 
