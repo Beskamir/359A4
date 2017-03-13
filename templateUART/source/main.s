@@ -1,6 +1,9 @@
 ///Assignment 4 by Sebastian Kopacz and Yehonatan Shabash
 //use of tabs/formatting to indicate loops.
 
+.extern	snes
+.extern UpdateScreen
+
 .section    .init
 .globl     _start
 

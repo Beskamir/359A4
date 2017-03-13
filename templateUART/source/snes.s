@@ -2,7 +2,8 @@
 //use of tabs/formatting to indicate loops.
 
 .section    .init
-.globl     _start
+// .global     _start
+.global	snes
 
 names: 
 	.ascii	"\r\nAuthors: Yehonatan and Sebastian\r\n" //Author names (program step 1)
@@ -59,12 +60,13 @@ button12:
 	.ascii "Right "
 	.align
 
-_start:	
-    b       main
+// _start:	
+//     b       main
     
 .section .text
 
-main:
+// main:
+snes:
     mov		sp, #0x8000 // Initializing the stack pointer
 	bl		EnableJTAG 	// Enable JTAG
 	bl		InitUART 	//This is important to be  able to use UART
