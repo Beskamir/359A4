@@ -3,10 +3,10 @@
 
 // .extern	snes
 // .extern UpdateScreen
-.include snes.s 
-.include UpdateScreen.s 
+// .include "snes"
 
 .section    .init
+// .include "UpdateScreen.s"
 .globl     _start
 
 _start:	
@@ -19,14 +19,19 @@ main:
 	bl		EnableJTAG 	// Enable JTAG
 	bl		InitUART 	//This is important to be  able to use UART
 
-	
+	bl InitFrameBuffer
+
+	bl UpdateScreen
+
+
 	//Code here
 
 
-	b haltLoop$
+	// b haltLoop$
 
 haltLoop$:	//Halts the program
 	b	haltLoop$	//infinite loop
+
 
 .section .data  
 

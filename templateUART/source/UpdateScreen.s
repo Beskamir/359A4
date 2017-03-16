@@ -1,7 +1,7 @@
 ///This file is used to clear the screen.
 
 .section    .init
-.globl 		UpdateScreen
+// .globl 		UpdateScreen	//makes update screen visible to all
     
 .section .text
 
