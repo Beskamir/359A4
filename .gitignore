@@ -1,3 +1,2 @@
 #Ignore compiled files
-*.o
-*.elf
+templateUART/build/*
