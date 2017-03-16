@@ -5,63 +5,6 @@
 // .global     _start
 .global	snes
 
-names: 
-	.ascii	"\r\nAuthors: Yehonatan and Sebastian\r\n" //Author names (program step 1)
-	.align	//No idea why this is here, it was in the TA's code...
-
-prompt:
-	.ascii "\r\nPlease press a button... \r\n"
-	.ascii "\r\nYou have pressed "
-	.align
-
-//message indicating program exiting
-exitMessage:
-	.ascii "\r\nProgram is terminating...\r\n"
-	.align
-
-newLine:
-	.ascii "\r\n"
-	.align
-
-button1:
-	.ascii "B "
-	.align
-button2:
-	.ascii "Y "
-	.align
-button3:
-	.ascii "Select "
-	.align
-// button4:
-// 	.ascii "Start "
-// 	.align
-button5:
-	.ascii "Joy-pad UP "
-	.align
-button6:
-	.ascii "Joy-pad DOWN "
-	.align
-button7:
-	.ascii "Joy-pad LEFT "
-	.align
-button8:
-	.ascii "Joy-pad RIGHT "
-	.align
-button9:
-	.ascii "A "
-	.align
-button10:
-	.ascii "X "
-	.align
-button11:
-	.ascii "Left "
-	.align
-button12:
-	.ascii "Right "
-	.align
-
-// _start:	
-//     b       main
     
 .section .text
 
@@ -70,22 +13,7 @@ snes:
     mov		sp, #0x8000 // Initializing the stack pointer
 	bl		EnableJTAG 	// Enable JTAG
 	bl		InitUART 	//This is important to be  able to use UART
-
-	// ///Clear registers mainly for the sake of debugging.
-	// mov r0, #0
-	// mov r1, #0
-	// mov r2, #0
-	// mov r3, #0
-	// mov r4, #0
-	// mov r5, #0
-	// mov r6, #0
-	// mov r7, #0
-	// mov r8, #0
-	// mov r9, #0
-	// mov r10, #0
 	
-	ldr	r0, =prompt
-
 
 	//r4 previous register
 	//r5 current register
@@ -93,37 +21,31 @@ snes:
 	ldr r4, =0xFFFF	//set r4 to 16 one's
 	mov r8, r4			//all ones
 	mainLoop:
-		ldr r0, =prompt		//address to the label containing our names	
-		mov r1, #31			//Number of characters to print
-		bl Print_Message
-
 		buttonListen:	
 
 				bl Read_SNES	//branch to read snes
 				mov r5, r0		//store read_snes output in r5
-				eor r4, r8		//negate r4
-				orr r6, r5, r4	//newly pressed buttons stored in r6
-
+				eor r9, r8		//negate r4
+				orr r6, r5, r9	//newly pressed buttons stored in r6
+				
+				//Special case: If left or right on D-pad being held, they should still be counted as pressed!
+				mov r10, #0x40			//r10 = ... 0000 0100 0000
+				tst	r4, r10				//Check what the value of joy pad left is
+				biceq r6, r10			//If it's pressed, turn the 1 in r6 in that position into a 0 
+				//Now check for right
+				mov r10, #0x80			//r10 = ... 0000 1000 0000
+				tst	r4, r10				//Check what the value of joy pad right is
+				biceq r6, r10			//If it's pressed, turn the 1 in r6 in that position into a 0 
+				
+				
 				ldr r7, =0xFFFF
 
 				mov r0, #10
 				bl Wait
 
 				teq r6, r7 //check if user pressed a button
-			mov r4, r5
+				mov r4, r5
 			beq buttonListen //Loop back if user didn't press any buttons
-
-			//Check if user pressed START button
-			mov r7, #1		//Move a 1 to r7
-			lsl r7, #3		//Shift the 1 to where the start button would be
-			tst r6, r7		//Compare that register to what we read from the SNES
-		beq endProgram	//If it's zero, goto end program and thus exiting the loop
-
-			//Print second part of prompt, informing user they pressed something
-			ldr r0, =prompt
-			add r0, #26
-			mov r1, #21
-			bl Print_Message
 
 			mov r0, r6
 			//branch to function which determines which buttons were pressed
