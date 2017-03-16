@@ -6,7 +6,7 @@
 // .include "snes"
 
 .section    .init
-// .include "UpdateScreen.s"
+.include "Graphics.s"
 .globl     _start
 
 _start:	
@@ -19,7 +19,7 @@ main:
 	bl		EnableJTAG 	// Enable JTAG
 	bl		InitUART 	//This is important to be  able to use UART
 
-	bl InitFrameBuffer
+	bl InitFrameBuffer1
 
 	bl UpdateScreen
 

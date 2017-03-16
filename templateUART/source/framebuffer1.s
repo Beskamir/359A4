@@ -1,6 +1,6 @@
 .section .text
 
-.globl InitFrameBuffer
+.globl InitFrameBuffer1
 /* Initialize the FrameBuffer using the FrameBufferInit structure
  * Returns:
  *	r0 - 0 on failure, framebuffer pointer on success
@@ -107,8 +107,8 @@ FrameBuffer:
 	.int	0			//end tag, indicates the end of the buffer
 
 .align 4
-.globl FrameBufferPointer
-FrameBufferPointer:
+.globl FrameBufferPointer1
+FrameBufferPointer1:
 	.int	0
 
 

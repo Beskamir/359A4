@@ -5,6 +5,14 @@
     
 .section .text
 
+
+InitFrameBuffers:
+
+	bl InitFrameBuffer1
+	bl InitFrameBuffer2
+
+	bx	lr
+
 //input: The buffer to be displayed
 //return: null
 //effect: draw a new frame
