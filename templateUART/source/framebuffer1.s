@@ -1,11 +1,11 @@
 .section .text
 
-.globl InitFrameBuffer
+.globl InitFrameBuffer1
 /* Initialize the FrameBuffer using the FrameBufferInit structure
  * Returns:
  *	r0 - 0 on failure, framebuffer pointer on success
  */
-InitFrameBuffer:
+InitFrameBuffer1:
 	// load the address of the mailbox interface
 	mbox	.req	r2
 	ldr		mbox,	=0x3F00B880
@@ -65,7 +65,7 @@ pointerWaitLoop$:
 	
 	beq	pointerWaitLoop$
 	
-	ldr 	r3, =FrameBufferPointer
+	ldr 	r3, =FrameBufferPointer1
 	str	r0, [r3]
 
 	.unreq	mbox
@@ -107,8 +107,8 @@ FrameBuffer:
 	.int	0			//end tag, indicates the end of the buffer
 
 .align 4
-.globl FrameBufferPointer
-FrameBufferPointer:
+.globl FrameBufferPointer1
+FrameBufferPointer1:
 	.int	0
 
 
