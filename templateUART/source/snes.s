@@ -1,4 +1,4 @@
-///Assignment 3 by Sebastian Kopacz and Yehonatan Shabash
+///SNES driver, based on Assignment 3
 //use of tabs/formatting to indicate loops.
 
 .section    .init
@@ -84,10 +84,6 @@ snes:
 	// mov r9, #0
 	// mov r10, #0
 	
-	ldr r0, =names 		//address to the label containing our names	
-	mov r1, #38			//Number of characters to print
-	bl Print_Message 	//Writes to console
-
 	ldr	r0, =prompt
 
 
@@ -393,20 +389,6 @@ printButtons:
 	bleq	Print_Message		//Print the button
 
 	pop		{r4-r10, fp, lr}	//Load previous registers from the stack
-	bx 		lr					//Return
-
-
-//Input: Message address in r0, Number of characters in r1
-//return: null
-//effect: prints to console
-Print_Message:
-	push	{r4-r10, fp, lr}	//Push registers onto the stack
-
-	// ldr r4, [r0] 		//address to the label containing stuff to print	
-	// mov r0, r4
-	bl WriteStringUART 	//Writes to console
-
-	pop		{r4-r10, fp, lr}	//Load the original registers from the stack
 	bx 		lr					//Return
 
 .section .data  
