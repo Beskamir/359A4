@@ -19,13 +19,20 @@ main:
 	bl		EnableJTAG 	// Enable JTAG
 	bl		InitUART 	//This is important to be  able to use UART
 
-	bl InitFrameBuffer1
+	// bl InitFrameBuffer1
+	bl InitFrameBuffers
+
+	// bl MainMenu
+	// mov r4,r0
+
+///Keep looping this until the game ends or user quits
+PlayingLoop:
 
 	bl UpdateScreen
 
-
 	//Code here
 
+	// b PlayingLoop
 
 	// b haltLoop$
 

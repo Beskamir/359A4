@@ -5,7 +5,7 @@
  * Returns:
  *	r0 - 0 on failure, framebuffer pointer on success
  */
-InitFrameBuffer:
+InitFrameBuffer1:
 	// load the address of the mailbox interface
 	mbox	.req	r2
 	ldr		mbox,	=0x3F00B880
@@ -65,7 +65,7 @@ pointerWaitLoop$:
 	
 	beq	pointerWaitLoop$
 	
-	ldr 	r3, =FrameBufferPointer
+	ldr 	r3, =FrameBufferPointer1
 	str	r0, [r3]
 
 	.unreq	mbox
