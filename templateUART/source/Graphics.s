@@ -9,8 +9,7 @@
 InitFrameBuffers:
 	push {fp, lr}
 
-	bl InitFrameBuffer1
-	bl InitFrameBuffer2
+	bl InitFrameBuffer
 
 	pop {fp, lr}
 	bx	lr
@@ -83,7 +82,7 @@ DrawPixel:
 
 	// store the colour (half word) at framebuffer pointer + offset
 
-	ldr	r0, =FrameBufferPointer1
+	ldr	r0, =FrameBufferPointer
 	ldr	r0, [r0]
 	strh	r2, [r0, offset]
 
