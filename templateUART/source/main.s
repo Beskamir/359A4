@@ -7,6 +7,7 @@
 
 .section    .init
 .include "Graphics.s"
+// .include "art.s"
 .globl     _start
 
 _start:	
@@ -19,8 +20,10 @@ main:
 	bl		EnableJTAG 	// Enable JTAG
 	bl		InitUART 	//This is important to be  able to use UART
 
-	// bl InitFrameBuffer1
-	bl InitFrameBuffers
+	bl InitFrameBuffer
+	// bl InitFrameBuffers
+
+
 
 	// bl MainMenu
 	// mov r4,r0
@@ -30,6 +33,7 @@ PlayingLoop:
 
 	bl UpdateScreen
 
+	// bl DrawGameScreen
 	//Code here
 
 	// b PlayingLoop

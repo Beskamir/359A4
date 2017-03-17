@@ -2,798 +2,1469 @@
 build/output.elf:     file format elf32-littlearm
 
 
-Disassembly of section .init:
-
-00008000 <names>:
-    8000:	75410a0d 	.word	0x75410a0d
-    8004:	726f6874 	.word	0x726f6874
-    8008:	59203a73 	.word	0x59203a73
-    800c:	6e6f6865 	.word	0x6e6f6865
-    8010:	6e617461 	.word	0x6e617461
-    8014:	646e6120 	.word	0x646e6120
-    8018:	62655320 	.word	0x62655320
-    801c:	69747361 	.word	0x69747361
-    8020:	0a0d6e61 	.word	0x0a0d6e61
-
-00008024 <prompt>:
-    8024:	6c500a0d 	.word	0x6c500a0d
-    8028:	65736165 	.word	0x65736165
-    802c:	65727020 	.word	0x65727020
-    8030:	61207373 	.word	0x61207373
-    8034:	74756220 	.word	0x74756220
-    8038:	2e6e6f74 	.word	0x2e6e6f74
-    803c:	0d202e2e 	.word	0x0d202e2e
-    8040:	590a0d0a 	.word	0x590a0d0a
-    8044:	6820756f 	.word	0x6820756f
-    8048:	20657661 	.word	0x20657661
-    804c:	73657270 	.word	0x73657270
-    8050:	20646573 	.word	0x20646573
-
-00008054 <exitMessage>:
-    8054:	72500a0d 	.word	0x72500a0d
-    8058:	6172676f 	.word	0x6172676f
-    805c:	7369206d 	.word	0x7369206d
-    8060:	72657420 	.word	0x72657420
-    8064:	616e696d 	.word	0x616e696d
-    8068:	676e6974 	.word	0x676e6974
-    806c:	0d2e2e2e 	.word	0x0d2e2e2e
-    8070:	0a          	.byte	0x0a
-    8071:	00          	.byte	0x00
-	...
-
-00008074 <newLine>:
-    8074:	0a0d      	.short	0x0a0d
-	...
-
-00008078 <button1>:
-    8078:	2042      	.short	0x2042
-	...
-
-0000807c <button2>:
-    807c:	2059      	.short	0x2059
-	...
-
-00008080 <button3>:
-    8080:	656c6553 	.word	0x656c6553
-    8084:	7463      	.short	0x7463
-    8086:	20          	.byte	0x20
-	...
-
-00008088 <button5>:
-    8088:	2d796f4a 	.word	0x2d796f4a
-    808c:	20646170 	.word	0x20646170
-    8090:	5055      	.short	0x5055
-    8092:	20          	.byte	0x20
-	...
-
-00008094 <button6>:
-    8094:	2d796f4a 	.word	0x2d796f4a
-    8098:	20646170 	.word	0x20646170
-    809c:	4e574f44 	.word	0x4e574f44
-    80a0:	20          	.byte	0x20
-    80a1:	00          	.byte	0x00
-	...
-
-000080a4 <button7>:
-    80a4:	2d796f4a 	.word	0x2d796f4a
-    80a8:	20646170 	.word	0x20646170
-    80ac:	5446454c 	.word	0x5446454c
-    80b0:	20          	.byte	0x20
-    80b1:	00          	.byte	0x00
-	...
-
-000080b4 <button8>:
-    80b4:	2d796f4a 	.word	0x2d796f4a
-    80b8:	20646170 	.word	0x20646170
-    80bc:	48474952 	.word	0x48474952
-    80c0:	2054      	.short	0x2054
-	...
-
-000080c4 <button9>:
-    80c4:	2041      	.short	0x2041
-	...
-
-000080c8 <button10>:
-    80c8:	2058      	.short	0x2058
-	...
-
-000080cc <button11>:
-    80cc:	7466654c 	.word	0x7466654c
-    80d0:	20          	.byte	0x20
-    80d1:	00          	.byte	0x00
-	...
-
-000080d4 <button12>:
-    80d4:	68676952 	.word	0x68676952
-    80d8:	2074      	.short	0x2074
-	...
-
 Disassembly of section .text:
 
-00009960 <InitFrameBuffers>:
-    9960:	e92d4800 	push	{fp, lr}
-    9964:	eb000051 	bl	9ab0 <InitFrameBuffer1>
-    9968:	eb000070 	bl	9b30 <InitFrameBuffer2>
-    996c:	e8bd4800 	pop	{fp, lr}
-    9970:	e12fff1e 	bx	lr
+000098f0 <Menu>:
+    98f0:	e92d5ff0 	push	{r4, r5, r6, r7, r8, r9, sl, fp, ip, lr}
+    98f4:	e8bd5ff0 	pop	{r4, r5, r6, r7, r8, r9, sl, fp, ip, lr}
+    98f8:	e1a0f00e 	mov	pc, lr
 
-00009974 <UpdateScreen>:
-    9974:	e92d4ff0 	push	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9978:	e1a04000 	mov	r4, r0
-    997c:	eb000001 	bl	9988 <ClearScreen>
-    9980:	e8bd4ff0 	pop	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9984:	e12fff1e 	bx	lr
+000098fc <EnableJTAG>:
+    98fc:	e52de004 	push	{lr}		; (str lr, [sp, #-4]!)
+    9900:	e59f0064 	ldr	r0, [pc, #100]	; 996c <dowaitloop+0xc>
+    9904:	e0211001 	eor	r1, r1, r1
+    9908:	e5801000 	str	r1, [r0]
+    990c:	eb000012 	bl	995c <dowait>
+    9910:	e59f0058 	ldr	r0, [pc, #88]	; 9970 <dowaitloop+0x10>
+    9914:	e59f1058 	ldr	r1, [pc, #88]	; 9974 <dowaitloop+0x14>
+    9918:	e5801000 	str	r1, [r0]
+    991c:	eb00000e 	bl	995c <dowait>
+    9920:	e0211001 	eor	r1, r1, r1
+    9924:	e5801000 	str	r1, [r0]
+    9928:	e59f0048 	ldr	r0, [pc, #72]	; 9978 <dowaitloop+0x18>
+    992c:	e5901000 	ldr	r1, [r0]
+    9930:	e3c11a07 	bic	r1, r1, #28672	; 0x7000
+    9934:	e3811a02 	orr	r1, r1, #8192	; 0x2000
+    9938:	e5801000 	str	r1, [r0]
+    993c:	e59f0038 	ldr	r0, [pc, #56]	; 997c <dowaitloop+0x1c>
+    9940:	e5901000 	ldr	r1, [r0]
+    9944:	e59f2034 	ldr	r2, [pc, #52]	; 9980 <dowaitloop+0x20>
+    9948:	e1c11002 	bic	r1, r1, r2
+    994c:	e59f2030 	ldr	r2, [pc, #48]	; 9984 <dowaitloop+0x24>
+    9950:	e1811002 	orr	r1, r1, r2
+    9954:	e5801000 	str	r1, [r0]
+    9958:	e49df004 	pop	{pc}		; (ldr pc, [sp], #4)
 
-00009988 <ClearScreen>:
-    9988:	e92d49f0 	push	{r4, r5, r6, r7, r8, fp, lr}
-    998c:	e3a04000 	mov	r4, #0
-    9990:	e3a05000 	mov	r5, #0
-    9994:	e3a06000 	mov	r6, #0
-    9998:	e59f7078 	ldr	r7, [pc, #120]	; 9a18 <haltLoop$+0x4>
-    999c:	e59f8078 	ldr	r8, [pc, #120]	; 9a1c <haltLoop$+0x8>
+0000995c <dowait>:
+    995c:	e3a02f4b 	mov	r2, #300	; 0x12c
 
-000099a0 <clearLooping>:
-    99a0:	e1a00004 	mov	r0, r4
-    99a4:	e1a01005 	mov	r1, r5
-    99a8:	e1a02006 	mov	r2, r6
-    99ac:	e52de004 	push	{lr}		; (str lr, [sp, #-4]!)
-    99b0:	eb000009 	bl	99dc <DrawPixel>
-    99b4:	e49de004 	pop	{lr}		; (ldr lr, [sp], #4)
-    99b8:	e2844001 	add	r4, r4, #1
-    99bc:	e1540007 	cmp	r4, r7
-    99c0:	bafffff6 	blt	99a0 <clearLooping>
-    99c4:	e3a04000 	mov	r4, #0
-    99c8:	e2855001 	add	r5, r5, #1
-    99cc:	e1550008 	cmp	r5, r8
-    99d0:	bafffff2 	blt	99a0 <clearLooping>
-    99d4:	e8bd49f0 	pop	{r4, r5, r6, r7, r8, fp, lr}
-    99d8:	e12fff1e 	bx	lr
+00009960 <dowaitloop>:
+    9960:	e2522001 	subs	r2, r2, #1
+    9964:	1afffffd 	bne	9960 <dowaitloop>
+    9968:	e12fff1e 	bx	lr
+    996c:	3f200094 	.word	0x3f200094
+    9970:	3f200098 	.word	0x3f200098
+    9974:	0bc00010 	.word	0x0bc00010
+    9978:	3f200000 	.word	0x3f200000
+    997c:	3f200008 	.word	0x3f200008
+    9980:	00e3ffc0 	.word	0x00e3ffc0
+    9984:	0061b6c0 	.word	0x0061b6c0
 
-000099dc <DrawPixel>:
-    99dc:	e52d4004 	push	{r4}		; (str r4, [sp, #-4]!)
-    99e0:	e0804501 	add	r4, r0, r1, lsl #10
-    99e4:	e1a04084 	lsl	r4, r4, #1
-    99e8:	e59f0030 	ldr	r0, [pc, #48]	; 9a20 <haltLoop$+0xc>
-    99ec:	e5900000 	ldr	r0, [r0]
-    99f0:	e18020b4 	strh	r2, [r0, r4]
-    99f4:	e49d4004 	pop	{r4}		; (ldr r4, [sp], #4)
-    99f8:	e12fff1e 	bx	lr
+00009988 <InitFrameBuffer>:
+    9988:	e59f2068 	ldr	r2, [pc, #104]	; 99f8 <pointerWaitLoop$+0x1c>
+    998c:	e59f3068 	ldr	r3, [pc, #104]	; 99fc <pointerWaitLoop$+0x20>
 
-000099fc <_start>:
-    99fc:	eaffffff 	b	9a00 <main>
+00009990 <mBoxFullLoop$>:
+    9990:	e5920018 	ldr	r0, [r2, #24]
+    9994:	e3100102 	tst	r0, #-2147483648	; 0x80000000
+    9998:	1afffffc 	bne	9990 <mBoxFullLoop$>
+    999c:	e2830101 	add	r0, r3, #1073741824	; 0x40000000
+    99a0:	e3800008 	orr	r0, r0, #8
+    99a4:	e5820020 	str	r0, [r2, #32]
 
-00009a00 <main>:
-    9a00:	e3a0d902 	mov	sp, #32768	; 0x8000
-    9a04:	eb000006 	bl	9a24 <EnableJTAG>
-    9a08:	eb00016c 	bl	9fc0 <InitUART>
-    9a0c:	ebffffd3 	bl	9960 <InitFrameBuffers>
+000099a8 <mBoxEmptyLoop$>:
+    99a8:	e5920018 	ldr	r0, [r2, #24]
+    99ac:	e3100101 	tst	r0, #1073741824	; 0x40000000
+    99b0:	1afffffc 	bne	99a8 <mBoxEmptyLoop$>
+    99b4:	e5920000 	ldr	r0, [r2]
+    99b8:	e200100f 	and	r1, r0, #15
+    99bc:	e3310008 	teq	r1, #8
+    99c0:	1afffff8 	bne	99a8 <mBoxEmptyLoop$>
+    99c4:	e59f0030 	ldr	r0, [pc, #48]	; 99fc <pointerWaitLoop$+0x20>
+    99c8:	e5901004 	ldr	r1, [r0, #4]
+    99cc:	e3310102 	teq	r1, #-2147483648	; 0x80000000
+    99d0:	0a000001 	beq	99dc <pointerWaitLoop$>
+    99d4:	13a00000 	movne	r0, #0
+    99d8:	112fff1e 	bxne	lr
 
-00009a10 <PlayingLoop>:
-    9a10:	ebffffd7 	bl	9974 <UpdateScreen>
+000099dc <pointerWaitLoop$>:
+    99dc:	e59f001c 	ldr	r0, [pc, #28]	; 9a00 <pointerWaitLoop$+0x24>
+    99e0:	e5900000 	ldr	r0, [r0]
+    99e4:	e3300000 	teq	r0, #0
+    99e8:	0afffffb 	beq	99dc <pointerWaitLoop$>
+    99ec:	e59f3010 	ldr	r3, [pc, #16]	; 9a04 <pointerWaitLoop$+0x28>
+    99f0:	e5830000 	str	r0, [r3]
+    99f4:	e12fff1e 	bx	lr
+    99f8:	3f00b880 	.word	0x3f00b880
+    99fc:	00009080 	.word	0x00009080
+    9a00:	000090cc 	.word	0x000090cc
+    9a04:	000090e0 	.word	0x000090e0
 
-00009a14 <haltLoop$>:
-    9a14:	eafffffe 	b	9a14 <haltLoop$>
-    9a18:	000003ff 	.word	0x000003ff
-    9a1c:	000002ff 	.word	0x000002ff
-    9a20:	000098e0 	.word	0x000098e0
+00009a08 <DrawGameScreen>:
+    9a08:	e92d4ff0 	push	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
+    9a0c:	e59f4104 	ldr	r4, [pc, #260]	; 9b18 <haltLoop$+0x4>
+    9a10:	e59f5104 	ldr	r5, [pc, #260]	; 9b1c <haltLoop$+0x8>
+    9a14:	e3a06020 	mov	r6, #32
+    9a18:	e3a0a000 	mov	sl, #0
+    9a1c:	e3a09064 	mov	r9, #100	; 0x64
+    9a20:	e3a08064 	mov	r8, #100	; 0x64
+    9a24:	ea00000d 	b	9a60 <drawLoopTest>
 
-00009a24 <EnableJTAG>:
-    9a24:	e52de004 	push	{lr}		; (str lr, [sp, #-4]!)
-    9a28:	e59f0064 	ldr	r0, [pc, #100]	; 9a94 <dowaitloop+0xc>
-    9a2c:	e0211001 	eor	r1, r1, r1
-    9a30:	e5801000 	str	r1, [r0]
-    9a34:	eb000012 	bl	9a84 <dowait>
-    9a38:	e59f0058 	ldr	r0, [pc, #88]	; 9a98 <dowaitloop+0x10>
-    9a3c:	e59f1058 	ldr	r1, [pc, #88]	; 9a9c <dowaitloop+0x14>
-    9a40:	e5801000 	str	r1, [r0]
-    9a44:	eb00000e 	bl	9a84 <dowait>
-    9a48:	e0211001 	eor	r1, r1, r1
-    9a4c:	e5801000 	str	r1, [r0]
-    9a50:	e59f0048 	ldr	r0, [pc, #72]	; 9aa0 <dowaitloop+0x18>
-    9a54:	e5901000 	ldr	r1, [r0]
-    9a58:	e3c11a07 	bic	r1, r1, #28672	; 0x7000
-    9a5c:	e3811a02 	orr	r1, r1, #8192	; 0x2000
-    9a60:	e5801000 	str	r1, [r0]
-    9a64:	e59f0038 	ldr	r0, [pc, #56]	; 9aa4 <dowaitloop+0x1c>
-    9a68:	e5901000 	ldr	r1, [r0]
-    9a6c:	e59f2034 	ldr	r2, [pc, #52]	; 9aa8 <dowaitloop+0x20>
-    9a70:	e1c11002 	bic	r1, r1, r2
-    9a74:	e59f2030 	ldr	r2, [pc, #48]	; 9aac <dowaitloop+0x24>
-    9a78:	e1811002 	orr	r1, r1, r2
-    9a7c:	e5801000 	str	r1, [r0]
-    9a80:	e49df004 	pop	{pc}		; (ldr pc, [sp], #4)
+00009a28 <drawImageLoop>:
+    9a28:	e2899001 	add	r9, r9, #1
+    9a2c:	ea000009 	b	9a58 <loopTest2>
 
-00009a84 <dowait>:
-    9a84:	e3a02f4b 	mov	r2, #300	; 0x12c
+00009a30 <drawImageLoop2>:
+    9a30:	e4947004 	ldr	r7, [r4], #4
+    9a34:	e3c774ff 	bic	r7, r7, #-16777216	; 0xff000000
+    9a38:	e1a00008 	mov	r0, r8
+    9a3c:	e1a01009 	mov	r1, r9
+    9a40:	e1a02007 	mov	r2, r7
+    9a44:	e52de004 	push	{lr}		; (str lr, [sp, #-4]!)
+    9a48:	eb000023 	bl	9adc <DrawPixel>
+    9a4c:	e49de004 	pop	{lr}		; (ldr lr, [sp], #4)
+    9a50:	e28aa001 	add	sl, sl, #1
+    9a54:	e2888001 	add	r8, r8, #1
 
-00009a88 <dowaitloop>:
-    9a88:	e2522001 	subs	r2, r2, #1
-    9a8c:	1afffffd 	bne	9a88 <dowaitloop>
-    9a90:	e12fff1e 	bx	lr
-    9a94:	3f200094 	.word	0x3f200094
-    9a98:	3f200098 	.word	0x3f200098
-    9a9c:	0bc00010 	.word	0x0bc00010
-    9aa0:	3f200000 	.word	0x3f200000
-    9aa4:	3f200008 	.word	0x3f200008
-    9aa8:	00e3ffc0 	.word	0x00e3ffc0
-    9aac:	0061b6c0 	.word	0x0061b6c0
+00009a58 <loopTest2>:
+    9a58:	e15a0006 	cmp	sl, r6
+    9a5c:	dafffff3 	ble	9a30 <drawImageLoop2>
 
-00009ab0 <InitFrameBuffer1>:
-    9ab0:	e59f2068 	ldr	r2, [pc, #104]	; 9b20 <pointerWaitLoop$+0x1c>
-    9ab4:	e59f3068 	ldr	r3, [pc, #104]	; 9b24 <pointerWaitLoop$+0x20>
+00009a60 <drawLoopTest>:
+    9a60:	e1540005 	cmp	r4, r5
+    9a64:	1affffef 	bne	9a28 <drawImageLoop>
+    9a68:	e8bd4ff0 	pop	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
+    9a6c:	e12fff1e 	bx	lr
 
-00009ab8 <mBoxFullLoop$>:
-    9ab8:	e5920018 	ldr	r0, [r2, #24]
-    9abc:	e3100102 	tst	r0, #-2147483648	; 0x80000000
-    9ac0:	1afffffc 	bne	9ab8 <mBoxFullLoop$>
-    9ac4:	e2830101 	add	r0, r3, #1073741824	; 0x40000000
-    9ac8:	e3800008 	orr	r0, r0, #8
-    9acc:	e5820020 	str	r0, [r2, #32]
+00009a70 <UpdateScreen>:
+    9a70:	e92d4ff0 	push	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
+    9a74:	e1a04000 	mov	r4, r0
+    9a78:	eb000002 	bl	9a88 <ClearScreen>
+    9a7c:	ebffffe1 	bl	9a08 <DrawGameScreen>
+    9a80:	e8bd4ff0 	pop	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
+    9a84:	e12fff1e 	bx	lr
 
-00009ad0 <mBoxEmptyLoop$>:
-    9ad0:	e5920018 	ldr	r0, [r2, #24]
-    9ad4:	e3100101 	tst	r0, #1073741824	; 0x40000000
-    9ad8:	1afffffc 	bne	9ad0 <mBoxEmptyLoop$>
-    9adc:	e5920000 	ldr	r0, [r2]
-    9ae0:	e200100f 	and	r1, r0, #15
-    9ae4:	e3310008 	teq	r1, #8
-    9ae8:	1afffff8 	bne	9ad0 <mBoxEmptyLoop$>
-    9aec:	e59f0030 	ldr	r0, [pc, #48]	; 9b24 <pointerWaitLoop$+0x20>
-    9af0:	e5901004 	ldr	r1, [r0, #4]
-    9af4:	e3310102 	teq	r1, #-2147483648	; 0x80000000
-    9af8:	0a000001 	beq	9b04 <pointerWaitLoop$>
-    9afc:	13a00000 	movne	r0, #0
-    9b00:	112fff1e 	bxne	lr
+00009a88 <ClearScreen>:
+    9a88:	e92d49f0 	push	{r4, r5, r6, r7, r8, fp, lr}
+    9a8c:	e3a04000 	mov	r4, #0
+    9a90:	e3a05000 	mov	r5, #0
+    9a94:	e3a06000 	mov	r6, #0
+    9a98:	e59f7080 	ldr	r7, [pc, #128]	; 9b20 <haltLoop$+0xc>
+    9a9c:	e59f8080 	ldr	r8, [pc, #128]	; 9b24 <haltLoop$+0x10>
 
-00009b04 <pointerWaitLoop$>:
-    9b04:	e59f001c 	ldr	r0, [pc, #28]	; 9b28 <pointerWaitLoop$+0x24>
-    9b08:	e5900000 	ldr	r0, [r0]
-    9b0c:	e3300000 	teq	r0, #0
-    9b10:	0afffffb 	beq	9b04 <pointerWaitLoop$>
-    9b14:	e59f3010 	ldr	r3, [pc, #16]	; 9b2c <pointerWaitLoop$+0x28>
-    9b18:	e5830000 	str	r0, [r3]
-    9b1c:	e12fff1e 	bx	lr
-    9b20:	3f00b880 	.word	0x3f00b880
-    9b24:	00009880 	.word	0x00009880
-    9b28:	000098cc 	.word	0x000098cc
-    9b2c:	000098e0 	.word	0x000098e0
+00009aa0 <clearLooping>:
+    9aa0:	e1a00004 	mov	r0, r4
+    9aa4:	e1a01005 	mov	r1, r5
+    9aa8:	e1a02006 	mov	r2, r6
+    9aac:	e52de004 	push	{lr}		; (str lr, [sp, #-4]!)
+    9ab0:	eb000009 	bl	9adc <DrawPixel>
+    9ab4:	e49de004 	pop	{lr}		; (ldr lr, [sp], #4)
+    9ab8:	e2844001 	add	r4, r4, #1
+    9abc:	e1540007 	cmp	r4, r7
+    9ac0:	bafffff6 	blt	9aa0 <clearLooping>
+    9ac4:	e3a04000 	mov	r4, #0
+    9ac8:	e2855001 	add	r5, r5, #1
+    9acc:	e1550008 	cmp	r5, r8
+    9ad0:	bafffff2 	blt	9aa0 <clearLooping>
+    9ad4:	e8bd49f0 	pop	{r4, r5, r6, r7, r8, fp, lr}
+    9ad8:	e12fff1e 	bx	lr
 
-00009b30 <InitFrameBuffer2>:
-    9b30:	e59f2068 	ldr	r2, [pc, #104]	; 9ba0 <pointerWaitLoop$+0x1c>
-    9b34:	e59f3068 	ldr	r3, [pc, #104]	; 9ba4 <pointerWaitLoop$+0x20>
+00009adc <DrawPixel>:
+    9adc:	e52d4004 	push	{r4}		; (str r4, [sp, #-4]!)
+    9ae0:	e0804501 	add	r4, r0, r1, lsl #10
+    9ae4:	e1a04084 	lsl	r4, r4, #1
+    9ae8:	e59f0038 	ldr	r0, [pc, #56]	; 9b28 <haltLoop$+0x14>
+    9aec:	e5900000 	ldr	r0, [r0]
+    9af0:	e18020b4 	strh	r2, [r0, r4]
+    9af4:	e49d4004 	pop	{r4}		; (ldr r4, [sp], #4)
+    9af8:	e12fff1e 	bx	lr
 
-00009b38 <mBoxFullLoop$>:
-    9b38:	e5920018 	ldr	r0, [r2, #24]
-    9b3c:	e3100102 	tst	r0, #-2147483648	; 0x80000000
-    9b40:	1afffffc 	bne	9b38 <mBoxFullLoop$>
-    9b44:	e2830101 	add	r0, r3, #1073741824	; 0x40000000
-    9b48:	e3800008 	orr	r0, r0, #8
-    9b4c:	e5820020 	str	r0, [r2, #32]
+00009afc <_start>:
+    9afc:	eaffffff 	b	9b00 <main>
 
-00009b50 <mBoxEmptyLoop$>:
-    9b50:	e5920018 	ldr	r0, [r2, #24]
-    9b54:	e3100101 	tst	r0, #1073741824	; 0x40000000
-    9b58:	1afffffc 	bne	9b50 <mBoxEmptyLoop$>
-    9b5c:	e5920000 	ldr	r0, [r2]
-    9b60:	e200100f 	and	r1, r0, #15
-    9b64:	e3310008 	teq	r1, #8
-    9b68:	1afffff8 	bne	9b50 <mBoxEmptyLoop$>
-    9b6c:	e59f0030 	ldr	r0, [pc, #48]	; 9ba4 <pointerWaitLoop$+0x20>
-    9b70:	e5901004 	ldr	r1, [r0, #4]
-    9b74:	e3310102 	teq	r1, #-2147483648	; 0x80000000
-    9b78:	0a000001 	beq	9b84 <pointerWaitLoop$>
-    9b7c:	13a00000 	movne	r0, #0
-    9b80:	112fff1e 	bxne	lr
+00009b00 <main>:
+    9b00:	e3a0d902 	mov	sp, #32768	; 0x8000
+    9b04:	ebffff7c 	bl	98fc <EnableJTAG>
+    9b08:	eb00042d 	bl	abc4 <InitUART>
+    9b0c:	ebffff9d 	bl	9988 <InitFrameBuffer>
 
-00009b84 <pointerWaitLoop$>:
-    9b84:	e59f001c 	ldr	r0, [pc, #28]	; 9ba8 <pointerWaitLoop$+0x24>
-    9b88:	e5900000 	ldr	r0, [r0]
-    9b8c:	e3300000 	teq	r0, #0
-    9b90:	0afffffb 	beq	9b84 <pointerWaitLoop$>
-    9b94:	e59f3010 	ldr	r3, [pc, #16]	; 9bac <pointerWaitLoop$+0x28>
-    9b98:	e5830000 	str	r0, [r3]
-    9b9c:	e12fff1e 	bx	lr
-    9ba0:	3f00b880 	.word	0x3f00b880
-    9ba4:	000098f0 	.word	0x000098f0
-    9ba8:	0000993c 	.word	0x0000993c
-    9bac:	00009950 	.word	0x00009950
+00009b10 <PlayingLoop>:
+    9b10:	ebffffd6 	bl	9a70 <UpdateScreen>
 
-00009bb0 <InitFrameBuffers>:
-    9bb0:	e92d4800 	push	{fp, lr}
-    9bb4:	ebffffbd 	bl	9ab0 <InitFrameBuffer1>
-    9bb8:	ebffffdc 	bl	9b30 <InitFrameBuffer2>
-    9bbc:	e8bd4800 	pop	{fp, lr}
-    9bc0:	e12fff1e 	bx	lr
+00009b14 <haltLoop$>:
+    9b14:	eafffffe 	b	9b14 <haltLoop$>
+    9b18:	00008000 	.word	0x00008000
+    9b1c:	00008000 	.word	0x00008000
+    9b20:	000003ff 	.word	0x000003ff
+    9b24:	000002ff 	.word	0x000002ff
+    9b28:	000090e0 	.word	0x000090e0
 
-00009bc4 <UpdateScreen>:
-    9bc4:	e92d4ff0 	push	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9bc8:	e1a04000 	mov	r4, r0
-    9bcc:	eb000001 	bl	9bd8 <ClearScreen>
-    9bd0:	e8bd4ff0 	pop	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9bd4:	e12fff1e 	bx	lr
+00009b2c <DrawGameScreen>:
+    9b2c:	e92d4ff0 	push	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
+    9b30:	e59f40e8 	ldr	r4, [pc, #232]	; 9c20 <DrawPixel+0x20>
+    9b34:	e59f50e8 	ldr	r5, [pc, #232]	; 9c24 <DrawPixel+0x24>
+    9b38:	e3a06020 	mov	r6, #32
+    9b3c:	e3a0a000 	mov	sl, #0
+    9b40:	e3a09064 	mov	r9, #100	; 0x64
+    9b44:	e3a08064 	mov	r8, #100	; 0x64
+    9b48:	ea00000d 	b	9b84 <drawLoopTest>
 
-00009bd8 <ClearScreen>:
-    9bd8:	e92d49f0 	push	{r4, r5, r6, r7, r8, fp, lr}
-    9bdc:	e3a04000 	mov	r4, #0
-    9be0:	e3a05000 	mov	r5, #0
-    9be4:	e3a06000 	mov	r6, #0
-    9be8:	e59f705c 	ldr	r7, [pc, #92]	; 9c4c <DrawPixel+0x20>
-    9bec:	e59f805c 	ldr	r8, [pc, #92]	; 9c50 <DrawPixel+0x24>
+00009b4c <drawImageLoop>:
+    9b4c:	e2899001 	add	r9, r9, #1
+    9b50:	ea000009 	b	9b7c <loopTest2>
 
-00009bf0 <clearLooping>:
-    9bf0:	e1a00004 	mov	r0, r4
-    9bf4:	e1a01005 	mov	r1, r5
-    9bf8:	e1a02006 	mov	r2, r6
-    9bfc:	e52de004 	push	{lr}		; (str lr, [sp, #-4]!)
-    9c00:	eb000009 	bl	9c2c <DrawPixel>
-    9c04:	e49de004 	pop	{lr}		; (ldr lr, [sp], #4)
-    9c08:	e2844001 	add	r4, r4, #1
-    9c0c:	e1540007 	cmp	r4, r7
-    9c10:	bafffff6 	blt	9bf0 <clearLooping>
-    9c14:	e3a04000 	mov	r4, #0
-    9c18:	e2855001 	add	r5, r5, #1
-    9c1c:	e1550008 	cmp	r5, r8
-    9c20:	bafffff2 	blt	9bf0 <clearLooping>
-    9c24:	e8bd49f0 	pop	{r4, r5, r6, r7, r8, fp, lr}
-    9c28:	e12fff1e 	bx	lr
+00009b54 <drawImageLoop2>:
+    9b54:	e4947004 	ldr	r7, [r4], #4
+    9b58:	e3c774ff 	bic	r7, r7, #-16777216	; 0xff000000
+    9b5c:	e1a00008 	mov	r0, r8
+    9b60:	e1a01009 	mov	r1, r9
+    9b64:	e1a02007 	mov	r2, r7
+    9b68:	e52de004 	push	{lr}		; (str lr, [sp, #-4]!)
+    9b6c:	eb000023 	bl	9c00 <DrawPixel>
+    9b70:	e49de004 	pop	{lr}		; (ldr lr, [sp], #4)
+    9b74:	e28aa001 	add	sl, sl, #1
+    9b78:	e2888001 	add	r8, r8, #1
 
-00009c2c <DrawPixel>:
-    9c2c:	e52d4004 	push	{r4}		; (str r4, [sp, #-4]!)
-    9c30:	e0804501 	add	r4, r0, r1, lsl #10
-    9c34:	e1a04084 	lsl	r4, r4, #1
-    9c38:	e59f0014 	ldr	r0, [pc, #20]	; 9c54 <DrawPixel+0x28>
-    9c3c:	e5900000 	ldr	r0, [r0]
-    9c40:	e18020b4 	strh	r2, [r0, r4]
-    9c44:	e49d4004 	pop	{r4}		; (ldr r4, [sp], #4)
-    9c48:	e12fff1e 	bx	lr
-    9c4c:	000003ff 	.word	0x000003ff
-    9c50:	000002ff 	.word	0x000002ff
-    9c54:	000098e0 	.word	0x000098e0
+00009b7c <loopTest2>:
+    9b7c:	e15a0006 	cmp	sl, r6
+    9b80:	dafffff3 	ble	9b54 <drawImageLoop2>
 
-00009c58 <snes>:
-    9c58:	e3a0d902 	mov	sp, #32768	; 0x8000
-    9c5c:	ebffff70 	bl	9a24 <EnableJTAG>
-    9c60:	eb0000d6 	bl	9fc0 <InitUART>
-    9c64:	e59f0304 	ldr	r0, [pc, #772]	; 9f70 <Print_Message+0x10>
-    9c68:	e3a01026 	mov	r1, #38	; 0x26
-    9c6c:	eb0000bb 	bl	9f60 <Print_Message>
-    9c70:	e59f02fc 	ldr	r0, [pc, #764]	; 9f74 <Print_Message+0x14>
-    9c74:	e59f42fc 	ldr	r4, [pc, #764]	; 9f78 <Print_Message+0x18>
-    9c78:	e1a08004 	mov	r8, r4
+00009b84 <drawLoopTest>:
+    9b84:	e1540005 	cmp	r4, r5
+    9b88:	1affffef 	bne	9b4c <drawImageLoop>
+    9b8c:	e8bd4ff0 	pop	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
+    9b90:	e12fff1e 	bx	lr
 
-00009c7c <mainLoop>:
-    9c7c:	e59f02f0 	ldr	r0, [pc, #752]	; 9f74 <Print_Message+0x14>
-    9c80:	e3a0101f 	mov	r1, #31
-    9c84:	eb0000b5 	bl	9f60 <Print_Message>
+00009b94 <UpdateScreen>:
+    9b94:	e92d4ff0 	push	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
+    9b98:	e1a04000 	mov	r4, r0
+    9b9c:	eb000002 	bl	9bac <ClearScreen>
+    9ba0:	ebffffe1 	bl	9b2c <DrawGameScreen>
+    9ba4:	e8bd4ff0 	pop	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
+    9ba8:	e12fff1e 	bx	lr
 
-00009c88 <buttonListen>:
-    9c88:	eb000059 	bl	9df4 <Read_SNES>
-    9c8c:	e1a05000 	mov	r5, r0
-    9c90:	e0244008 	eor	r4, r4, r8
-    9c94:	e1856004 	orr	r6, r5, r4
-    9c98:	e59f72d8 	ldr	r7, [pc, #728]	; 9f78 <Print_Message+0x18>
-    9c9c:	e3a0000a 	mov	r0, #10
-    9ca0:	eb00004a 	bl	9dd0 <Wait>
-    9ca4:	e1360007 	teq	r6, r7
-    9ca8:	e1a04005 	mov	r4, r5
-    9cac:	0afffff5 	beq	9c88 <buttonListen>
-    9cb0:	e3a07001 	mov	r7, #1
-    9cb4:	e1a07187 	lsl	r7, r7, #3
-    9cb8:	e1160007 	tst	r6, r7
-    9cbc:	0a00000b 	beq	9cf0 <endProgram>
-    9cc0:	e59f02ac 	ldr	r0, [pc, #684]	; 9f74 <Print_Message+0x14>
-    9cc4:	e280001a 	add	r0, r0, #26
-    9cc8:	e3a01015 	mov	r1, #21
-    9ccc:	eb0000a3 	bl	9f60 <Print_Message>
-    9cd0:	e1a00006 	mov	r0, r6
-    9cd4:	eb000064 	bl	9e6c <printButtons>
-    9cd8:	e59f029c 	ldr	r0, [pc, #668]	; 9f7c <Print_Message+0x1c>
-    9cdc:	e3a01002 	mov	r1, #2
-    9ce0:	eb00009e 	bl	9f60 <Print_Message>
-    9ce4:	e3a0000a 	mov	r0, #10
-    9ce8:	eb000038 	bl	9dd0 <Wait>
-    9cec:	eaffffe2 	b	9c7c <mainLoop>
+00009bac <ClearScreen>:
+    9bac:	e92d49f0 	push	{r4, r5, r6, r7, r8, fp, lr}
+    9bb0:	e3a04000 	mov	r4, #0
+    9bb4:	e3a05000 	mov	r5, #0
+    9bb8:	e3a06000 	mov	r6, #0
+    9bbc:	e59f7064 	ldr	r7, [pc, #100]	; 9c28 <DrawPixel+0x28>
+    9bc0:	e59f8064 	ldr	r8, [pc, #100]	; 9c2c <DrawPixel+0x2c>
 
-00009cf0 <endProgram>:
-    9cf0:	e59f0288 	ldr	r0, [pc, #648]	; 9f80 <Print_Message+0x20>
-    9cf4:	e3a0101d 	mov	r1, #29
-    9cf8:	eb000098 	bl	9f60 <Print_Message>
-    9cfc:	eaffffff 	b	9d00 <haltLoop$>
+00009bc4 <clearLooping>:
+    9bc4:	e1a00004 	mov	r0, r4
+    9bc8:	e1a01005 	mov	r1, r5
+    9bcc:	e1a02006 	mov	r2, r6
+    9bd0:	e52de004 	push	{lr}		; (str lr, [sp, #-4]!)
+    9bd4:	eb000009 	bl	9c00 <DrawPixel>
+    9bd8:	e49de004 	pop	{lr}		; (ldr lr, [sp], #4)
+    9bdc:	e2844001 	add	r4, r4, #1
+    9be0:	e1540007 	cmp	r4, r7
+    9be4:	bafffff6 	blt	9bc4 <clearLooping>
+    9be8:	e3a04000 	mov	r4, #0
+    9bec:	e2855001 	add	r5, r5, #1
+    9bf0:	e1550008 	cmp	r5, r8
+    9bf4:	bafffff2 	blt	9bc4 <clearLooping>
+    9bf8:	e8bd49f0 	pop	{r4, r5, r6, r7, r8, fp, lr}
+    9bfc:	e12fff1e 	bx	lr
 
-00009d00 <haltLoop$>:
-    9d00:	eafffffe 	b	9d00 <haltLoop$>
+00009c00 <DrawPixel>:
+    9c00:	e52d4004 	push	{r4}		; (str r4, [sp, #-4]!)
+    9c04:	e0804501 	add	r4, r0, r1, lsl #10
+    9c08:	e1a04084 	lsl	r4, r4, #1
+    9c0c:	e59f001c 	ldr	r0, [pc, #28]	; 9c30 <DrawPixel+0x30>
+    9c10:	e5900000 	ldr	r0, [r0]
+    9c14:	e18020b4 	strh	r2, [r0, r4]
+    9c18:	e49d4004 	pop	{r4}		; (ldr r4, [sp], #4)
+    9c1c:	e12fff1e 	bx	lr
+    9c20:	00008000 	.word	0x00008000
+    9c24:	00008000 	.word	0x00008000
+    9c28:	000003ff 	.word	0x000003ff
+    9c2c:	000002ff 	.word	0x000002ff
+    9c30:	000090e0 	.word	0x000090e0
 
-00009d04 <init_GPIO>:
-    9d04:	e92d4ff0 	push	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9d08:	e59f4274 	ldr	r4, [pc, #628]	; 9f84 <Print_Message+0x24>
-    9d0c:	e5945000 	ldr	r5, [r4]
-    9d10:	e3a06007 	mov	r6, #7
-    9d14:	e1a06186 	lsl	r6, r6, #3
-    9d18:	e2866007 	add	r6, r6, #7
-    9d1c:	e1c55006 	bic	r5, r5, r6
-    9d20:	e3a06001 	mov	r6, #1
-    9d24:	e1a06186 	lsl	r6, r6, #3
-    9d28:	e1855006 	orr	r5, r5, r6
-    9d2c:	e5845000 	str	r5, [r4]
-    9d30:	e59f4250 	ldr	r4, [pc, #592]	; 9f88 <Print_Message+0x28>
-    9d34:	e5945000 	ldr	r5, [r4]
-    9d38:	e3a06007 	mov	r6, #7
-    9d3c:	e1a06d86 	lsl	r6, r6, #27
-    9d40:	e1c55006 	bic	r5, r5, r6
-    9d44:	e3a06001 	mov	r6, #1
-    9d48:	e1a06d86 	lsl	r6, r6, #27
-    9d4c:	e1855006 	orr	r5, r5, r6
-    9d50:	e5845000 	str	r5, [r4]
-    9d54:	e8bd4ff0 	pop	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9d58:	e12fff1e 	bx	lr
+00009c34 <MapArray>:
+    9c34:	30303021 	.word	0x30303021
+    9c38:	30303030 	.word	0x30303030
+    9c3c:	30303030 	.word	0x30303030
+    9c40:	30303030 	.word	0x30303030
+    9c44:	30303030 	.word	0x30303030
+    9c48:	30303030 	.word	0x30303030
+    9c4c:	30303030 	.word	0x30303030
+    9c50:	30303030 	.word	0x30303030
+    9c54:	30307c30 	.word	0x30307c30
+    9c58:	30303030 	.word	0x30303030
+    9c5c:	30303030 	.word	0x30303030
+    9c60:	30303030 	.word	0x30303030
+    9c64:	30303030 	.word	0x30303030
+    9c68:	30303030 	.word	0x30303030
+    9c6c:	30303030 	.word	0x30303030
+    9c70:	30303030 	.word	0x30303030
+    9c74:	307c3030 	.word	0x307c3030
+    9c78:	30303030 	.word	0x30303030
+    9c7c:	30303030 	.word	0x30303030
+    9c80:	30303030 	.word	0x30303030
+    9c84:	30303030 	.word	0x30303030
+    9c88:	30303030 	.word	0x30303030
+    9c8c:	30303030 	.word	0x30303030
+    9c90:	30303030 	.word	0x30303030
+    9c94:	7c303030 	.word	0x7c303030
+    9c98:	30303030 	.word	0x30303030
+    9c9c:	30303030 	.word	0x30303030
+    9ca0:	30303030 	.word	0x30303030
+    9ca4:	30303030 	.word	0x30303030
+    9ca8:	30303030 	.word	0x30303030
+    9cac:	30303030 	.word	0x30303030
+    9cb0:	30303030 	.word	0x30303030
+    9cb4:	30303030 	.word	0x30303030
+    9cb8:	3030307c 	.word	0x3030307c
+    9cbc:	30303030 	.word	0x30303030
+    9cc0:	30303030 	.word	0x30303030
+    9cc4:	30303030 	.word	0x30303030
+    9cc8:	30303030 	.word	0x30303030
+    9ccc:	30303030 	.word	0x30303030
+    9cd0:	30303030 	.word	0x30303030
+    9cd4:	30303030 	.word	0x30303030
+    9cd8:	30212130 	.word	0x30212130
+    9cdc:	30303030 	.word	0x30303030
+    9ce0:	30303030 	.word	0x30303030
+    9ce4:	30303030 	.word	0x30303030
+    9ce8:	30303030 	.word	0x30303030
+    9cec:	30303030 	.word	0x30303030
+    9cf0:	30303030 	.word	0x30303030
+    9cf4:	30303030 	.word	0x30303030
+    9cf8:	7c303030 	.word	0x7c303030
+    9cfc:	30303030 	.word	0x30303030
+    9d00:	30303030 	.word	0x30303030
+    9d04:	30303030 	.word	0x30303030
+    9d08:	30303030 	.word	0x30303030
+    9d0c:	30303030 	.word	0x30303030
+    9d10:	30303030 	.word	0x30303030
+    9d14:	30303030 	.word	0x30303030
+    9d18:	30303030 	.word	0x30303030
+    9d1c:	3030307c 	.word	0x3030307c
+    9d20:	30303030 	.word	0x30303030
+    9d24:	30303030 	.word	0x30303030
+    9d28:	30303030 	.word	0x30303030
+    9d2c:	30303030 	.word	0x30303030
+    9d30:	30303030 	.word	0x30303030
+    9d34:	30303030 	.word	0x30303030
+    9d38:	30303030 	.word	0x30303030
+    9d3c:	30307c30 	.word	0x30307c30
+    9d40:	30303030 	.word	0x30303030
+    9d44:	30303030 	.word	0x30303030
+    9d48:	30303030 	.word	0x30303030
+    9d4c:	30303030 	.word	0x30303030
+    9d50:	30303030 	.word	0x30303030
+    9d54:	30303030 	.word	0x30303030
+    9d58:	30303030 	.word	0x30303030
+    9d5c:	307c3030 	.word	0x307c3030
+    9d60:	30303030 	.word	0x30303030
+    9d64:	30303030 	.word	0x30303030
+    9d68:	30303030 	.word	0x30303030
+    9d6c:	30303030 	.word	0x30303030
+    9d70:	30303030 	.word	0x30303030
+    9d74:	30303030 	.word	0x30303030
+    9d78:	30303030 	.word	0x30303030
+    9d7c:	21303030 	.word	0x21303030
+    9d80:	30303021 	.word	0x30303021
+    9d84:	30303030 	.word	0x30303030
+    9d88:	30303030 	.word	0x30303030
+    9d8c:	30303030 	.word	0x30303030
+    9d90:	30303030 	.word	0x30303030
+    9d94:	30303030 	.word	0x30303030
+    9d98:	30303030 	.word	0x30303030
+    9d9c:	30303030 	.word	0x30303030
+    9da0:	30307c30 	.word	0x30307c30
+    9da4:	30303030 	.word	0x30303030
+    9da8:	30303030 	.word	0x30303030
+    9dac:	30303030 	.word	0x30303030
+    9db0:	30303030 	.word	0x30303030
+    9db4:	30303030 	.word	0x30303030
+    9db8:	30303030 	.word	0x30303030
+    9dbc:	30303030 	.word	0x30303030
+    9dc0:	307c3030 	.word	0x307c3030
+    9dc4:	30303030 	.word	0x30303030
+    9dc8:	30303030 	.word	0x30303030
+    9dcc:	30303030 	.word	0x30303030
+    9dd0:	30303030 	.word	0x30303030
+    9dd4:	30303030 	.word	0x30303030
+    9dd8:	30303030 	.word	0x30303030
+    9ddc:	30303030 	.word	0x30303030
+    9de0:	7c303030 	.word	0x7c303030
+    9de4:	30303030 	.word	0x30303030
+    9de8:	30303030 	.word	0x30303030
+    9dec:	30303030 	.word	0x30303030
+    9df0:	30303030 	.word	0x30303030
+    9df4:	30303030 	.word	0x30303030
+    9df8:	30303030 	.word	0x30303030
+    9dfc:	30303030 	.word	0x30303030
+    9e00:	30303030 	.word	0x30303030
+    9e04:	3030307c 	.word	0x3030307c
+    9e08:	30303030 	.word	0x30303030
+    9e0c:	30303030 	.word	0x30303030
+    9e10:	30303030 	.word	0x30303030
+    9e14:	30303030 	.word	0x30303030
+    9e18:	30303030 	.word	0x30303030
+    9e1c:	30303030 	.word	0x30303030
+    9e20:	30303030 	.word	0x30303030
+    9e24:	30212130 	.word	0x30212130
+    9e28:	30303030 	.word	0x30303030
+    9e2c:	30303030 	.word	0x30303030
+    9e30:	30303030 	.word	0x30303030
+    9e34:	30303030 	.word	0x30303030
+    9e38:	30303030 	.word	0x30303030
+    9e3c:	30303030 	.word	0x30303030
+    9e40:	30303030 	.word	0x30303030
+    9e44:	7c303030 	.word	0x7c303030
+    9e48:	30303030 	.word	0x30303030
+    9e4c:	30303030 	.word	0x30303030
+    9e50:	30303030 	.word	0x30303030
+    9e54:	30303030 	.word	0x30303030
+    9e58:	30303030 	.word	0x30303030
+    9e5c:	30303030 	.word	0x30303030
+    9e60:	30303030 	.word	0x30303030
+    9e64:	30303030 	.word	0x30303030
+    9e68:	3030307c 	.word	0x3030307c
+    9e6c:	30303030 	.word	0x30303030
+    9e70:	30303030 	.word	0x30303030
+    9e74:	30303030 	.word	0x30303030
+    9e78:	30303030 	.word	0x30303030
+    9e7c:	30303030 	.word	0x30303030
+    9e80:	30303030 	.word	0x30303030
+    9e84:	30303030 	.word	0x30303030
+    9e88:	30307c30 	.word	0x30307c30
+    9e8c:	30303030 	.word	0x30303030
+    9e90:	30303030 	.word	0x30303030
+    9e94:	30303030 	.word	0x30303030
+    9e98:	30303030 	.word	0x30303030
+    9e9c:	30303030 	.word	0x30303030
+    9ea0:	30303030 	.word	0x30303030
+    9ea4:	30303030 	.word	0x30303030
+    9ea8:	307c3030 	.word	0x307c3030
+    9eac:	30303030 	.word	0x30303030
+    9eb0:	30303030 	.word	0x30303030
+    9eb4:	30303030 	.word	0x30303030
+    9eb8:	30303030 	.word	0x30303030
+    9ebc:	30303030 	.word	0x30303030
+    9ec0:	30303030 	.word	0x30303030
+    9ec4:	30303030 	.word	0x30303030
+    9ec8:	21303030 	.word	0x21303030
+    9ecc:	30303021 	.word	0x30303021
+    9ed0:	30303030 	.word	0x30303030
+    9ed4:	30303030 	.word	0x30303030
+    9ed8:	30303030 	.word	0x30303030
+    9edc:	30303030 	.word	0x30303030
+    9ee0:	30303030 	.word	0x30303030
+    9ee4:	30303030 	.word	0x30303030
+    9ee8:	30303030 	.word	0x30303030
+    9eec:	30307c30 	.word	0x30307c30
+    9ef0:	30303030 	.word	0x30303030
+    9ef4:	30303030 	.word	0x30303030
+    9ef8:	30303030 	.word	0x30303030
+    9efc:	30303030 	.word	0x30303030
+    9f00:	30303030 	.word	0x30303030
+    9f04:	30303030 	.word	0x30303030
+    9f08:	30303030 	.word	0x30303030
+    9f0c:	307c3030 	.word	0x307c3030
+    9f10:	30303030 	.word	0x30303030
+    9f14:	30303030 	.word	0x30303030
+    9f18:	30303030 	.word	0x30303030
+    9f1c:	30303030 	.word	0x30303030
+    9f20:	30303030 	.word	0x30303030
+    9f24:	30303030 	.word	0x30303030
+    9f28:	30303030 	.word	0x30303030
+    9f2c:	7c303030 	.word	0x7c303030
+    9f30:	30303030 	.word	0x30303030
+    9f34:	30303030 	.word	0x30303030
+    9f38:	30303030 	.word	0x30303030
+    9f3c:	30303030 	.word	0x30303030
+    9f40:	30303030 	.word	0x30303030
+    9f44:	30303030 	.word	0x30303030
+    9f48:	30303030 	.word	0x30303030
+    9f4c:	30303030 	.word	0x30303030
+    9f50:	3030307c 	.word	0x3030307c
+    9f54:	30303030 	.word	0x30303030
+    9f58:	30303030 	.word	0x30303030
+    9f5c:	30303030 	.word	0x30303030
+    9f60:	30303030 	.word	0x30303030
+    9f64:	30303030 	.word	0x30303030
+    9f68:	30303030 	.word	0x30303030
+    9f6c:	30303030 	.word	0x30303030
+    9f70:	30212130 	.word	0x30212130
+    9f74:	30303030 	.word	0x30303030
+    9f78:	30303030 	.word	0x30303030
+    9f7c:	30303030 	.word	0x30303030
+    9f80:	30303030 	.word	0x30303030
+    9f84:	30303030 	.word	0x30303030
+    9f88:	30303030 	.word	0x30303030
+    9f8c:	30303030 	.word	0x30303030
+    9f90:	7c303030 	.word	0x7c303030
+    9f94:	30303030 	.word	0x30303030
+    9f98:	30303030 	.word	0x30303030
+    9f9c:	30303030 	.word	0x30303030
+    9fa0:	30303030 	.word	0x30303030
+    9fa4:	30303030 	.word	0x30303030
+    9fa8:	30303030 	.word	0x30303030
+    9fac:	30303030 	.word	0x30303030
+    9fb0:	30303030 	.word	0x30303030
+    9fb4:	3030307c 	.word	0x3030307c
+    9fb8:	30303030 	.word	0x30303030
+    9fbc:	30303030 	.word	0x30303030
+    9fc0:	30303030 	.word	0x30303030
+    9fc4:	30303030 	.word	0x30303030
+    9fc8:	30303030 	.word	0x30303030
+    9fcc:	30303030 	.word	0x30303030
+    9fd0:	30303030 	.word	0x30303030
+    9fd4:	30307c30 	.word	0x30307c30
+    9fd8:	30303030 	.word	0x30303030
+    9fdc:	30303030 	.word	0x30303030
+    9fe0:	30303030 	.word	0x30303030
+    9fe4:	30303030 	.word	0x30303030
+    9fe8:	30303030 	.word	0x30303030
+    9fec:	30303030 	.word	0x30303030
+    9ff0:	30303030 	.word	0x30303030
+    9ff4:	307c3030 	.word	0x307c3030
+    9ff8:	30303030 	.word	0x30303030
+    9ffc:	30303030 	.word	0x30303030
+    a000:	30303030 	.word	0x30303030
+    a004:	30303030 	.word	0x30303030
+    a008:	30303030 	.word	0x30303030
+    a00c:	30303030 	.word	0x30303030
+    a010:	30303030 	.word	0x30303030
+    a014:	21303030 	.word	0x21303030
+    a018:	30303021 	.word	0x30303021
+    a01c:	30303030 	.word	0x30303030
+    a020:	30303030 	.word	0x30303030
+    a024:	30303030 	.word	0x30303030
+    a028:	30303030 	.word	0x30303030
+    a02c:	30303030 	.word	0x30303030
+    a030:	30303030 	.word	0x30303030
+    a034:	30303030 	.word	0x30303030
+    a038:	30307c30 	.word	0x30307c30
+    a03c:	30303030 	.word	0x30303030
+    a040:	30303030 	.word	0x30303030
+    a044:	30303030 	.word	0x30303030
+    a048:	30303030 	.word	0x30303030
+    a04c:	30303030 	.word	0x30303030
+    a050:	30303030 	.word	0x30303030
+    a054:	30303030 	.word	0x30303030
+    a058:	307c3030 	.word	0x307c3030
+    a05c:	30303030 	.word	0x30303030
+    a060:	30303030 	.word	0x30303030
+    a064:	30303030 	.word	0x30303030
+    a068:	30303030 	.word	0x30303030
+    a06c:	30303030 	.word	0x30303030
+    a070:	30303030 	.word	0x30303030
+    a074:	30303030 	.word	0x30303030
+    a078:	7c303030 	.word	0x7c303030
+    a07c:	30303030 	.word	0x30303030
+    a080:	30303030 	.word	0x30303030
+    a084:	30303030 	.word	0x30303030
+    a088:	30303030 	.word	0x30303030
+    a08c:	30303030 	.word	0x30303030
+    a090:	30303030 	.word	0x30303030
+    a094:	30303030 	.word	0x30303030
+    a098:	30303030 	.word	0x30303030
+    a09c:	3030307c 	.word	0x3030307c
+    a0a0:	30303030 	.word	0x30303030
+    a0a4:	30303030 	.word	0x30303030
+    a0a8:	30303030 	.word	0x30303030
+    a0ac:	30303030 	.word	0x30303030
+    a0b0:	30303030 	.word	0x30303030
+    a0b4:	30303030 	.word	0x30303030
+    a0b8:	30303030 	.word	0x30303030
+    a0bc:	30212130 	.word	0x30212130
+    a0c0:	30303030 	.word	0x30303030
+    a0c4:	30303030 	.word	0x30303030
+    a0c8:	30303030 	.word	0x30303030
+    a0cc:	30303063 	.word	0x30303063
+    a0d0:	30303030 	.word	0x30303030
+    a0d4:	30303030 	.word	0x30303030
+    a0d8:	30303030 	.word	0x30303030
+    a0dc:	7c303030 	.word	0x7c303030
+    a0e0:	30303030 	.word	0x30303030
+    a0e4:	30303030 	.word	0x30303030
+    a0e8:	30303030 	.word	0x30303030
+    a0ec:	30303030 	.word	0x30303030
+    a0f0:	30303030 	.word	0x30303030
+    a0f4:	30303030 	.word	0x30303030
+    a0f8:	30303030 	.word	0x30303030
+    a0fc:	30303030 	.word	0x30303030
+    a100:	3030307c 	.word	0x3030307c
+    a104:	30303030 	.word	0x30303030
+    a108:	30303030 	.word	0x30303030
+    a10c:	30303030 	.word	0x30303030
+    a110:	30303030 	.word	0x30303030
+    a114:	30303030 	.word	0x30303030
+    a118:	30303030 	.word	0x30303030
+    a11c:	30303030 	.word	0x30303030
+    a120:	30307c30 	.word	0x30307c30
+    a124:	30303030 	.word	0x30303030
+    a128:	30303030 	.word	0x30303030
+    a12c:	30303030 	.word	0x30303030
+    a130:	30303030 	.word	0x30303030
+    a134:	30303030 	.word	0x30303030
+    a138:	30303030 	.word	0x30303030
+    a13c:	30303030 	.word	0x30303030
+    a140:	307c3030 	.word	0x307c3030
+    a144:	30303030 	.word	0x30303030
+    a148:	30303030 	.word	0x30303030
+    a14c:	30303030 	.word	0x30303030
+    a150:	30303030 	.word	0x30303030
+    a154:	30303030 	.word	0x30303030
+    a158:	30303030 	.word	0x30303030
+    a15c:	30303030 	.word	0x30303030
+    a160:	21303030 	.word	0x21303030
+    a164:	30303021 	.word	0x30303021
+    a168:	30303030 	.word	0x30303030
+    a16c:	30303030 	.word	0x30303030
+    a170:	30303030 	.word	0x30303030
+    a174:	30303030 	.word	0x30303030
+    a178:	30303030 	.word	0x30303030
+    a17c:	30303030 	.word	0x30303030
+    a180:	30303030 	.word	0x30303030
+    a184:	30307c30 	.word	0x30307c30
+    a188:	30303030 	.word	0x30303030
+    a18c:	30303030 	.word	0x30303030
+    a190:	30303030 	.word	0x30303030
+    a194:	30303030 	.word	0x30303030
+    a198:	30303030 	.word	0x30303030
+    a19c:	30303030 	.word	0x30303030
+    a1a0:	30303030 	.word	0x30303030
+    a1a4:	307c3030 	.word	0x307c3030
+    a1a8:	30303030 	.word	0x30303030
+    a1ac:	30303030 	.word	0x30303030
+    a1b0:	30303030 	.word	0x30303030
+    a1b4:	30303030 	.word	0x30303030
+    a1b8:	30303030 	.word	0x30303030
+    a1bc:	30303030 	.word	0x30303030
+    a1c0:	30303030 	.word	0x30303030
+    a1c4:	7c303030 	.word	0x7c303030
+    a1c8:	30303030 	.word	0x30303030
+    a1cc:	30303030 	.word	0x30303030
+    a1d0:	30303030 	.word	0x30303030
+    a1d4:	30303030 	.word	0x30303030
+    a1d8:	30303030 	.word	0x30303030
+    a1dc:	30303030 	.word	0x30303030
+    a1e0:	30303030 	.word	0x30303030
+    a1e4:	30303030 	.word	0x30303030
+    a1e8:	3030307c 	.word	0x3030307c
+    a1ec:	30303030 	.word	0x30303030
+    a1f0:	30303030 	.word	0x30303030
+    a1f4:	30303030 	.word	0x30303030
+    a1f8:	30303030 	.word	0x30303030
+    a1fc:	30303030 	.word	0x30303030
+    a200:	30303030 	.word	0x30303030
+    a204:	30303030 	.word	0x30303030
+    a208:	30212130 	.word	0x30212130
+    a20c:	30303030 	.word	0x30303030
+    a210:	30303030 	.word	0x30303030
+    a214:	30303030 	.word	0x30303030
+    a218:	30303030 	.word	0x30303030
+    a21c:	30303030 	.word	0x30303030
+    a220:	30303030 	.word	0x30303030
+    a224:	30303030 	.word	0x30303030
+    a228:	7c303030 	.word	0x7c303030
+    a22c:	30303030 	.word	0x30303030
+    a230:	30303030 	.word	0x30303030
+    a234:	30303030 	.word	0x30303030
+    a238:	30303030 	.word	0x30303030
+    a23c:	30303030 	.word	0x30303030
+    a240:	30303030 	.word	0x30303030
+    a244:	30303030 	.word	0x30303030
+    a248:	30303030 	.word	0x30303030
+    a24c:	3030307c 	.word	0x3030307c
+    a250:	30303030 	.word	0x30303030
+    a254:	30303030 	.word	0x30303030
+    a258:	30303030 	.word	0x30303030
+    a25c:	30303030 	.word	0x30303030
+    a260:	30303030 	.word	0x30303030
+    a264:	30303030 	.word	0x30303030
+    a268:	30303030 	.word	0x30303030
+    a26c:	30307c30 	.word	0x30307c30
+    a270:	30303030 	.word	0x30303030
+    a274:	30303030 	.word	0x30303030
+    a278:	30303030 	.word	0x30303030
+    a27c:	30303030 	.word	0x30303030
+    a280:	30303030 	.word	0x30303030
+    a284:	30303030 	.word	0x30303030
+    a288:	30303030 	.word	0x30303030
+    a28c:	307c3030 	.word	0x307c3030
+    a290:	30303030 	.word	0x30303030
+    a294:	30303030 	.word	0x30303030
+    a298:	30303030 	.word	0x30303030
+    a29c:	30303030 	.word	0x30303030
+    a2a0:	30303030 	.word	0x30303030
+    a2a4:	30303030 	.word	0x30303030
+    a2a8:	30303030 	.word	0x30303030
+    a2ac:	21303030 	.word	0x21303030
+    a2b0:	30303021 	.word	0x30303021
+    a2b4:	30303030 	.word	0x30303030
+    a2b8:	30303030 	.word	0x30303030
+    a2bc:	30303030 	.word	0x30303030
+    a2c0:	30303030 	.word	0x30303030
+    a2c4:	30303030 	.word	0x30303030
+    a2c8:	30303030 	.word	0x30303030
+    a2cc:	30303030 	.word	0x30303030
+    a2d0:	30307c30 	.word	0x30307c30
+    a2d4:	30303030 	.word	0x30303030
+    a2d8:	30303030 	.word	0x30303030
+    a2dc:	30303030 	.word	0x30303030
+    a2e0:	30303030 	.word	0x30303030
+    a2e4:	30303030 	.word	0x30303030
+    a2e8:	30303030 	.word	0x30303030
+    a2ec:	30303030 	.word	0x30303030
+    a2f0:	307c3030 	.word	0x307c3030
+    a2f4:	30303030 	.word	0x30303030
+    a2f8:	30303030 	.word	0x30303030
+    a2fc:	30303030 	.word	0x30303030
+    a300:	30303030 	.word	0x30303030
+    a304:	30303030 	.word	0x30303030
+    a308:	30303030 	.word	0x30303030
+    a30c:	30303030 	.word	0x30303030
+    a310:	7c303030 	.word	0x7c303030
+    a314:	30303030 	.word	0x30303030
+    a318:	30303030 	.word	0x30303030
+    a31c:	30303030 	.word	0x30303030
+    a320:	30303030 	.word	0x30303030
+    a324:	30303030 	.word	0x30303030
+    a328:	30303030 	.word	0x30303030
+    a32c:	30303030 	.word	0x30303030
+    a330:	30303030 	.word	0x30303030
+    a334:	3030307c 	.word	0x3030307c
+    a338:	30303030 	.word	0x30303030
+    a33c:	30303030 	.word	0x30303030
+    a340:	30303030 	.word	0x30303030
+    a344:	30303030 	.word	0x30303030
+    a348:	30303030 	.word	0x30303030
+    a34c:	30303030 	.word	0x30303030
+    a350:	30303030 	.word	0x30303030
+    a354:	30212130 	.word	0x30212130
+    a358:	30303030 	.word	0x30303030
+    a35c:	30303030 	.word	0x30303030
+    a360:	30303030 	.word	0x30303030
+    a364:	30303030 	.word	0x30303030
+    a368:	30303030 	.word	0x30303030
+    a36c:	30303030 	.word	0x30303030
+    a370:	30303030 	.word	0x30303030
+    a374:	7c303030 	.word	0x7c303030
+    a378:	30303030 	.word	0x30303030
+    a37c:	30303030 	.word	0x30303030
+    a380:	30303030 	.word	0x30303030
+    a384:	30303030 	.word	0x30303030
+    a388:	30303030 	.word	0x30303030
+    a38c:	30303030 	.word	0x30303030
+    a390:	30303030 	.word	0x30303030
+    a394:	30303030 	.word	0x30303030
+    a398:	3030307c 	.word	0x3030307c
+    a39c:	30303030 	.word	0x30303030
+    a3a0:	30303030 	.word	0x30303030
+    a3a4:	30303030 	.word	0x30303030
+    a3a8:	30303030 	.word	0x30303030
+    a3ac:	30303030 	.word	0x30303030
+    a3b0:	30303030 	.word	0x30303030
+    a3b4:	30303030 	.word	0x30303030
+    a3b8:	30307c30 	.word	0x30307c30
+    a3bc:	30303030 	.word	0x30303030
+    a3c0:	30303030 	.word	0x30303030
+    a3c4:	30303030 	.word	0x30303030
+    a3c8:	30303030 	.word	0x30303030
+    a3cc:	30303030 	.word	0x30303030
+    a3d0:	30303030 	.word	0x30303030
+    a3d4:	30303030 	.word	0x30303030
+    a3d8:	307c3030 	.word	0x307c3030
+    a3dc:	30303030 	.word	0x30303030
+    a3e0:	30303030 	.word	0x30303030
+    a3e4:	30303030 	.word	0x30303030
+    a3e8:	30303030 	.word	0x30303030
+    a3ec:	30303030 	.word	0x30303030
+    a3f0:	30303030 	.word	0x30303030
+    a3f4:	30303030 	.word	0x30303030
+    a3f8:	21303030 	.word	0x21303030
+    a3fc:	30303021 	.word	0x30303021
+    a400:	30303030 	.word	0x30303030
+    a404:	30303030 	.word	0x30303030
+    a408:	30303030 	.word	0x30303030
+    a40c:	30303030 	.word	0x30303030
+    a410:	30303030 	.word	0x30303030
+    a414:	30303030 	.word	0x30303030
+    a418:	30303030 	.word	0x30303030
+    a41c:	30307c30 	.word	0x30307c30
+    a420:	30303030 	.word	0x30303030
+    a424:	30303030 	.word	0x30303030
+    a428:	30303030 	.word	0x30303030
+    a42c:	30303030 	.word	0x30303030
+    a430:	30303030 	.word	0x30303030
+    a434:	30303030 	.word	0x30303030
+    a438:	30303030 	.word	0x30303030
+    a43c:	307c3030 	.word	0x307c3030
+    a440:	30303030 	.word	0x30303030
+    a444:	30303030 	.word	0x30303030
+    a448:	30303030 	.word	0x30303030
+    a44c:	30303030 	.word	0x30303030
+    a450:	30303030 	.word	0x30303030
+    a454:	30303030 	.word	0x30303030
+    a458:	30303030 	.word	0x30303030
+    a45c:	7c303030 	.word	0x7c303030
+    a460:	30303030 	.word	0x30303030
+    a464:	30303030 	.word	0x30303030
+    a468:	30303030 	.word	0x30303030
+    a46c:	30303030 	.word	0x30303030
+    a470:	30303030 	.word	0x30303030
+    a474:	30303030 	.word	0x30303030
+    a478:	30303030 	.word	0x30303030
+    a47c:	30303030 	.word	0x30303030
+    a480:	3030307c 	.word	0x3030307c
+    a484:	30303030 	.word	0x30303030
+    a488:	30303030 	.word	0x30303030
+    a48c:	30303030 	.word	0x30303030
+    a490:	30303030 	.word	0x30303030
+    a494:	30303030 	.word	0x30303030
+    a498:	30303030 	.word	0x30303030
+    a49c:	30303030 	.word	0x30303030
+    a4a0:	30212130 	.word	0x30212130
+    a4a4:	30303030 	.word	0x30303030
+    a4a8:	30303030 	.word	0x30303030
+    a4ac:	30303030 	.word	0x30303030
+    a4b0:	30303030 	.word	0x30303030
+    a4b4:	30303030 	.word	0x30303030
+    a4b8:	30303030 	.word	0x30303030
+    a4bc:	30303030 	.word	0x30303030
+    a4c0:	7c303030 	.word	0x7c303030
+    a4c4:	30303030 	.word	0x30303030
+    a4c8:	30303030 	.word	0x30303030
+    a4cc:	30303030 	.word	0x30303030
+    a4d0:	30303030 	.word	0x30303030
+    a4d4:	30303030 	.word	0x30303030
+    a4d8:	30303030 	.word	0x30303030
+    a4dc:	30303030 	.word	0x30303030
+    a4e0:	30303030 	.word	0x30303030
+    a4e4:	3030307c 	.word	0x3030307c
+    a4e8:	30303030 	.word	0x30303030
+    a4ec:	30303030 	.word	0x30303030
+    a4f0:	30303030 	.word	0x30303030
+    a4f4:	30303030 	.word	0x30303030
+    a4f8:	30303030 	.word	0x30303030
+    a4fc:	30303030 	.word	0x30303030
+    a500:	30303030 	.word	0x30303030
+    a504:	30307c30 	.word	0x30307c30
+    a508:	30303030 	.word	0x30303030
+    a50c:	30303030 	.word	0x30303030
+    a510:	30303030 	.word	0x30303030
+    a514:	30303030 	.word	0x30303030
+    a518:	30303030 	.word	0x30303030
+    a51c:	30303030 	.word	0x30303030
+    a520:	30303030 	.word	0x30303030
+    a524:	307c3030 	.word	0x307c3030
+    a528:	30303030 	.word	0x30303030
+    a52c:	30303030 	.word	0x30303030
+    a530:	30303030 	.word	0x30303030
+    a534:	30303030 	.word	0x30303030
+    a538:	30303030 	.word	0x30303030
+    a53c:	30303030 	.word	0x30303030
+    a540:	30303030 	.word	0x30303030
+    a544:	21303030 	.word	0x21303030
+    a548:	30303021 	.word	0x30303021
+    a54c:	30303030 	.word	0x30303030
+    a550:	30303030 	.word	0x30303030
+    a554:	30303030 	.word	0x30303030
+    a558:	30303030 	.word	0x30303030
+    a55c:	30303030 	.word	0x30303030
+    a560:	30303030 	.word	0x30303030
+    a564:	30303030 	.word	0x30303030
+    a568:	30307c30 	.word	0x30307c30
+    a56c:	30303030 	.word	0x30303030
+    a570:	30303030 	.word	0x30303030
+    a574:	30303030 	.word	0x30303030
+    a578:	30303030 	.word	0x30303030
+    a57c:	3030303f 	.word	0x3030303f
+    a580:	30303030 	.word	0x30303030
+    a584:	30303030 	.word	0x30303030
+    a588:	307c3030 	.word	0x307c3030
+    a58c:	30303030 	.word	0x30303030
+    a590:	30303030 	.word	0x30303030
+    a594:	30303030 	.word	0x30303030
+    a598:	30303030 	.word	0x30303030
+    a59c:	30303030 	.word	0x30303030
+    a5a0:	30303030 	.word	0x30303030
+    a5a4:	30303030 	.word	0x30303030
+    a5a8:	7c303030 	.word	0x7c303030
+    a5ac:	30303030 	.word	0x30303030
+    a5b0:	30303030 	.word	0x30303030
+    a5b4:	30303030 	.word	0x30303030
+    a5b8:	30303030 	.word	0x30303030
+    a5bc:	30303030 	.word	0x30303030
+    a5c0:	30303030 	.word	0x30303030
+    a5c4:	30303030 	.word	0x30303030
+    a5c8:	30303030 	.word	0x30303030
+    a5cc:	3030307c 	.word	0x3030307c
+    a5d0:	30303030 	.word	0x30303030
+    a5d4:	30303030 	.word	0x30303030
+    a5d8:	30303030 	.word	0x30303030
+    a5dc:	30303030 	.word	0x30303030
+    a5e0:	30303030 	.word	0x30303030
+    a5e4:	30303030 	.word	0x30303030
+    a5e8:	30303030 	.word	0x30303030
+    a5ec:	30212130 	.word	0x30212130
+    a5f0:	30303030 	.word	0x30303030
+    a5f4:	30303030 	.word	0x30303030
+    a5f8:	30303030 	.word	0x30303030
+    a5fc:	30303030 	.word	0x30303030
+    a600:	30303030 	.word	0x30303030
+    a604:	30303030 	.word	0x30303030
+    a608:	30303030 	.word	0x30303030
+    a60c:	7c303030 	.word	0x7c303030
+    a610:	30303030 	.word	0x30303030
+    a614:	30303030 	.word	0x30303030
+    a618:	30303030 	.word	0x30303030
+    a61c:	30303030 	.word	0x30303030
+    a620:	30303030 	.word	0x30303030
+    a624:	30303030 	.word	0x30303030
+    a628:	30303030 	.word	0x30303030
+    a62c:	30303030 	.word	0x30303030
+    a630:	3030307c 	.word	0x3030307c
+    a634:	30303030 	.word	0x30303030
+    a638:	30303030 	.word	0x30303030
+    a63c:	30303030 	.word	0x30303030
+    a640:	30303030 	.word	0x30303030
+    a644:	30303030 	.word	0x30303030
+    a648:	30303030 	.word	0x30303030
+    a64c:	30303030 	.word	0x30303030
+    a650:	30307c30 	.word	0x30307c30
+    a654:	30303030 	.word	0x30303030
+    a658:	30303030 	.word	0x30303030
+    a65c:	30303030 	.word	0x30303030
+    a660:	30303030 	.word	0x30303030
+    a664:	30303030 	.word	0x30303030
+    a668:	30303030 	.word	0x30303030
+    a66c:	30303030 	.word	0x30303030
+    a670:	307c3030 	.word	0x307c3030
+    a674:	30303030 	.word	0x30303030
+    a678:	30303030 	.word	0x30303030
+    a67c:	30303030 	.word	0x30303030
+    a680:	30303030 	.word	0x30303030
+    a684:	30303030 	.word	0x30303030
+    a688:	30303030 	.word	0x30303030
+    a68c:	30303030 	.word	0x30303030
+    a690:	21303030 	.word	0x21303030
+    a694:	30303021 	.word	0x30303021
+    a698:	30303030 	.word	0x30303030
+    a69c:	30303030 	.word	0x30303030
+    a6a0:	30303030 	.word	0x30303030
+    a6a4:	30303030 	.word	0x30303030
+    a6a8:	30303030 	.word	0x30303030
+    a6ac:	30303030 	.word	0x30303030
+    a6b0:	30303030 	.word	0x30303030
+    a6b4:	30307c30 	.word	0x30307c30
+    a6b8:	30303030 	.word	0x30303030
+    a6bc:	30303030 	.word	0x30303030
+    a6c0:	30303030 	.word	0x30303030
+    a6c4:	30303030 	.word	0x30303030
+    a6c8:	30303030 	.word	0x30303030
+    a6cc:	30303030 	.word	0x30303030
+    a6d0:	30303030 	.word	0x30303030
+    a6d4:	307c3030 	.word	0x307c3030
+    a6d8:	30303030 	.word	0x30303030
+    a6dc:	30303030 	.word	0x30303030
+    a6e0:	30303030 	.word	0x30303030
+    a6e4:	30303030 	.word	0x30303030
+    a6e8:	30303030 	.word	0x30303030
+    a6ec:	30303030 	.word	0x30303030
+    a6f0:	30303030 	.word	0x30303030
+    a6f4:	7c303030 	.word	0x7c303030
+    a6f8:	30303030 	.word	0x30303030
+    a6fc:	30303030 	.word	0x30303030
+    a700:	30303030 	.word	0x30303030
+    a704:	30303030 	.word	0x30303030
+    a708:	30303030 	.word	0x30303030
+    a70c:	30303030 	.word	0x30303030
+    a710:	30303030 	.word	0x30303030
+    a714:	30303030 	.word	0x30303030
+    a718:	3030307c 	.word	0x3030307c
+    a71c:	30303030 	.word	0x30303030
+    a720:	30303030 	.word	0x30303030
+    a724:	30303030 	.word	0x30303030
+    a728:	30303030 	.word	0x30303030
+    a72c:	30303030 	.word	0x30303030
+    a730:	30303030 	.word	0x30303030
+    a734:	30303030 	.word	0x30303030
+    a738:	30212130 	.word	0x30212130
+    a73c:	30303030 	.word	0x30303030
+    a740:	30303030 	.word	0x30303030
+    a744:	30303030 	.word	0x30303030
+    a748:	30303030 	.word	0x30303030
+    a74c:	30303030 	.word	0x30303030
+    a750:	30303030 	.word	0x30303030
+    a754:	30303030 	.word	0x30303030
+    a758:	7c303030 	.word	0x7c303030
+    a75c:	30303030 	.word	0x30303030
+    a760:	30303030 	.word	0x30303030
+    a764:	30303030 	.word	0x30303030
+    a768:	30303030 	.word	0x30303030
+    a76c:	30303030 	.word	0x30303030
+    a770:	30303030 	.word	0x30303030
+    a774:	30303030 	.word	0x30303030
+    a778:	30303030 	.word	0x30303030
+    a77c:	3030307c 	.word	0x3030307c
+    a780:	30303030 	.word	0x30303030
+    a784:	30303030 	.word	0x30303030
+    a788:	30303030 	.word	0x30303030
+    a78c:	30303030 	.word	0x30303030
+    a790:	30303030 	.word	0x30303030
+    a794:	30303030 	.word	0x30303030
+    a798:	30303030 	.word	0x30303030
+    a79c:	30307c30 	.word	0x30307c30
+    a7a0:	30303030 	.word	0x30303030
+    a7a4:	30303030 	.word	0x30303030
+    a7a8:	30303030 	.word	0x30303030
+    a7ac:	30303030 	.word	0x30303030
+    a7b0:	30303030 	.word	0x30303030
+    a7b4:	30303030 	.word	0x30303030
+    a7b8:	30303030 	.word	0x30303030
+    a7bc:	307c3030 	.word	0x307c3030
+    a7c0:	30303030 	.word	0x30303030
+    a7c4:	30303030 	.word	0x30303030
+    a7c8:	30303030 	.word	0x30303030
+    a7cc:	30303030 	.word	0x30303030
+    a7d0:	30303030 	.word	0x30303030
+    a7d4:	30303030 	.word	0x30303030
+    a7d8:	30303030 	.word	0x30303030
+    a7dc:	21303030 	.word	0x21303030
+    a7e0:	30303021 	.word	0x30303021
+    a7e4:	30303030 	.word	0x30303030
+    a7e8:	30303030 	.word	0x30303030
+    a7ec:	30303030 	.word	0x30303030
+    a7f0:	30303030 	.word	0x30303030
+    a7f4:	30303030 	.word	0x30303030
+    a7f8:	30303030 	.word	0x30303030
+    a7fc:	30303030 	.word	0x30303030
+    a800:	30307c30 	.word	0x30307c30
+    a804:	30303030 	.word	0x30303030
+    a808:	3030303f 	.word	0x3030303f
+    a80c:	30303030 	.word	0x30303030
+    a810:	3f2d3030 	.word	0x3f2d3030
+    a814:	302d3f2d 	.word	0x302d3f2d
+    a818:	30303030 	.word	0x30303030
+    a81c:	30303030 	.word	0x30303030
+    a820:	307c3030 	.word	0x307c3030
+    a824:	30303030 	.word	0x30303030
+    a828:	30303030 	.word	0x30303030
+    a82c:	30303030 	.word	0x30303030
+    a830:	30303030 	.word	0x30303030
+    a834:	30303030 	.word	0x30303030
+    a838:	30303030 	.word	0x30303030
+    a83c:	30303030 	.word	0x30303030
+    a840:	7c303030 	.word	0x7c303030
+    a844:	30303030 	.word	0x30303030
+    a848:	30303030 	.word	0x30303030
+    a84c:	30303030 	.word	0x30303030
+    a850:	30303030 	.word	0x30303030
+    a854:	30303030 	.word	0x30303030
+    a858:	30303030 	.word	0x30303030
+    a85c:	30303030 	.word	0x30303030
+    a860:	30303030 	.word	0x30303030
+    a864:	3030307c 	.word	0x3030307c
+    a868:	30303030 	.word	0x30303030
+    a86c:	30303030 	.word	0x30303030
+    a870:	30303030 	.word	0x30303030
+    a874:	30303030 	.word	0x30303030
+    a878:	30303030 	.word	0x30303030
+    a87c:	30303030 	.word	0x30303030
+    a880:	30303030 	.word	0x30303030
+    a884:	30212130 	.word	0x30212130
+    a888:	30303030 	.word	0x30303030
+    a88c:	30303030 	.word	0x30303030
+    a890:	30303030 	.word	0x30303030
+    a894:	30303030 	.word	0x30303030
+    a898:	30303030 	.word	0x30303030
+    a89c:	30303030 	.word	0x30303030
+    a8a0:	30303030 	.word	0x30303030
+    a8a4:	7c303030 	.word	0x7c303030
+    a8a8:	30303030 	.word	0x30303030
+    a8ac:	30303030 	.word	0x30303030
+    a8b0:	30303030 	.word	0x30303030
+    a8b4:	30303030 	.word	0x30303030
+    a8b8:	30303030 	.word	0x30303030
+    a8bc:	30303030 	.word	0x30303030
+    a8c0:	30303030 	.word	0x30303030
+    a8c4:	30303030 	.word	0x30303030
+    a8c8:	3030307c 	.word	0x3030307c
+    a8cc:	30303030 	.word	0x30303030
+    a8d0:	30303030 	.word	0x30303030
+    a8d4:	30303030 	.word	0x30303030
+    a8d8:	30303030 	.word	0x30303030
+    a8dc:	30303030 	.word	0x30303030
+    a8e0:	30303030 	.word	0x30303030
+    a8e4:	30303030 	.word	0x30303030
+    a8e8:	30307c30 	.word	0x30307c30
+    a8ec:	30303030 	.word	0x30303030
+    a8f0:	30303030 	.word	0x30303030
+    a8f4:	30303030 	.word	0x30303030
+    a8f8:	30303030 	.word	0x30303030
+    a8fc:	30303030 	.word	0x30303030
+    a900:	30303030 	.word	0x30303030
+    a904:	30303030 	.word	0x30303030
+    a908:	307c3030 	.word	0x307c3030
+    a90c:	30303030 	.word	0x30303030
+    a910:	30303030 	.word	0x30303030
+    a914:	30303030 	.word	0x30303030
+    a918:	30303030 	.word	0x30303030
+    a91c:	30303030 	.word	0x30303030
+    a920:	30303030 	.word	0x30303030
+    a924:	30303030 	.word	0x30303030
+    a928:	21303030 	.word	0x21303030
+    a92c:	30303021 	.word	0x30303021
+    a930:	30303030 	.word	0x30303030
+    a934:	30303030 	.word	0x30303030
+    a938:	30303030 	.word	0x30303030
+    a93c:	30303030 	.word	0x30303030
+    a940:	30303030 	.word	0x30303030
+    a944:	30303030 	.word	0x30303030
+    a948:	30303030 	.word	0x30303030
+    a94c:	30307c30 	.word	0x30307c30
+    a950:	30303030 	.word	0x30303030
+    a954:	30303030 	.word	0x30303030
+    a958:	30303030 	.word	0x30303030
+    a95c:	30303030 	.word	0x30303030
+    a960:	30303030 	.word	0x30303030
+    a964:	30303030 	.word	0x30303030
+    a968:	30303030 	.word	0x30303030
+    a96c:	307c3030 	.word	0x307c3030
+    a970:	30303030 	.word	0x30303030
+    a974:	30303030 	.word	0x30303030
+    a978:	30303030 	.word	0x30303030
+    a97c:	30303030 	.word	0x30303030
+    a980:	30303030 	.word	0x30303030
+    a984:	30303030 	.word	0x30303030
+    a988:	30303030 	.word	0x30303030
+    a98c:	7c303030 	.word	0x7c303030
+    a990:	30303030 	.word	0x30303030
+    a994:	30303030 	.word	0x30303030
+    a998:	30303030 	.word	0x30303030
+    a99c:	30303030 	.word	0x30303030
+    a9a0:	30303030 	.word	0x30303030
+    a9a4:	30303030 	.word	0x30303030
+    a9a8:	30303030 	.word	0x30303030
+    a9ac:	30303030 	.word	0x30303030
+    a9b0:	3030307c 	.word	0x3030307c
+    a9b4:	30303030 	.word	0x30303030
+    a9b8:	30303030 	.word	0x30303030
+    a9bc:	30303030 	.word	0x30303030
+    a9c0:	30303030 	.word	0x30303030
+    a9c4:	30303030 	.word	0x30303030
+    a9c8:	30303030 	.word	0x30303030
+    a9cc:	30303030 	.word	0x30303030
+    a9d0:	30212130 	.word	0x30212130
+    a9d4:	30306d30 	.word	0x30306d30
+    a9d8:	30303030 	.word	0x30303030
+    a9dc:	30303030 	.word	0x30303030
+    a9e0:	30303030 	.word	0x30303030
+    a9e4:	30303030 	.word	0x30303030
+    a9e8:	30303030 	.word	0x30303030
+    a9ec:	30303030 	.word	0x30303030
+    a9f0:	7c303030 	.word	0x7c303030
+    a9f4:	30303030 	.word	0x30303030
+    a9f8:	30303030 	.word	0x30303030
+    a9fc:	67303030 	.word	0x67303030
+    aa00:	30303030 	.word	0x30303030
+    aa04:	30303030 	.word	0x30303030
+    aa08:	30303030 	.word	0x30303030
+    aa0c:	30303030 	.word	0x30303030
+    aa10:	30303030 	.word	0x30303030
+    aa14:	3030307c 	.word	0x3030307c
+    aa18:	30303030 	.word	0x30303030
+    aa1c:	30303030 	.word	0x30303030
+    aa20:	30303030 	.word	0x30303030
+    aa24:	30303030 	.word	0x30303030
+    aa28:	30303030 	.word	0x30303030
+    aa2c:	30303030 	.word	0x30303030
+    aa30:	30303030 	.word	0x30303030
+    aa34:	30307c30 	.word	0x30307c30
+    aa38:	30303030 	.word	0x30303030
+    aa3c:	30303030 	.word	0x30303030
+    aa40:	30303030 	.word	0x30303030
+    aa44:	30303030 	.word	0x30303030
+    aa48:	30303030 	.word	0x30303030
+    aa4c:	30303030 	.word	0x30303030
+    aa50:	30303030 	.word	0x30303030
+    aa54:	307c3030 	.word	0x307c3030
+    aa58:	30303030 	.word	0x30303030
+    aa5c:	30303030 	.word	0x30303030
+    aa60:	30303030 	.word	0x30303030
+    aa64:	30303030 	.word	0x30303030
+    aa68:	30303030 	.word	0x30303030
+    aa6c:	30303030 	.word	0x30303030
+    aa70:	30303030 	.word	0x30303030
+    aa74:	21303030 	.word	0x21303030
+    aa78:	46464621 	.word	0x46464621
+    aa7c:	46464646 	.word	0x46464646
+    aa80:	46464646 	.word	0x46464646
+    aa84:	46464646 	.word	0x46464646
+    aa88:	46464646 	.word	0x46464646
+    aa8c:	46464646 	.word	0x46464646
+    aa90:	46464646 	.word	0x46464646
+    aa94:	46464646 	.word	0x46464646
+    aa98:	46467c46 	.word	0x46467c46
+    aa9c:	46464646 	.word	0x46464646
+    aaa0:	46464646 	.word	0x46464646
+    aaa4:	46464646 	.word	0x46464646
+    aaa8:	46464646 	.word	0x46464646
+    aaac:	46464646 	.word	0x46464646
+    aab0:	46464646 	.word	0x46464646
+    aab4:	46464646 	.word	0x46464646
+    aab8:	467c4646 	.word	0x467c4646
+    aabc:	46464646 	.word	0x46464646
+    aac0:	46464646 	.word	0x46464646
+    aac4:	46464646 	.word	0x46464646
+    aac8:	46464646 	.word	0x46464646
+    aacc:	46464646 	.word	0x46464646
+    aad0:	46464646 	.word	0x46464646
+    aad4:	46464646 	.word	0x46464646
+    aad8:	7c464646 	.word	0x7c464646
+    aadc:	46464646 	.word	0x46464646
+    aae0:	46464646 	.word	0x46464646
+    aae4:	46464646 	.word	0x46464646
+    aae8:	46464646 	.word	0x46464646
+    aaec:	46464646 	.word	0x46464646
+    aaf0:	46464646 	.word	0x46464646
+    aaf4:	46464646 	.word	0x46464646
+    aaf8:	46464646 	.word	0x46464646
+    aafc:	4646467c 	.word	0x4646467c
+    ab00:	46464646 	.word	0x46464646
+    ab04:	46464646 	.word	0x46464646
+    ab08:	46464646 	.word	0x46464646
+    ab0c:	46464646 	.word	0x46464646
+    ab10:	46464646 	.word	0x46464646
+    ab14:	46464646 	.word	0x46464646
+    ab18:	46464646 	.word	0x46464646
+    ab1c:	46212146 	.word	0x46212146
+    ab20:	46464646 	.word	0x46464646
+    ab24:	46464646 	.word	0x46464646
+    ab28:	46464646 	.word	0x46464646
+    ab2c:	46464646 	.word	0x46464646
+    ab30:	46464646 	.word	0x46464646
+    ab34:	46464646 	.word	0x46464646
+    ab38:	46464646 	.word	0x46464646
+    ab3c:	7c464646 	.word	0x7c464646
+    ab40:	46464646 	.word	0x46464646
+    ab44:	46464646 	.word	0x46464646
+    ab48:	46464646 	.word	0x46464646
+    ab4c:	46464646 	.word	0x46464646
+    ab50:	46464646 	.word	0x46464646
+    ab54:	46464646 	.word	0x46464646
+    ab58:	46464646 	.word	0x46464646
+    ab5c:	46464646 	.word	0x46464646
+    ab60:	4646467c 	.word	0x4646467c
+    ab64:	46464646 	.word	0x46464646
+    ab68:	46464646 	.word	0x46464646
+    ab6c:	46464646 	.word	0x46464646
+    ab70:	46464646 	.word	0x46464646
+    ab74:	46464646 	.word	0x46464646
+    ab78:	46464646 	.word	0x46464646
+    ab7c:	46464646 	.word	0x46464646
+    ab80:	46467c46 	.word	0x46467c46
+    ab84:	46464646 	.word	0x46464646
+    ab88:	46464646 	.word	0x46464646
+    ab8c:	46464646 	.word	0x46464646
+    ab90:	46464646 	.word	0x46464646
+    ab94:	46464646 	.word	0x46464646
+    ab98:	46464646 	.word	0x46464646
+    ab9c:	46464646 	.word	0x46464646
+    aba0:	467c4646 	.word	0x467c4646
+    aba4:	46464646 	.word	0x46464646
+    aba8:	46464646 	.word	0x46464646
+    abac:	46464646 	.word	0x46464646
+    abb0:	46464646 	.word	0x46464646
+    abb4:	46464646 	.word	0x46464646
+    abb8:	46464646 	.word	0x46464646
+    abbc:	46464646 	.word	0x46464646
+    abc0:	21464646 	.word	0x21464646
 
-00009d5c <Write_Latch>:
-    9d5c:	e92d4ff0 	push	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9d60:	e59f4220 	ldr	r4, [pc, #544]	; 9f88 <Print_Message+0x28>
-    9d64:	e3a05001 	mov	r5, #1
-    9d68:	e1a05485 	lsl	r5, r5, #9
-    9d6c:	e3300000 	teq	r0, #0
-    9d70:	05845028 	streq	r5, [r4, #40]	; 0x28
-    9d74:	1584501c 	strne	r5, [r4, #28]
-    9d78:	e8bd4ff0 	pop	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9d7c:	e12fff1e 	bx	lr
+0000abc4 <InitUART>:
+    abc4:	e52de004 	push	{lr}		; (str lr, [sp, #-4]!)
+    abc8:	e59f017c 	ldr	r0, [pc, #380]	; ad4c <WaitForCycles+0x10>
+    abcc:	e3a01001 	mov	r1, #1
+    abd0:	e5801000 	str	r1, [r0]
+    abd4:	e59f0174 	ldr	r0, [pc, #372]	; ad50 <WaitForCycles+0x14>
+    abd8:	e0211001 	eor	r1, r1, r1
+    abdc:	e5801000 	str	r1, [r0]
+    abe0:	e59f016c 	ldr	r0, [pc, #364]	; ad54 <WaitForCycles+0x18>
+    abe4:	e0211001 	eor	r1, r1, r1
+    abe8:	e5801000 	str	r1, [r0]
+    abec:	e59f0164 	ldr	r0, [pc, #356]	; ad58 <WaitForCycles+0x1c>
+    abf0:	e3a01003 	mov	r1, #3
+    abf4:	e5801000 	str	r1, [r0]
+    abf8:	e59f015c 	ldr	r0, [pc, #348]	; ad5c <WaitForCycles+0x20>
+    abfc:	e0211001 	eor	r1, r1, r1
+    ac00:	e5801000 	str	r1, [r0]
+    ac04:	e59f0144 	ldr	r0, [pc, #324]	; ad50 <WaitForCycles+0x14>
+    ac08:	e0211001 	eor	r1, r1, r1
+    ac0c:	e5801000 	str	r1, [r0]
+    ac10:	e59f0148 	ldr	r0, [pc, #328]	; ad60 <WaitForCycles+0x24>
+    ac14:	e3a010c6 	mov	r1, #198	; 0xc6
+    ac18:	e5801000 	str	r1, [r0]
+    ac1c:	e59f0140 	ldr	r0, [pc, #320]	; ad64 <WaitForCycles+0x28>
+    ac20:	e59f1140 	ldr	r1, [pc, #320]	; ad68 <WaitForCycles+0x2c>
+    ac24:	e5801000 	str	r1, [r0]
+    ac28:	e3a0000e 	mov	r0, #14
+    ac2c:	e3a01002 	mov	r1, #2
+    ac30:	eb000053 	bl	ad84 <SetGpioFunction>
+    ac34:	e3a0000f 	mov	r0, #15
+    ac38:	e3a01002 	mov	r1, #2
+    ac3c:	eb000050 	bl	ad84 <SetGpioFunction>
+    ac40:	e59f0124 	ldr	r0, [pc, #292]	; ad6c <WaitForCycles+0x30>
+    ac44:	e0211001 	eor	r1, r1, r1
+    ac48:	e5801000 	str	r1, [r0]
+    ac4c:	e3a00096 	mov	r0, #150	; 0x96
+    ac50:	eb000039 	bl	ad3c <WaitForCycles>
+    ac54:	e59f0114 	ldr	r0, [pc, #276]	; ad70 <WaitForCycles+0x34>
+    ac58:	e3a01903 	mov	r1, #49152	; 0xc000
+    ac5c:	e5801000 	str	r1, [r0]
+    ac60:	e3a00096 	mov	r0, #150	; 0x96
+    ac64:	eb000034 	bl	ad3c <WaitForCycles>
+    ac68:	e59f0100 	ldr	r0, [pc, #256]	; ad70 <WaitForCycles+0x34>
+    ac6c:	e0211001 	eor	r1, r1, r1
+    ac70:	e5801000 	str	r1, [r0]
+    ac74:	e59f00d8 	ldr	r0, [pc, #216]	; ad54 <WaitForCycles+0x18>
+    ac78:	e3a01003 	mov	r1, #3
+    ac7c:	e5801000 	str	r1, [r0]
+    ac80:	e49df004 	pop	{pc}		; (ldr pc, [sp], #4)
 
-00009d80 <Write_Clock>:
-    9d80:	e92d4ff0 	push	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9d84:	e59f41fc 	ldr	r4, [pc, #508]	; 9f88 <Print_Message+0x28>
-    9d88:	e3a05001 	mov	r5, #1
-    9d8c:	e1a05585 	lsl	r5, r5, #11
-    9d90:	e3300000 	teq	r0, #0
-    9d94:	05845028 	streq	r5, [r4, #40]	; 0x28
-    9d98:	1584501c 	strne	r5, [r4, #28]
-    9d9c:	e8bd4ff0 	pop	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9da0:	e12fff1e 	bx	lr
+0000ac84 <PutCharUART>:
+    ac84:	e59f20e8 	ldr	r2, [pc, #232]	; ad74 <WaitForCycles+0x38>
 
-00009da4 <Read_Data>:
-    9da4:	e92d4ff0 	push	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9da8:	e59f41dc 	ldr	r4, [pc, #476]	; 9f8c <Print_Message+0x2c>
-    9dac:	e5945000 	ldr	r5, [r4]
-    9db0:	e3a06001 	mov	r6, #1
-    9db4:	e1a06506 	lsl	r6, r6, #10
-    9db8:	e0055006 	and	r5, r5, r6
-    9dbc:	e3350000 	teq	r5, #0
-    9dc0:	13a00001 	movne	r0, #1
-    9dc4:	03a00000 	moveq	r0, #0
-    9dc8:	e8bd4ff0 	pop	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9dcc:	e12fff1e 	bx	lr
+0000ac88 <putWaitLoop$>:
+    ac88:	e5921000 	ldr	r1, [r2]
+    ac8c:	e3110020 	tst	r1, #32
+    ac90:	0afffffc 	beq	ac88 <putWaitLoop$>
+    ac94:	e59f20dc 	ldr	r2, [pc, #220]	; ad78 <WaitForCycles+0x3c>
+    ac98:	e5820000 	str	r0, [r2]
+    ac9c:	e1a0f00e 	mov	pc, lr
 
-00009dd0 <Wait>:
-    9dd0:	e92d4ff0 	push	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9dd4:	e59f41b4 	ldr	r4, [pc, #436]	; 9f90 <Print_Message+0x30>
-    9dd8:	e5945000 	ldr	r5, [r4]
-    9ddc:	e0855000 	add	r5, r5, r0
+0000aca0 <GetCharUART>:
+    aca0:	e59f20cc 	ldr	r2, [pc, #204]	; ad74 <WaitForCycles+0x38>
 
-00009de0 <waitLoop>:
-    9de0:	e5946000 	ldr	r6, [r4]
-    9de4:	e1550006 	cmp	r5, r6
-    9de8:	8afffffc 	bhi	9de0 <waitLoop>
-    9dec:	e8bd4ff0 	pop	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9df0:	e12fff1e 	bx	lr
+0000aca4 <getWaitLoop$>:
+    aca4:	e5921000 	ldr	r1, [r2]
+    aca8:	e3110001 	tst	r1, #1
+    acac:	0afffffc 	beq	aca4 <getWaitLoop$>
+    acb0:	e59f20c0 	ldr	r2, [pc, #192]	; ad78 <WaitForCycles+0x3c>
+    acb4:	e5920000 	ldr	r0, [r2]
+    acb8:	e1a0f00e 	mov	pc, lr
 
-00009df4 <Read_SNES>:
-    9df4:	e92d4ff0 	push	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9df8:	e3a00001 	mov	r0, #1
-    9dfc:	ebffffdf 	bl	9d80 <Write_Clock>
-    9e00:	e3a00001 	mov	r0, #1
-    9e04:	ebffffd4 	bl	9d5c <Write_Latch>
-    9e08:	e3a0000c 	mov	r0, #12
-    9e0c:	ebffffef 	bl	9dd0 <Wait>
-    9e10:	e3a00000 	mov	r0, #0
-    9e14:	ebffffd0 	bl	9d5c <Write_Latch>
-    9e18:	e3a04000 	mov	r4, #0
-    9e1c:	e3a05000 	mov	r5, #0
-    9e20:	ea00000c 	b	9e58 <RLtest>
+0000acbc <WriteStringUART>:
+    acbc:	e92d4070 	push	{r4, r5, r6, lr}
+    acc0:	e1a04000 	mov	r4, r0
+    acc4:	e1a05001 	mov	r5, r1
+    acc8:	e3a06000 	mov	r6, #0
 
-00009e24 <Read_Loop>:
-    9e24:	e3a00006 	mov	r0, #6
-    9e28:	ebffffe8 	bl	9dd0 <Wait>
-    9e2c:	e3a00000 	mov	r0, #0
-    9e30:	ebffffd2 	bl	9d80 <Write_Clock>
-    9e34:	e3a00006 	mov	r0, #6
-    9e38:	ebffffe4 	bl	9dd0 <Wait>
-    9e3c:	ebffffd8 	bl	9da4 <Read_Data>
-    9e40:	e1a06000 	mov	r6, r0
-    9e44:	e1a06416 	lsl	r6, r6, r4
-    9e48:	e0855006 	add	r5, r5, r6
-    9e4c:	e3a00001 	mov	r0, #1
-    9e50:	ebffffca 	bl	9d80 <Write_Clock>
-    9e54:	e2844001 	add	r4, r4, #1
+0000accc <writeLoop$>:
+    accc:	e3550000 	cmp	r5, #0
+    acd0:	da000004 	ble	ace8 <writeLoopEnd$>
+    acd4:	e7d40006 	ldrb	r0, [r4, r6]
+    acd8:	ebffffe9 	bl	ac84 <PutCharUART>
+    acdc:	e2866001 	add	r6, r6, #1
+    ace0:	e2455001 	sub	r5, r5, #1
+    ace4:	eafffff8 	b	accc <writeLoop$>
 
-00009e58 <RLtest>:
-    9e58:	e3540010 	cmp	r4, #16
-    9e5c:	bafffff0 	blt	9e24 <Read_Loop>
-    9e60:	e1a00005 	mov	r0, r5
-    9e64:	e8bd4ff0 	pop	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9e68:	e12fff1e 	bx	lr
+0000ace8 <writeLoopEnd$>:
+    ace8:	e8bd8070 	pop	{r4, r5, r6, pc}
 
-00009e6c <printButtons>:
-    9e6c:	e92d4ff0 	push	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9e70:	e59f9100 	ldr	r9, [pc, #256]	; 9f78 <Print_Message+0x18>
-    9e74:	e1a04000 	mov	r4, r0
-    9e78:	e0244009 	eor	r4, r4, r9
-    9e7c:	e3a05001 	mov	r5, #1
-    9e80:	e1340005 	teq	r4, r5
-    9e84:	059f0108 	ldreq	r0, [pc, #264]	; 9f94 <Print_Message+0x34>
-    9e88:	e3a01002 	mov	r1, #2
-    9e8c:	0b000033 	bleq	9f60 <Print_Message>
-    9e90:	e1a05085 	lsl	r5, r5, #1
-    9e94:	e1340005 	teq	r4, r5
-    9e98:	059f00f8 	ldreq	r0, [pc, #248]	; 9f98 <Print_Message+0x38>
-    9e9c:	e3a01002 	mov	r1, #2
-    9ea0:	0b00002e 	bleq	9f60 <Print_Message>
-    9ea4:	e1a05085 	lsl	r5, r5, #1
-    9ea8:	e1340005 	teq	r4, r5
-    9eac:	059f00e8 	ldreq	r0, [pc, #232]	; 9f9c <Print_Message+0x3c>
-    9eb0:	e3a01007 	mov	r1, #7
-    9eb4:	0b000029 	bleq	9f60 <Print_Message>
-    9eb8:	e1a05105 	lsl	r5, r5, #2
-    9ebc:	e1340005 	teq	r4, r5
-    9ec0:	059f00d8 	ldreq	r0, [pc, #216]	; 9fa0 <Print_Message+0x40>
-    9ec4:	e3a0100b 	mov	r1, #11
-    9ec8:	0b000024 	bleq	9f60 <Print_Message>
-    9ecc:	e1a05085 	lsl	r5, r5, #1
-    9ed0:	e1340005 	teq	r4, r5
-    9ed4:	059f00c8 	ldreq	r0, [pc, #200]	; 9fa4 <Print_Message+0x44>
-    9ed8:	e3a0100d 	mov	r1, #13
-    9edc:	0b00001f 	bleq	9f60 <Print_Message>
-    9ee0:	e1a05085 	lsl	r5, r5, #1
-    9ee4:	e1340005 	teq	r4, r5
-    9ee8:	059f00b8 	ldreq	r0, [pc, #184]	; 9fa8 <Print_Message+0x48>
-    9eec:	e3a0100d 	mov	r1, #13
-    9ef0:	0b00001a 	bleq	9f60 <Print_Message>
-    9ef4:	e1a05085 	lsl	r5, r5, #1
-    9ef8:	e1340005 	teq	r4, r5
-    9efc:	059f00a8 	ldreq	r0, [pc, #168]	; 9fac <Print_Message+0x4c>
-    9f00:	e3a0100e 	mov	r1, #14
-    9f04:	0b000015 	bleq	9f60 <Print_Message>
-    9f08:	e1a05085 	lsl	r5, r5, #1
-    9f0c:	e1340005 	teq	r4, r5
-    9f10:	059f0098 	ldreq	r0, [pc, #152]	; 9fb0 <Print_Message+0x50>
-    9f14:	e3a01002 	mov	r1, #2
-    9f18:	0b000010 	bleq	9f60 <Print_Message>
-    9f1c:	e1a05085 	lsl	r5, r5, #1
-    9f20:	e1340005 	teq	r4, r5
-    9f24:	059f0088 	ldreq	r0, [pc, #136]	; 9fb4 <Print_Message+0x54>
-    9f28:	e3a01002 	mov	r1, #2
-    9f2c:	0b00000b 	bleq	9f60 <Print_Message>
-    9f30:	e1a05085 	lsl	r5, r5, #1
-    9f34:	e1340005 	teq	r4, r5
-    9f38:	059f0078 	ldreq	r0, [pc, #120]	; 9fb8 <Print_Message+0x58>
-    9f3c:	e3a01005 	mov	r1, #5
-    9f40:	0b000006 	bleq	9f60 <Print_Message>
-    9f44:	e1a05085 	lsl	r5, r5, #1
-    9f48:	e1340005 	teq	r4, r5
-    9f4c:	059f0068 	ldreq	r0, [pc, #104]	; 9fbc <Print_Message+0x5c>
-    9f50:	e3a01006 	mov	r1, #6
-    9f54:	0b000001 	bleq	9f60 <Print_Message>
-    9f58:	e8bd4ff0 	pop	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9f5c:	e12fff1e 	bx	lr
+0000acec <ReadLineUART>:
+    acec:	e92d4070 	push	{r4, r5, r6, lr}
+    acf0:	e1a04000 	mov	r4, r0
+    acf4:	e1a05001 	mov	r5, r1
+    acf8:	e3a06000 	mov	r6, #0
 
-00009f60 <Print_Message>:
-    9f60:	e92d4ff0 	push	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9f64:	eb000053 	bl	a0b8 <WriteStringUART>
-    9f68:	e8bd4ff0 	pop	{r4, r5, r6, r7, r8, r9, sl, fp, lr}
-    9f6c:	e12fff1e 	bx	lr
-    9f70:	00008000 	.word	0x00008000
-    9f74:	00008024 	.word	0x00008024
-    9f78:	0000ffff 	.word	0x0000ffff
-    9f7c:	00008074 	.word	0x00008074
-    9f80:	00008054 	.word	0x00008054
-    9f84:	3f200004 	.word	0x3f200004
-    9f88:	3f200000 	.word	0x3f200000
-    9f8c:	3f200034 	.word	0x3f200034
-    9f90:	3f003004 	.word	0x3f003004
-    9f94:	00008078 	.word	0x00008078
-    9f98:	0000807c 	.word	0x0000807c
-    9f9c:	00008080 	.word	0x00008080
-    9fa0:	00008088 	.word	0x00008088
-    9fa4:	00008094 	.word	0x00008094
-    9fa8:	000080a4 	.word	0x000080a4
-    9fac:	000080b4 	.word	0x000080b4
-    9fb0:	000080c4 	.word	0x000080c4
-    9fb4:	000080c8 	.word	0x000080c8
-    9fb8:	000080cc 	.word	0x000080cc
-    9fbc:	000080d4 	.word	0x000080d4
+0000acfc <readLoop$>:
+    acfc:	e1360005 	teq	r6, r5
+    ad00:	0a00000b 	beq	ad34 <readLoopEnd$>
+    ad04:	ebffffe5 	bl	aca0 <GetCharUART>
+    ad08:	ebffffdd 	bl	ac84 <PutCharUART>
+    ad0c:	e5c40000 	strb	r0, [r4]
+    ad10:	e2866001 	add	r6, r6, #1
+    ad14:	e2844001 	add	r4, r4, #1
+    ad18:	e330000d 	teq	r0, #13
+    ad1c:	1afffff6 	bne	acfc <readLoop$>
+    ad20:	e3a0000a 	mov	r0, #10
+    ad24:	ebffffd6 	bl	ac84 <PutCharUART>
+    ad28:	e2444001 	sub	r4, r4, #1
+    ad2c:	e3a00000 	mov	r0, #0
+    ad30:	e5c40000 	strb	r0, [r4]
 
-00009fc0 <InitUART>:
-    9fc0:	e52de004 	push	{lr}		; (str lr, [sp, #-4]!)
-    9fc4:	e59f017c 	ldr	r0, [pc, #380]	; a148 <WaitForCycles+0x10>
-    9fc8:	e3a01001 	mov	r1, #1
-    9fcc:	e5801000 	str	r1, [r0]
-    9fd0:	e59f0174 	ldr	r0, [pc, #372]	; a14c <WaitForCycles+0x14>
-    9fd4:	e0211001 	eor	r1, r1, r1
-    9fd8:	e5801000 	str	r1, [r0]
-    9fdc:	e59f016c 	ldr	r0, [pc, #364]	; a150 <WaitForCycles+0x18>
-    9fe0:	e0211001 	eor	r1, r1, r1
-    9fe4:	e5801000 	str	r1, [r0]
-    9fe8:	e59f0164 	ldr	r0, [pc, #356]	; a154 <WaitForCycles+0x1c>
-    9fec:	e3a01003 	mov	r1, #3
-    9ff0:	e5801000 	str	r1, [r0]
-    9ff4:	e59f015c 	ldr	r0, [pc, #348]	; a158 <WaitForCycles+0x20>
-    9ff8:	e0211001 	eor	r1, r1, r1
-    9ffc:	e5801000 	str	r1, [r0]
-    a000:	e59f0144 	ldr	r0, [pc, #324]	; a14c <WaitForCycles+0x14>
-    a004:	e0211001 	eor	r1, r1, r1
-    a008:	e5801000 	str	r1, [r0]
-    a00c:	e59f0148 	ldr	r0, [pc, #328]	; a15c <WaitForCycles+0x24>
-    a010:	e3a010c6 	mov	r1, #198	; 0xc6
-    a014:	e5801000 	str	r1, [r0]
-    a018:	e59f0140 	ldr	r0, [pc, #320]	; a160 <WaitForCycles+0x28>
-    a01c:	e59f1140 	ldr	r1, [pc, #320]	; a164 <WaitForCycles+0x2c>
-    a020:	e5801000 	str	r1, [r0]
-    a024:	e3a0000e 	mov	r0, #14
-    a028:	e3a01002 	mov	r1, #2
-    a02c:	eb000053 	bl	a180 <SetGpioFunction>
-    a030:	e3a0000f 	mov	r0, #15
-    a034:	e3a01002 	mov	r1, #2
-    a038:	eb000050 	bl	a180 <SetGpioFunction>
-    a03c:	e59f0124 	ldr	r0, [pc, #292]	; a168 <WaitForCycles+0x30>
-    a040:	e0211001 	eor	r1, r1, r1
-    a044:	e5801000 	str	r1, [r0]
-    a048:	e3a00096 	mov	r0, #150	; 0x96
-    a04c:	eb000039 	bl	a138 <WaitForCycles>
-    a050:	e59f0114 	ldr	r0, [pc, #276]	; a16c <WaitForCycles+0x34>
-    a054:	e3a01903 	mov	r1, #49152	; 0xc000
-    a058:	e5801000 	str	r1, [r0]
-    a05c:	e3a00096 	mov	r0, #150	; 0x96
-    a060:	eb000034 	bl	a138 <WaitForCycles>
-    a064:	e59f0100 	ldr	r0, [pc, #256]	; a16c <WaitForCycles+0x34>
-    a068:	e0211001 	eor	r1, r1, r1
-    a06c:	e5801000 	str	r1, [r0]
-    a070:	e59f00d8 	ldr	r0, [pc, #216]	; a150 <WaitForCycles+0x18>
-    a074:	e3a01003 	mov	r1, #3
-    a078:	e5801000 	str	r1, [r0]
-    a07c:	e49df004 	pop	{pc}		; (ldr pc, [sp], #4)
+0000ad34 <readLoopEnd$>:
+    ad34:	e2460001 	sub	r0, r6, #1
+    ad38:	e8bd8070 	pop	{r4, r5, r6, pc}
 
-0000a080 <PutCharUART>:
-    a080:	e59f20e8 	ldr	r2, [pc, #232]	; a170 <WaitForCycles+0x38>
+0000ad3c <WaitForCycles>:
+    ad3c:	e2400001 	sub	r0, r0, #1
+    ad40:	e3500000 	cmp	r0, #0
+    ad44:	aafffffc 	bge	ad3c <WaitForCycles>
+    ad48:	e1a0f00e 	mov	pc, lr
+    ad4c:	3f215004 	.word	0x3f215004
+    ad50:	3f215044 	.word	0x3f215044
+    ad54:	3f215060 	.word	0x3f215060
+    ad58:	3f21504c 	.word	0x3f21504c
+    ad5c:	3f215050 	.word	0x3f215050
+    ad60:	3f215048 	.word	0x3f215048
+    ad64:	3f215068 	.word	0x3f215068
+    ad68:	0000010e 	.word	0x0000010e
+    ad6c:	3f200094 	.word	0x3f200094
+    ad70:	3f200098 	.word	0x3f200098
+    ad74:	3f215054 	.word	0x3f215054
+    ad78:	3f215040 	.word	0x3f215040
 
-0000a084 <putWaitLoop$>:
-    a084:	e5921000 	ldr	r1, [r2]
-    a088:	e3110020 	tst	r1, #32
-    a08c:	0afffffc 	beq	a084 <putWaitLoop$>
-    a090:	e59f20dc 	ldr	r2, [pc, #220]	; a174 <WaitForCycles+0x3c>
-    a094:	e5820000 	str	r0, [r2]
-    a098:	e1a0f00e 	mov	pc, lr
+0000ad7c <GetGpioAddress>:
+    ad7c:	e59f00cc 	ldr	r0, [pc, #204]	; ae50 <GetGpio+0x44>
+    ad80:	e1a0f00e 	mov	pc, lr
 
-0000a09c <GetCharUART>:
-    a09c:	e59f20cc 	ldr	r2, [pc, #204]	; a170 <WaitForCycles+0x38>
+0000ad84 <SetGpioFunction>:
+    ad84:	e3500035 	cmp	r0, #53	; 0x35
+    ad88:	93510007 	cmpls	r1, #7
+    ad8c:	81a0f00e 	movhi	pc, lr
+    ad90:	e52de004 	push	{lr}		; (str lr, [sp, #-4]!)
+    ad94:	e1a02000 	mov	r2, r0
+    ad98:	ebfffff7 	bl	ad7c <GetGpioAddress>
 
-0000a0a0 <getWaitLoop$>:
-    a0a0:	e5921000 	ldr	r1, [r2]
-    a0a4:	e3110001 	tst	r1, #1
-    a0a8:	0afffffc 	beq	a0a0 <getWaitLoop$>
-    a0ac:	e59f20c0 	ldr	r2, [pc, #192]	; a174 <WaitForCycles+0x3c>
-    a0b0:	e5920000 	ldr	r0, [r2]
-    a0b4:	e1a0f00e 	mov	pc, lr
+0000ad9c <functionLoop$>:
+    ad9c:	e3520009 	cmp	r2, #9
+    ada0:	8242200a 	subhi	r2, r2, #10
+    ada4:	82800004 	addhi	r0, r0, #4
+    ada8:	8afffffb 	bhi	ad9c <functionLoop$>
+    adac:	e0822082 	add	r2, r2, r2, lsl #1
+    adb0:	e1a01211 	lsl	r1, r1, r2
+    adb4:	e3a03007 	mov	r3, #7
+    adb8:	e1a03213 	lsl	r3, r3, r2
+    adbc:	e5902000 	ldr	r2, [r0]
+    adc0:	e1c22003 	bic	r2, r2, r3
+    adc4:	e1811002 	orr	r1, r1, r2
+    adc8:	e5801000 	str	r1, [r0]
+    adcc:	e49df004 	pop	{pc}		; (ldr pc, [sp], #4)
 
-0000a0b8 <WriteStringUART>:
-    a0b8:	e92d4070 	push	{r4, r5, r6, lr}
-    a0bc:	e1a04000 	mov	r4, r0
-    a0c0:	e1a05001 	mov	r5, r1
-    a0c4:	e3a06000 	mov	r6, #0
+0000add0 <SetGpio>:
+    add0:	e3500035 	cmp	r0, #53	; 0x35
+    add4:	81a0f00e 	movhi	pc, lr
+    add8:	e52de004 	push	{lr}		; (str lr, [sp, #-4]!)
+    addc:	e1a02000 	mov	r2, r0
+    ade0:	ebffffe5 	bl	ad7c <GetGpioAddress>
+    ade4:	e1a032a2 	lsr	r3, r2, #5
+    ade8:	e1a03103 	lsl	r3, r3, #2
+    adec:	e0800003 	add	r0, r0, r3
+    adf0:	e202201f 	and	r2, r2, #31
+    adf4:	e3a03001 	mov	r3, #1
+    adf8:	e1a03213 	lsl	r3, r3, r2
+    adfc:	e3310000 	teq	r1, #0
+    ae00:	05803028 	streq	r3, [r0, #40]	; 0x28
+    ae04:	1580301c 	strne	r3, [r0, #28]
+    ae08:	e49df004 	pop	{pc}		; (ldr pc, [sp], #4)
 
-0000a0c8 <writeLoop$>:
-    a0c8:	e3550000 	cmp	r5, #0
-    a0cc:	da000004 	ble	a0e4 <writeLoopEnd$>
-    a0d0:	e7d40006 	ldrb	r0, [r4, r6]
-    a0d4:	ebffffe9 	bl	a080 <PutCharUART>
-    a0d8:	e2866001 	add	r6, r6, #1
-    a0dc:	e2455001 	sub	r5, r5, #1
-    a0e0:	eafffff8 	b	a0c8 <writeLoop$>
-
-0000a0e4 <writeLoopEnd$>:
-    a0e4:	e8bd8070 	pop	{r4, r5, r6, pc}
-
-0000a0e8 <ReadLineUART>:
-    a0e8:	e92d4070 	push	{r4, r5, r6, lr}
-    a0ec:	e1a04000 	mov	r4, r0
-    a0f0:	e1a05001 	mov	r5, r1
-    a0f4:	e3a06000 	mov	r6, #0
-
-0000a0f8 <readLoop$>:
-    a0f8:	e1360005 	teq	r6, r5
-    a0fc:	0a00000b 	beq	a130 <readLoopEnd$>
-    a100:	ebffffe5 	bl	a09c <GetCharUART>
-    a104:	ebffffdd 	bl	a080 <PutCharUART>
-    a108:	e5c40000 	strb	r0, [r4]
-    a10c:	e2866001 	add	r6, r6, #1
-    a110:	e2844001 	add	r4, r4, #1
-    a114:	e330000d 	teq	r0, #13
-    a118:	1afffff6 	bne	a0f8 <readLoop$>
-    a11c:	e3a0000a 	mov	r0, #10
-    a120:	ebffffd6 	bl	a080 <PutCharUART>
-    a124:	e2444001 	sub	r4, r4, #1
-    a128:	e3a00000 	mov	r0, #0
-    a12c:	e5c40000 	strb	r0, [r4]
-
-0000a130 <readLoopEnd$>:
-    a130:	e2460001 	sub	r0, r6, #1
-    a134:	e8bd8070 	pop	{r4, r5, r6, pc}
-
-0000a138 <WaitForCycles>:
-    a138:	e2400001 	sub	r0, r0, #1
-    a13c:	e3500000 	cmp	r0, #0
-    a140:	aafffffc 	bge	a138 <WaitForCycles>
-    a144:	e1a0f00e 	mov	pc, lr
-    a148:	3f215004 	.word	0x3f215004
-    a14c:	3f215044 	.word	0x3f215044
-    a150:	3f215060 	.word	0x3f215060
-    a154:	3f21504c 	.word	0x3f21504c
-    a158:	3f215050 	.word	0x3f215050
-    a15c:	3f215048 	.word	0x3f215048
-    a160:	3f215068 	.word	0x3f215068
-    a164:	0000010e 	.word	0x0000010e
-    a168:	3f200094 	.word	0x3f200094
-    a16c:	3f200098 	.word	0x3f200098
-    a170:	3f215054 	.word	0x3f215054
-    a174:	3f215040 	.word	0x3f215040
-
-0000a178 <GetGpioAddress>:
-    a178:	e59f00cc 	ldr	r0, [pc, #204]	; a24c <GetGpio+0x44>
-    a17c:	e1a0f00e 	mov	pc, lr
-
-0000a180 <SetGpioFunction>:
-    a180:	e3500035 	cmp	r0, #53	; 0x35
-    a184:	93510007 	cmpls	r1, #7
-    a188:	81a0f00e 	movhi	pc, lr
-    a18c:	e52de004 	push	{lr}		; (str lr, [sp, #-4]!)
-    a190:	e1a02000 	mov	r2, r0
-    a194:	ebfffff7 	bl	a178 <GetGpioAddress>
-
-0000a198 <functionLoop$>:
-    a198:	e3520009 	cmp	r2, #9
-    a19c:	8242200a 	subhi	r2, r2, #10
-    a1a0:	82800004 	addhi	r0, r0, #4
-    a1a4:	8afffffb 	bhi	a198 <functionLoop$>
-    a1a8:	e0822082 	add	r2, r2, r2, lsl #1
-    a1ac:	e1a01211 	lsl	r1, r1, r2
-    a1b0:	e3a03007 	mov	r3, #7
-    a1b4:	e1a03213 	lsl	r3, r3, r2
-    a1b8:	e5902000 	ldr	r2, [r0]
-    a1bc:	e1c22003 	bic	r2, r2, r3
-    a1c0:	e1811002 	orr	r1, r1, r2
-    a1c4:	e5801000 	str	r1, [r0]
-    a1c8:	e49df004 	pop	{pc}		; (ldr pc, [sp], #4)
-
-0000a1cc <SetGpio>:
-    a1cc:	e3500035 	cmp	r0, #53	; 0x35
-    a1d0:	81a0f00e 	movhi	pc, lr
-    a1d4:	e52de004 	push	{lr}		; (str lr, [sp, #-4]!)
-    a1d8:	e1a02000 	mov	r2, r0
-    a1dc:	ebffffe5 	bl	a178 <GetGpioAddress>
-    a1e0:	e1a032a2 	lsr	r3, r2, #5
-    a1e4:	e1a03103 	lsl	r3, r3, #2
-    a1e8:	e0800003 	add	r0, r0, r3
-    a1ec:	e202201f 	and	r2, r2, #31
-    a1f0:	e3a03001 	mov	r3, #1
-    a1f4:	e1a03213 	lsl	r3, r3, r2
-    a1f8:	e3310000 	teq	r1, #0
-    a1fc:	05803028 	streq	r3, [r0, #40]	; 0x28
-    a200:	1580301c 	strne	r3, [r0, #28]
-    a204:	e49df004 	pop	{pc}		; (ldr pc, [sp], #4)
-
-0000a208 <GetGpio>:
-    a208:	e3500035 	cmp	r0, #53	; 0x35
-    a20c:	81a0f00e 	movhi	pc, lr
-    a210:	e92d4010 	push	{r4, lr}
-    a214:	e1a04000 	mov	r4, r0
-    a218:	ebffffd6 	bl	a178 <GetGpioAddress>
-    a21c:	e1a032a4 	lsr	r3, r4, #5
-    a220:	e1a03103 	lsl	r3, r3, #2
-    a224:	e0800003 	add	r0, r0, r3
-    a228:	e204401f 	and	r4, r4, #31
-    a22c:	e3a03001 	mov	r3, #1
-    a230:	e1a03413 	lsl	r3, r3, r4
-    a234:	e5904034 	ldr	r4, [r0, #52]	; 0x34
-    a238:	e0044003 	and	r4, r4, r3
-    a23c:	e3340000 	teq	r4, #0
-    a240:	03a00000 	moveq	r0, #0
-    a244:	13a00001 	movne	r0, #1
-    a248:	e8bd8010 	pop	{r4, pc}
-    a24c:	3f200000 	.word	0x3f200000
+0000ae0c <GetGpio>:
+    ae0c:	e3500035 	cmp	r0, #53	; 0x35
+    ae10:	81a0f00e 	movhi	pc, lr
+    ae14:	e92d4010 	push	{r4, lr}
+    ae18:	e1a04000 	mov	r4, r0
+    ae1c:	ebffffd6 	bl	ad7c <GetGpioAddress>
+    ae20:	e1a032a4 	lsr	r3, r4, #5
+    ae24:	e1a03103 	lsl	r3, r3, #2
+    ae28:	e0800003 	add	r0, r0, r3
+    ae2c:	e204401f 	and	r4, r4, #31
+    ae30:	e3a03001 	mov	r3, #1
+    ae34:	e1a03413 	lsl	r3, r3, r4
+    ae38:	e5904034 	ldr	r4, [r0, #52]	; 0x34
+    ae3c:	e0044003 	and	r4, r4, r3
+    ae40:	e3340000 	teq	r4, #0
+    ae44:	03a00000 	moveq	r0, #0
+    ae48:	13a00001 	movne	r0, #1
+    ae4c:	e8bd8010 	pop	{r4, pc}
+    ae50:	3f200000 	.word	0x3f200000
