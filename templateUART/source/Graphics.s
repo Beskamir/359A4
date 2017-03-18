@@ -53,7 +53,7 @@ DrawGameScreen:
 
 	ldr r4, =Bricks	//load brick label
 
-	ldr r5, =Bricks_End
+	mov r5, #0
 	// ldr r6, =BricksRow
 	// sub r6, r4
 	mov r6, #32
@@ -65,7 +65,6 @@ DrawGameScreen:
 	b drawLoopTest
 
 drawImageLoop:
-	add r9, #1
 	b loopTest2
 	drawImageLoop2:
 		ldr r7, [r4], #4
@@ -79,15 +78,17 @@ drawImageLoop:
 		pop {lr}
 
 		add r10, #1
-		add r8, #1
+		add r9, #1
 
 		loopTest2:
 		cmp r10,r6
 		ble drawImageLoop2
 
+	add r8, #1
+	add r5, #1
 	drawLoopTest:
-	cmp r4,r5
-	bne drawImageLoop
+	cmp r5,r6
+	ble drawImageLoop
 
 	pop {r4-r10, fp, lr}
 	bx	lr
@@ -120,7 +121,7 @@ ClearScreen:
 
 	mov	r4,	#0			//x value
 	mov	r5,	#0			//Y value
-	mov	r6,	#0			//black color
+	mov	r6,	#0xFFFFFF	//black color
 	ldr	r7,	=1023		//Width of screen
 	ldr	r8,	=767		//Height of the screen
 

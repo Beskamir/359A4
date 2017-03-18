@@ -50,7 +50,7 @@ LOAD gpio.o
  .text          0x00009988       0x80 build/framebuffer.o
                 0x00009988                InitFrameBuffer
  .text          0x00009a08      0x124 build/main.o
-                0x00009afc                _start
+                0x00009b00                _start
  .text          0x00009b2c      0x108 build/Graphics.o
  .text          0x00009c34      0xf90 build/map.o
  .text          0x0000abc4        0x0 build/snes.o
