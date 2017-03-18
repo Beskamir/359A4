@@ -2,7 +2,7 @@
 
 .section .init
 // .include "map.s"
-.include "art.s"
+// .include "art.s" Not needed, everything's global
 // .globl 		UpdateScreen	//makes update screen visible to all
     
 .section .text
