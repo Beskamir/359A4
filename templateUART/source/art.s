@@ -1,4 +1,3 @@
-.section .text
 .globl  UpMushroom
 .globl  Bricks
 .globl  BushDouble
@@ -31,6 +30,8 @@
 .globl  SuperMarioWalk
 .globl  SuperMario
 .globl  SuperMushroom
+
+.section .text
 
 UpMushroom:
 	.int: #32, #32

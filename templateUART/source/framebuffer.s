@@ -78,26 +78,26 @@ pointerWaitLoop$:
 .align 4
 FrameBufferInit:
 
-	.int 	22 * 4			//Buffer size in bytes
+	.int 	22 * 4		//Buffer size in bytes
 	.int	0			//Indicates a request to GPU
-	.int	0x00048003		//Set Physical Display width and height
+	.int	0x00048003	//Set Physical Display width and height
 	.int	8			//size of buffer
 	.int	8			//length of value
-	.int	1024			//horizontal resolution
+	.int	1024		//horizontal resolution
 	.int	768			//vertical resolution
 
-	.int	0x00048004		//Set Virtual Display width and height
+	.int	0x00048004	//Set Virtual Display width and height
 	.int	8			//size of buffer
 	.int	8			//length of value
-	.int 	1024			//same as physical display width and height
+	.int 	1024		//same as physical display width and height
 	.int 	768
 
-	.int	0x00048005		//Set bits per pixel
+	.int	0x00048005	//Set bits per pixel
 	.int 	4			//size of value buffer
 	.int	4			//length of value
 	.int	16			//bits per pixel value
 
-	.int	0x00040001		//Allocate framebuffer
+	.int	0x00040001	//Allocate framebuffer
 	.int	8			//size of value buffer
 	.int	8			//length of value
 FrameBuffer:

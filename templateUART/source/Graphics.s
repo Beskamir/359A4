@@ -1,6 +1,45 @@
-///This file is used to clear the screen.
+//This file contains or directly accesses all of the graphics stuff
 
-.section .init
+/*
+input: //passed in as sp
+		mov    r4, #xvalue
+		mov    r5, #yvalue
+		mov    r6, #colour
+		mov    r7, #width
+		mov    r8, #height
+		push   {r4-r8}
+		mov    r0, sp
+		bl    drawRectangle
+	int x value
+	int y value
+	hex pixel colour
+	width of rectangle
+	height of rectangle
+return: null
+effect: draw a rectangle
+*/
+.globl drawRectangle
+
+/*
+input: 
+	hex colour value to set screen to
+return: null
+effect: sets ever pixel on screen to a static colour
+*/
+.globl colourScreen
+
+/*
+input: 
+	int x value, 
+	int y value, 
+	hex pixel colour
+	buffer offset may not end up using this
+return: null
+effect: draw an individual pixel
+*/
+.globl drawPixel
+
+// .section .init
 // .include "map.s"
 // .include "art.s" Not needed, everything's global
 // .globl 		UpdateScreen	//makes update screen visible to all
@@ -93,6 +132,24 @@ drawImageLoop:
 	pop {r4-r10, fp, lr}
 	bx	lr
 
+//input: 
+	//top leftmost x coordinate indicating beginning of image
+	//top leftmost y coordinate indicating beginning of image
+	//image address
+//return: null
+//effect: display an image at specified coordinates on the screen
+drawImage:
+	push {r4-r10, fp, lr}
+	
+	mov r4, r0
+	mov r5, r1
+	mov r6, r2
+
+
+
+	pop {r4-r10, fp, lr}
+	bx	lr
+
 //input: The buffer to be displayed
 //return: null
 //effect: draw a new frame
@@ -113,58 +170,105 @@ UpdateScreen:
 	pop {r4-r10, fp, lr}
 	bx	lr
 
-//input: null
-//return: null
-//effect: makes every pixel on the screen black
-ClearScreen:
+/*
+input: 
+	hex colour value to set screen to
+return: null
+effect: sets ever pixel on screen to a static colour
+*/
+colourScreen:
 	push {r4-r8, fp, lr}
 
 	mov	r4,	#0			//x value
 	mov	r5,	#0			//Y value
-	mov	r6,	#0xFFFFFF	//black color
+	mov	r6,	r0 			//colour to set entire screen to
 	ldr	r7,	=1023		//Width of screen
 	ldr	r8,	=767		//Height of the screen
 
+	push [r4-r8]
+	mov r0, sp
+	bl drawRectangle
 
-	clearLooping:
+	pop {r4-r8,fp,lr}
+	bx	lr
+
+/*
+input: //passed in as sp
+		mov    r4, #xvalue
+		mov    r5, #yvalue
+		mov    r6, #colour
+		mov    r7, #width
+		mov    r8, #height
+		push   {r4-r8}
+		mov    r0, sp
+		bl    drawRectangle
+	int x value
+	int y value
+	hex pixel colour
+	width of rectangle
+	height of rectangle
+return: null
+effect: draw a rectangle
+*/
+drawRectangle:
+	push {r4-r9, fp, lr}
+	mov r9,sp		//save the sp
+
+	mov	sp, r0 		//change sp to input parameter
+	pop	{r4-r8}		//get the 5 registers
+
+	rectanlgeLoop:
 		mov	r0,	r4			//Setting x 
 		mov	r1,	r5			//Setting y
 		mov	r2,	r6			//setting pixel color
 		push {lr}
 		bl	DrawPixel
 		pop {lr}
+
 		add	r4,	#1			//increment x by 1
 		cmp	r4,	r7			//compare with width
-		blt	clearLooping
+		blt	rectanlgeLoop
 		mov	r4,	#0			//reset x
+
 		add	r5,	#1			//increment Y by 1
 		cmp	r5,	r8			//compare with height
-		blt	clearLooping
+		blt	rectanlgeLoop
 
+	mov	sp, r9
 	pop {r4-r8,fp,lr}
 	bx	lr
 
-//input: 
-	//int x value, 
-	//int y value, 
-	//hex? pixel colour
-//return: null
-//effect: draw an individual pixel
-DrawPixel:
+/*
+input: 
+	int x value, 
+	int y value, 
+	hex pixel colour
+	buffer offset may not end up using this
+return: null
+effect: draw an individual pixel
+*/
+drawPixel:
 	push	{r4}
+	mov 	r3, #0 	////Init to 0 for now, not yet using it
 
-	offset	.req	r4
+	// offset	.req	r4
+	xValue	.req	r0
+	yValue	.req	r1
+	colour	.req	r2
+	offset	.req	r3
+	temp	.req	r4
 
 	// offset = (y * 1024) + x = x + (y << 10)
-	add		offset,	r0, r1, lsl #10
+	// add		offset,	r0, r1, lsl #10
+	add		offset,	xValue, yValue, lsl #10
 	// offset *= 2 (for 16 bits per pixel = 2 bytes per pixel)
 	lsl		offset, #1
 
 	// store the colour (half word) at framebuffer pointer + offset
 
-	ldr	r0, =FrameBufferPointer
-	ldr	r0, [r0]
-	strh	r2, [r0, offset]
+	ldr		temp, =FrameBufferPointer
+	ldr		temp, [temp]
+	strh	colour, [temp, offset]
 
 	pop		{r4}
 	bx		lr
