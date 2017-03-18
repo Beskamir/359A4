@@ -1,4 +1,5 @@
 ##Python 2 file since PIL is only for Py -2
+#http://www.barth-dev.de/online/rgb565-color-picker/ use this
 from PIL import Image
 from PIL import ImageColor
 import os
@@ -42,7 +43,8 @@ def openImage(imgName,output):
 		output.write("\t.int: ")
 		for y in range(imageSize[1]):
 			r,g,b,a=pixels[x,y]
-			tempHex='{:02x}{:02x}{:02x}{:02x}'.format(a, r, g, b)
+			# tempHex='{:02x}{:02x}{:02x}{:02x}'.format(a, r, g, b)
+			tempHex= ("0x%0.4X" % ((int(r / 255 * 31) << 11) | (int(g / 255 * 63) << 5) | (int(b / 255 * 31))))
 			tempInt=int(tempHex,16)
 			# tempHex=hex(a+r+g+b)
 			if(y>0):
