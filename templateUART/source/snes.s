@@ -10,22 +10,20 @@
 
 // main:
 snes:
-    mov		sp, #0x8000 // Initializing the stack pointer
-	bl		EnableJTAG 	// Enable JTAG
-	bl		InitUART 	//This is important to be  able to use UART
-	
+	push {r4-r12, fp, lr}		//Push all the registers we might want to rewrite onto the stack
+    bl init_GPIO				//Initiate the GPIO
 
 	//r4 previous register
 	//r5 current register
 	//r6 register containing info of which button states changed from the last press
 	ldr r4, =0xFFFF	//set r4 to 16 one's
-	mov r8, r4			//all ones
+	mov r8, r4		//left half of registers is ones
 	mainLoop:
 		buttonListen:	
 
 				bl Read_SNES	//branch to read snes
 				mov r5, r0		//store read_snes output in r5
-				eor r9, r8		//negate r4
+				eor r9, r8		//negate r4 bottom 16 bits
 				orr r6, r5, r9	//newly pressed buttons stored in r6
 				
 				//Special case: If left or right on D-pad being held, they should still be counted as pressed!
@@ -47,30 +45,11 @@ snes:
 				mov r4, r5
 			beq buttonListen //Loop back if user didn't press any buttons
 
-			mov r0, r6
-			//branch to function which determines which buttons were pressed
-			// and then prints them
-			bl printButtons 
-
-			//Print a new line
-			ldr r0, =newLine
-			mov r1, #2
-			bl Print_Message
-
-			//mov r4, r5
-
 			mov r0, #10
 			bl Wait	
 
 		b mainLoop	//loop back to mainLoop for the next button press.
 
-
-	//Otherwise, program ends
-	endProgram:
-	ldr r0, =exitMessage	//address to the label containing the object prompts
-	mov r1, #29				//Number of characters to print
-	bl Print_Message 		//Writes to console
-	b haltLoop$
 
 haltLoop$:	//Halts the program
 	b	haltLoop$	//infinite loop
@@ -80,7 +59,7 @@ haltLoop$:	//Halts the program
 //Return: Nothing
 //Effect: Initialize pins
 init_GPIO:
-	push	{r4-r10, fp, lr}		//Push registers onto the stack
+	push	{r4-r10, fp, lr}	//Push registers onto the stack
 	
 	//Set pin 11 to output and pin 10 to input
 	ldr		r4, =0x3F200004		//Load GPFSEL1 address into r4
@@ -233,91 +212,5 @@ Read_SNES:
 	pop		{r4-r10, fp, lr}	//Load previous registers from the stack
 	bx 		lr					//Return
 
-//Input: Register of buttons pressed in r0
-//Return: prints the buttons pressed to the screen, followed by new lines
-//Effects: Nothing
-printButtons:
-	push	{r4-r10, fp, lr}	//Push registers onto the stack
-
-	ldr 	r9, =0xFFFF
-
-	mov		r4, r0				//Move the button data into r4
-	eor		r4,	r9				//For easier comparisons, flip the bits in button data so 1 is on and 0 is off
-	mov		r5, #1				//Put 1 in r5
-
-	teq		r4, r5				//See if Y was pressed
-	ldreq	r0, =button1		//If it was, get ready print Y
-	mov 	r1, #2				//Number of characters to print
-	bleq	Print_Message		//Print the button
-
-	lsl		r5, #1				//Move over the 1 to the next button
-	teq		r4, r5				//See if B was pressed
-	ldreq	r0, =button2		//If it was, get ready print B
-	mov 	r1, #2				//Number of characters to print
-	bleq	Print_Message		//Print the button
-
-	lsl		r5, #1				//Move over the 1 to the next button
-	teq		r4, r5				//See if Select was pressed
-	ldreq	r0, =button3		//If it was, get ready print Select
-	mov 	r1, #7				//Number of characters to print
-	bleq	Print_Message		//Print the button
-
-	lsl		r5, #2				//Move over the 2 to the next button because we won't print Start
-	teq		r4, r5				//See if Joy-pad UP was pressed
-	ldreq	r0, =button5		//If it was, get ready print Joy-pad UP
-	mov 	r1, #11				//Number of characters to print
-	bleq	Print_Message		//Print the button
-
-	lsl		r5, #1				//Move over the 1 to the next button
-	teq		r4, r5				//See if Joy-pad DOWN was pressed
-	ldreq	r0, =button6		//If it was, get ready print Joy-pad DOWN
-	mov 	r1, #13				//Number of characters to print
-	bleq	Print_Message		//Print the button
-
-	lsl		r5, #1				//Move over the 1 to the next button
-	teq		r4, r5				//See if Joy-pad LEFT was pressed
-	ldreq	r0, =button7		//If it was, get ready print Joy-pad LEFT
-	mov 	r1, #13				//Number of characters to print
-	bleq	Print_Message		//Print the button
-
-	lsl		r5, #1				//Move over the 1 to the next button
-	teq		r4, r5				//See if Joy-pad RIGHT was pressed
-	ldreq	r0, =button8		//If it was, get ready print Joy-pad RIGHT
-	mov 	r1, #14				//Number of characters to print
-	bleq	Print_Message		//Print the button
-
-	lsl		r5, #1				//Move over the 1 to the next button
-	teq		r4, r5				//See if A was pressed
-	ldreq	r0, =button9		//If it was, get ready print A
-	mov 	r1, #2				//Number of characters to print
-	bleq	Print_Message		//Print the button
-
-	lsl		r5, #1				//Move over the 1 to the next button
-	teq		r4, r5				//See if X was pressed
-	ldreq	r0, =button10		//If it was, get ready print X
-	mov 	r1, #2				//Number of characters to print
-	bleq	Print_Message		//Print the button
-
-	lsl		r5, #1				//Move over the 1 to the next button
-	teq		r4, r5				//See if Left was pressed
-	ldreq	r0, =button11		//If it was, get ready print Left
-	mov 	r1, #5				//Number of characters to print
-	bleq	Print_Message		//Print the button
-
-	lsl		r5, #1				//Move over the 1 to the next button
-	teq		r4, r5				//See if Right was pressed
-	ldreq	r0, =button12		//If it was, get ready print Right
-	mov 	r1, #6				//Number of characters to print
-	bleq	Print_Message		//Print the button
-
-	pop		{r4-r10, fp, lr}	//Load previous registers from the stack
-	bx 		lr					//Return
 
 .section .data  
-
-
-// //location where the user input will be stored in
-// Buffer:
-// 	.rept 256
-// 	.byte 0
-// 	.endr
