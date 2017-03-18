@@ -1,4 +1,14 @@
-//This file contains or directly accesses all of the graphics stuff
+//This file contains or directly accesses all of the graphics related stuff
+
+/*
+input: 
+	top leftmost x coordinate indicating beginning of image
+	top leftmost y coordinate indicating beginning of image
+	image address
+return: null
+effect: display an image at specified coordinates on the screen
+*/
+.globl drawImage
 
 /*
 input: //passed in as sp
@@ -47,125 +57,153 @@ effect: draw an individual pixel
 .section .text
 
 
-// InitFrameBuffers:
-// 	push {fp, lr}
-
-// 	bl InitFrameBuffer
-
-// 	pop {fp, lr}
-// 	bx	lr
-
-//Convert map.s to an image
-DrawGameScreen:
+actuallyDraw:
 	push {r4-r10, fp, lr}
 
+	mov r9,sp		//save the sp
 
-	// mov	r4,	#0			//x value
-	// mov	r5,	#0			//Y value
-	// // mov	r6,	#0			//black color
+	mov	sp, r0 		//change sp to input parameter
+	pop	{r4-r8}		//get the 5 registers
 
+	drawLoop
+		ldr r10, [r6], #4	//setting pixel color
+		mov r2, r10
+		bic r10, #0xFFFF 	//clear all bits other than first one and see if r10 is 0
+		//ie 0xF043F is alpha mapped, 0x0FCE8 is not
+		cmp r10, #0
+		bne skipDraw		//don't draw pixel
 
-	// mov	r7,	#32		//Width of screen
-	// mov	r8,	#32		//Height of the screen
-
-	// ldr r9, =Bricks
-
-	// drawLooping:
-
-	// 	ldr r6, [r9], #4
-	// 	mov	r0,	r4			//Setting x 
-	// 	mov	r1,	r5			//Setting y
-	// 	mov	r2,	r6			//setting pixel color
-	// 	push {lr}
-	// 	bl	DrawPixel
-	// 	pop {lr}
-	// 	add	r4,	#1			//increment x by 1
-	// 	cmp	r4,	r7			//compare with width
-	// 	blt	drawLooping
-
-	// 	mov	r4,	#0			//reset x
-	// 	add	r5,	#1			//increment Y by 1
-	// 	cmp	r5,	r8			//compare with height
-	// 	blt	drawLooping
-
-
-
-	ldr r4, =Bricks	//load brick label
-
-	mov r5, #0
-	// ldr r6, =BricksRow
-	// sub r6, r4
-	mov r6, #32
-	mov r10, #0
-
-	mov r9, #100
-	mov r8, #100
-
-	b drawLoopTest
-
-drawImageLoop:
-	b loopTest2
-	drawImageLoop2:
-		ldr r7, [r4], #4
-		bic r7, #0xFF000000
-
-		mov r0, r8
-		mov r1, r9
-		mov r2, r7
+		mov	r0,	r4			//Setting x 
+		mov	r1,	r5			//Setting y
 		push {lr}
-		bl DrawPixel
+		bl	drawPixel
 		pop {lr}
 
-		add r10, #1
-		add r9, #1
+	skipDraw:
+		add	r4,	#1			//increment x by 1
+		cmp	r4,	r7			//compare with width
+		blt	drawLoop
+		mov	r4,	#0			//reset x
 
-		loopTest2:
-		cmp r10,r6
-		ble drawImageLoop2
+		add	r5,	#1			//increment Y by 1
+		cmp	r5,	r8			//compare with height
+		blt	drawLoop
 
-	add r8, #1
-	add r5, #1
-	drawLoopTest:
-	cmp r5,r6
-	ble drawImageLoop
-
+	mov	sp, r9 	//restore sp
 	pop {r4-r10, fp, lr}
 	bx	lr
 
-//input: 
-	//top leftmost x coordinate indicating beginning of image
-	//top leftmost y coordinate indicating beginning of image
-	//image address
-//return: null
-//effect: display an image at specified coordinates on the screen
+//Notes on multithreading
+	//https://github.com/dwelch67/raspberrypi/blob/master/multi00/start.s
+// multithread:
+//     mrc p15, 0, r0, c0, c0, 5 //no idea what's the point of this instruction... 
+	//some sample code had it some didn't so it doesn't look required
+////////EXPERIMENTAL CODE
+/*
+input: null
+return: null
+effect: displays half of an image
+*/
+core1Draw:
+	//mark the core as being used
+	ldr r9, =coreState
+	ldr r10, [r9]
+	orr r10, #1
+	str r10, [r9]
+
+	ldr r0, =stashedImage
+	ldmia r0, {r4-r9}
+
+	mov    	r8, r9 		//only draw half of the image
+	push   	{r4-r8}
+	mov    	r0, sp
+	bl    	actuallyDraw
+
+	//mark core as being off
+	ldr r9, =coreState
+	ldr r10, [r9]
+	bic r10, #0x1
+	// mov r10, #0
+	str r10, [r9]
+
+	mov r10, #0
+	str r10, [#0x4000009C] //reset mailbox to 0 (should stop it... I hope)
+
+/*
+input: null
+return: null
+effect: displays half of an image
+*/
+core2Draw:
+	//mark the core as being used
+	ldr r9, =coreState
+	ldr r10, [r9]
+	orr r10, #2
+	str r10, [r9]
+
+	ldr r0, =stashedImage
+	ldmia r0, {r4-r9}
+
+	add 	r5, r9 		//skip to lower half of the image
+	push	{r4-r8}
+	mov    	r0, sp
+	bl    	actuallyDraw	
+
+	//mark core as being off
+	ldr r9, =coreState
+	ldr r10, [r9]
+	bic r10, #0x2
+	// mov r10, #0
+	str r10, [r9]
+
+	mov r10, #0
+	str r10, [#0x400000AC] //reset mailbox to 0 (should stop it... I hope)
+////////EXPERIMENTAL CODE
+
+/*
+input: 
+	top leftmost x coordinate indicating beginning of image
+	top leftmost y coordinate indicating beginning of image
+	image address
+return: null
+effect: display an image at specified coordinates on the screen
+*/
 drawImage:
 	push {r4-r10, fp, lr}
 	
-	mov r4, r0
-	mov r5, r1
-	mov r6, r2
+	mov r4, r0 		//x coordinate
+	mov r5, r1      //y coordinate
+	mov r6, r2 		//image address
 
+	ldr r7, [r6], #4	//get the image's x size
+	ldr r8, [r6], #4	//get the image's y size
 
+	mov r9, r8 	//copy r8 to r9
+	//currently assuming all images are gonna be even
 
-	pop {r4-r10, fp, lr}
-	bx	lr
+	lsr r9, #2	//divide y value by 2
 
-//input: The buffer to be displayed
-//return: null
-//effect: draw a new frame
-UpdateScreen:
-	push {r4-r10, fp, lr}
+	ldr r10, =stashedImage
+	stmia r10, {r4-r9}
 
-	mov r4, r0
+	//gets base address to "core" mailbox
+	mov r10, #0x40000000
 
-	bl ClearScreen
+	//starts core 1
+	ldr r0, =core1Draw
+	str r0, [r10, #0x9c]	
 
-	bl DrawGameScreen
-	//r4 contains reference to the buffer that should be drawn
-////////////////////////////////////////////////////////
-	//get each pixel to draw and then draw to the screen
-	///This is to be implemented
-//\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+	//starts core 2
+	ldr r0, =core2Draw
+	str r0, [r10, #0xAC]
+
+	//stall main core until core 1 and 2 finish.
+	coreSync:
+		//core state hex number with one's representing on, 0's representing off
+		ldr r10, =coreState 
+
+		cmp r10, #0	//thus if core state is all 0 then all cores are off
+		bne coreSync //so stop looping
 
 	pop {r4-r10, fp, lr}
 	bx	lr
@@ -222,7 +260,7 @@ drawRectangle:
 		mov	r1,	r5			//Setting y
 		mov	r2,	r6			//setting pixel color
 		push {lr}
-		bl	DrawPixel
+		bl	drawPixel
 		pop {lr}
 
 		add	r4,	#1			//increment x by 1
@@ -274,3 +312,8 @@ drawPixel:
 	bx		lr
 
 .section .data  
+
+//Used for passing on what to print to the cores.
+stashedImage:
+	.int 0, 0, 0, 0, 0, 0
+	.align 4

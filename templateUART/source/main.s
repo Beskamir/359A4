@@ -8,7 +8,8 @@
 .section    .init
 .include "Graphics.s"
 // .include "art.s"
-.globl     _start
+.globl    	_start
+.globl 		coreState
 
 _start:	
     b       main
@@ -45,6 +46,9 @@ haltLoop$:	//Halts the program
 
 
 .section .data  
+coreState:
+	.int 0
+
 
 .align 4
 font: .incbin "font.bin"
