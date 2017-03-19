@@ -20,11 +20,11 @@
 .section .text
 
 //Input: null
-//Output: newly pressed buttons pressed in r0; left and right joystick buttons always returned as pressed if they are pressed on the controller even if they were pressed before
-//Effect: none
+//Output: Newly pressed buttons pressed in r0; left and right joystick buttons always returned as pressed if they are pressed on the controller even if they were pressed before
+//Effect: Writes raw input to previousButtons
 //Usage: Make sure that init_GPIO has been called before using
 snes:
-	push {r4-r11, fp, lr}		//Push all the registers we might want to rewrite onto the stack
+	push {r4-r11, fp, lr}			//Push all the registers we might want to rewrite onto the stack
 
 	ldr		r11, =previousButtons	//Load the address of the previously pressed buttons into r11
 	ldrh	r4, [r11]				//Load the previously pressed buttons into r11
@@ -42,23 +42,22 @@ snes:
 	
 	//Special case: If left or right on D-pad being held, they should still be counted as pressed!
 	mov r10, #0x40			//r10 = ... 0000 0100 0000
-	tst	r4, r10				//Check what the value of joy pad left is
+	tst	r4, r10				//Check what the value of joy pad left was previously
 	biceq r6, r10			//If it's pressed, turn the 1 in r6 in that position into a 0 
 	//Now check for right
 	mov r10, #0x80			//r10 = ... 0000 1000 0000
-	tst	r4, r10				//Check what the value of joy pad right is
+	tst	r4, r10				//Check what the value of joy pad right was previous
 	biceq r6, r10			//If it's pressed, turn the 1 in r6 in that position into a 0 
 	
 	
 	ldr r7, =0xFFFF
 
-	mov r0, #10
-	bl Wait
-
+	strh	r5, [r11]		//Store the buttons that were just pressed into previousButtons
+	
 	mov r0, #10
 	bl Wait	
 	
-	mov	r0, r6			//Prepare to return output
+	mov	r0, r6				//Prepare to return output
 	
 	pop {r4-r11, fp, lr}	//Pop the previous registers from the stack
 	mov	pc, lr				//Return
