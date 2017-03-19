@@ -6,28 +6,31 @@
 from PIL import Image
 from PIL import ImageColor
 import os
+import random
 
-FOLDERNAME="\\Ready\\ImagesTest\\" #folder containing images
+FOLDERNAME="\\Sprites\\ImagesConvert\\" #folder containing images
 OUTPUTNAMEFILENAME="output.txt" #File output location
 SPLIT=True #Change this to either generate several 32*32 images or 1 unspecified image size. 
 	#*for 32^2 generation to work, (x and y) % 32 must be 0
 CELLSIZE=32 #in theory should determine image size for the above mentioned split.
 	#Not actually tested with anything other than 32
-
+staticColours=[0,0,0]
+staticASCII=33
 
 def getAllImages():
 	#Outputs to output.txt
 	output = open(OUTPUTNAMEFILENAME, 'w')
 	output.write(".section .text\n")
 
-	imageList=""
 	#Keep looping for all files in the folder Images
 	for fileName in os.listdir(os.getcwd()+FOLDERNAME):
 		# print(fileName,FOLDERNAME,output)
 		# imageList+=openImage(os.getcwd()+FOLDERNAME+fileName,output)
+		output.write(".align 4\n")
 		processImage(os.getcwd()+FOLDERNAME+fileName,output)
 
 	output.close()
+	print("\n")
 	# print("Copy paste the following to the top of the image file:\n")
 	# print(imageList)
 
@@ -56,7 +59,12 @@ def processImage(imgName,output):
 
 	if SPLIT:
 
-		# pixelsOff = [imageSize[0]%32, imageSize[1]%32]
+		expectedZones=[imageSize[0]//32, imageSize[1]//32]
+		newImage=Image.new('RGBA',(expectedZones[0],expectedZones[1]))
+		# for x in range(400):
+		# 	for y in range(400):
+		# 		newImage.putpixel((x,y), (0,0,200))
+		# newImagePixels=newImage.load()
 
 		zones = [0, 0]
 
@@ -72,30 +80,53 @@ def processImage(imgName,output):
 				y = (zones[1]*32)
 				memLabel=trimmedName+"_"+str(zones[0])+"_"+str(zones[1])
 				boundY=(32*(zones[1]+1))
+				
+				newImage.putpixel((zones[0],zones[1]), genPixel(memLabel))
+	
 				writeToFile(output, pixels,x,y,memLabel,boundX,boundY, zones[0])
 				# print(trimmedName,zones[0],zones[1])
 				zones[1]+=1
 			zones[0]+=1
 
+		newImage.save(os.getcwd()+"\\ImageOutput\\"+trimmedName+".png")
 	else:
 		x=y=0
 		# zones=[imageSize[0]//32, imageSize[1]//32]
 		memLabel=trimmedName
 		writeToFile(output, pixels,x,y,memLabel,imageSize[0],imageSize[1])
 
-	# zones = [imageSize[0]//32, imageSize[1]//32]
-	# for zoneY in range(zones[1]):
-	# 	for zoneX in range(zones[0]):
-	# 		writeToFile(output, trimmedName, pixels, zoneX, zoneY)
+def genPixel(memLabel):
+	global staticColours
+	global staticASCII
+	r,g,b=staticColours
+	b+=50
+	if b>255:
+		b=0
+		g+=50
+		if g>255:
+			g=0
+			r+=50
+	staticColours=[r,g,b]
+	tempHex='{:02x}{:02x}{:02x}'.format(r, g, b)
+	# print("# 0x"+tempHex+" >> '"+chr(staticASCII)+"' = "+str(staticASCII)+" >> "+memLabel)
+	print("'"+tempHex+"':'"+chr(staticASCII)+"',",end="")
+	staticASCII+=1
+	if staticASCII>126:
+		# print("\n\n")
+		staticASCII=33
+	if staticASCII==92 or staticASCII==34:
+		staticASCII+=1
+	return r,g,b
 
-	# return ("\n.globl\t"+trimmedName)
-
-	# output.write(".globl\t"+trimmedName+"_End\n"+trimmedName+"_End:\n\n")
+def genColour(colourParameter):
+	value=random.randrange(10)
+	if value>8:
+		colourParameter+=1
 
 def writeToFile(output,pixels,x,y,memLabel,imageSizeX,imageSizeY,zoneX=0):
 	##Write hex values to txt file
 	output.write(memLabel+":\n")
-	print(".globl "+memLabel)
+	# print(".globl "+memLabel)
 
 	# output.write("\t.int: #"+str(imageSize[0])+", #"+str(imageSize[1])+"\n")
 	output.write("\t.int: #32, #32\n")

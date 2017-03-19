@@ -1,18 +1,3 @@
-//This stores all the map specific information.
-//Foreground is where all the action happens and collisions are calculated
-//Background is where nobody cares about collisions
-
-
-//NOTE:
-//Currently the flagpole is in the background layer since mario will be overlayed 
-//	on it even though we care about collisions with the flagpole... 
-//	maybe move the flag to the foreground and use that to figure out where the flagpole is? 
-
-.globl mapBackground_text
-.globl mapForeground_text
-.globl mapBackground_data
-.globl mapForeground_data
-
 .section .text
 .align 4
 mapBackground_text:
