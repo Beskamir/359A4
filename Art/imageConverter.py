@@ -7,11 +7,11 @@ from PIL import Image
 from PIL import ImageColor
 import os
 
-FOLDERNAME="\\Images\\"
+FOLDERNAME="\\ImagesConvert\\"
 OUTPUTNAMEFILENAME="output.txt"
 
 
-def main():
+def getAllImages():
 	#Outputs to output.txt
 	output = open(OUTPUTNAMEFILENAME, 'w')
 	output.write(".section .text\n")
@@ -19,52 +19,104 @@ def main():
 	imageList=""
 	#Keep looping for all files in the folder Images
 	for fileName in os.listdir(os.getcwd()+FOLDERNAME):
-		imageList+=openImage(os.getcwd()+FOLDERNAME+fileName,output)
+		# print(fileName,FOLDERNAME,output)
+		# imageList+=openImage(os.getcwd()+FOLDERNAME+fileName,output)
+		processImage(os.getcwd()+FOLDERNAME+fileName,output)
 
 	output.close()
-	print("Copy paste the following to the top of the image file:\n")
-	print(imageList)
+	# print("Copy paste the following to the top of the image file:\n")
+	# print(imageList)
 
 #Trims the filepath to a label friendly string
 def trimImageName(imgName):
 	trimmedName=""
 	tempName=os.path.basename(imgName)
-	for x in tempName:
+	for i in range(len(tempName)):
 		# print (x)
-		if x!=' ' and x!='-' and not x.isdigit():
-			trimmedName+=x
+		if tempName[i]!=' ' and tempName[i]!='-':
+			if (i == 0) and not tempName[i].isdigit():
+				trimmedName+=tempName[i]
+			elif (i!=0):
+				trimmedName+=tempName[i]
 	trimmedName=trimmedName[:-4]
 	return trimmedName
 
 #Opens the image and converts to hex
-def openImage(imgName,output):
+def processImage(imgName,output):
 	img = Image.open(imgName) #Can be many different formats.
+
 	pixels = img.convert('RGBA').load()
 	imageSize = img.size #Get the width and hight of the image for iterating over
 
 	trimmedName=trimImageName(imgName)
 
+	CELLSIZE=32
+
+	# pixelsOff = [imageSize[0]%32, imageSize[1]%32]
+
+	zones = [0, 0]
+
+	# print(trimmedName)
+	while imageSize[0]>=(CELLSIZE*(zones[0]+1)):
+		# print(trimmedName)
+		zones[1]=0
+		while imageSize[1]>=(CELLSIZE*(zones[1]+1)):
+			# print(trimmedName)
+			writeToFile(output, trimmedName, pixels, zones[0], zones[1])
+			# print(trimmedName,zones[0],zones[1])
+			zones[1]+=1
+		zones[0]+=1
+			
+
+	# zones = [imageSize[0]//32, imageSize[1]//32]
+	# for zoneY in range(zones[1]):
+	# 	for zoneX in range(zones[0]):
+	# 		writeToFile(output, trimmedName, pixels, zoneX, zoneY)
+
+	# return ("\n.globl\t"+trimmedName)
+
+	# output.write(".globl\t"+trimmedName+"_End\n"+trimmedName+"_End:\n\n")
+
+def writeToFile(output,trimmedName,pixels,zoneX,zoneY):
 	##Write hex values to txt file
-	output.write(trimmedName+":\n")
+	memLabel=trimmedName+"_"+str(zoneX)+"_"+str(zoneY)
+	output.write(memLabel+":\n")
+	print(".globl "+memLabel)
 
-	output.write("\t.int: #"+str(imageSize[0])+", #"+str(imageSize[1])+"\n")
+	x = (zoneX*32)
+	y = (zoneY*32)
 
-	for x in range(imageSize[0]):
+	# output.write("\t.int: #"+str(imageSize[0])+", #"+str(imageSize[1])+"\n")
+	output.write("\t.int: #32, #32\n")
+
+	# for x in range(imageSize[0]):
+	while y < (32*(zoneY+1)):
 		output.write("\t.int: ")
-		for y in range(imageSize[1]):
+		x=zoneX*32
+		# for y in range(imageSize[1]):
+		while x < (32*(zoneX+1)):
 			tempHex=convertToHex(x, y, pixels)
 			# tempHex=hex(a+r+g+b)
-			if(y>0):
+			if(x%32!=0):
 				output.write(", ")
 			output.write(tempHex)
+			x+=1
+		y+=1
 
 		output.write("\n")
 
-	return ("\n.globl\t"+trimmedName)
-	# output.write(".globl\t"+trimmedName+"_End\n"+trimmedName+"_End:\n\n")
-
 def convertToHex(x, y, pixels):
+
+	# print(x,y)
+	
+	# if zoneX==0 and (x<=32-pixelsOff[0]) and pixelsOff[0]!=0:
+	# 	r,g,b,a=[0,0,0,0]
+	# if zoneY==0 and (y<=32-pixelsOff[1]) and pixelsOff[1]!=0:
+	# 	r,g,b,a=[0,0,0,0]
+
+	# else:
 	r,g,b,a=pixels[x,y]
+
 
 	#Following ugly mess converts image to proper hex value taking into 
 	# account the possibility of an alpha map.
@@ -82,4 +134,4 @@ def convertToHex(x, y, pixels):
 	return tempHex
 
 if __name__ == '__main__':
-	main()
+	getAllImages()

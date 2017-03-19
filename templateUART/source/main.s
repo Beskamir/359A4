@@ -6,7 +6,7 @@
 // .include "snes"
 
 .section    .init
-.include "Graphics.s"
+// .include "Graphics.s"
 // .include "art.s"
 .globl    	_start
 .globl 		coreState
@@ -20,10 +20,9 @@ main:
     mov		sp, #0x8000 // Initializing the stack pointer
 	bl		EnableJTAG 	// Enable JTAG
 	bl		InitUART 	//This is important to be  able to use UART
-	bl		init_GPIO	//Enable the GPIO pins
 
-	bl InitFrameBuffer
-	// bl InitFrameBuffers
+	bl		init_GPIO	//Enable the GPIO pins
+	bl 		InitFrameBuffer //Enable Frame Buffer
 
 
 
@@ -31,16 +30,11 @@ main:
 	// mov r4,r0
 
 ///Keep looping this until the game ends or user quits
-PlayingLoop:
+	_runningLoop:
+		//code that executes every frame here
 
-	bl UpdateScreen
 
-	// bl DrawGameScreen
-	//Code here
 
-	// b PlayingLoop
-
-	// b haltLoop$
 
 haltLoop$:	//Halts the program
 	b	haltLoop$	//infinite loop
