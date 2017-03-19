@@ -14,6 +14,7 @@
 //Effect: none
 //Usage: ALWAYS call init_GPIO first
 .globl	snes
+.globl	previousButtons
 
     
 .section .text
@@ -54,8 +55,6 @@ snes:
 	mov r0, #10
 	bl Wait
 
-	strh	r5, [r11] 	//Store the buttons that were just pressed into previousButtons
-
 	mov r0, #10
 	bl Wait	
 	
@@ -93,7 +92,7 @@ init_GPIO:
 	orr		r5, r6				//Set pin 9 bits to ouput
 	str		r5, [r4]			//Store GPFSEL0
 
-
+	
 	pop		{r4-r10, fp, lr}	//Load previous registers from the stack
 	bx 		lr					//Return
 
