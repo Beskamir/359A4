@@ -300,7 +300,7 @@ _stashedImage:
 	.align 4
 
 _isImage:
-	.int 0
+	.byte 0
 	.align 4
 
 rectangle:

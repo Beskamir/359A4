@@ -20,13 +20,15 @@ effect: main loop function in gameplay logic.
 
 /*
 Keep looping this until the game ends or user quits
-input: null (in future could return address to new)
+input: null (in future could have something to stop _copyMap from executing)
 return: null
 effect: main loop function in gameplay logic.
 */
 playingState:
 	push {r4-r10, fp, lr}
-	
+
+	bl _newGame
+
 	_playingLoop:	//Keep looping until game is over
 	
 	// b PlayingLoop
@@ -34,6 +36,22 @@ playingState:
 	pop {r4-r10, fp, lr}
 	bx	lr
 
+_newGame:
+	push {r4-r10, fp, lr}
+	
+	bl _copyMap
+	//set all variables in gameState to 0
+
+	pop {r4-r10, fp, lr}
+	bx	lr
+
+_copyMap:
+	push {r4-r10, fp, lr}
+	
+	//copy all the elements of the map arrays from .text to .data	
+
+	pop {r4-r10, fp, lr}
+	bx	lr
 
 _moveMario:
 	push {r4-r10, fp, lr}
@@ -77,3 +95,5 @@ _drawMap:
 	bx	lr
 
 .section .data
+_GameState:	
+	.byte 0, 0, 0, 0
