@@ -170,10 +170,10 @@ def convertToHex(x, y, pixels):
 	#	Thus in assembly just bit clear the last 4 bits and if the imageOutputs is 0 
 	#	then pass the hex value to be displayed, otherwise ignore the hex value
 	if a==255:
-		tempHex=("#0x0%0.4X" % ((int(r / 255 * 31) << 11) | (int(g / 255 * 63) << 5) | (int(b / 255 * 31))))
+		tempHex=("0x0%0.4X" % ((int(r / 255 * 31) << 11) | (int(g / 255 * 63) << 5) | (int(b / 255 * 31))))
 
 	else:
-		tempHex=("#0xF%0.4X" % ((int(r / 255 * 31) << 11) | (int(g / 255 * 63) << 5) | (int(b / 255 * 31))))
+		tempHex=("0xF%0.4X" % ((int(r / 255 * 31) << 11) | (int(g / 255 * 63) << 5) | (int(b / 255 * 31))))
 
 	# tempInt=int(tempHex,16)
 	return tempHex
