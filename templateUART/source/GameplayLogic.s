@@ -95,5 +95,5 @@ _drawMap:
 	bx	lr
 
 .section .data
-_GameState:	
+_s_gameState:	
 	.byte 0, 0, 0, 0

@@ -9,27 +9,34 @@ import os
 import random
 
 FOLDERNAME="\\Sprites\\ImagesConvert\\" #folder containing images
-OUTPUTNAMEFILENAME="output.txt" #File output location
+OUTPUTNAMEFILENAME="imageOutputs.txt" #File imageOutputs location
+KEYOUTPUTFILENAME="keyOutputs.txt" #File imageOutputs location
 SPLIT=True #Change this to either generate several 32*32 images or 1 unspecified image size. 
 	#*for 32^2 generation to work, (x and y) % 32 must be 0
 CELLSIZE=32 #in theory should determine image size for the above mentioned split.
 	#Not actually tested with anything other than 32
 staticColours=[0,0,0]
-staticASCII=33
+staticCounter=1
+
 
 def getAllImages():
-	#Outputs to output.txt
-	output = open(OUTPUTNAMEFILENAME, 'w')
-	output.write(".section .text\n")
+	#imageOutputss to imageOutputs.txt
+	imageOutputs = open(OUTPUTNAMEFILENAME, 'w')
+	imageOutputs.write(".section .text\n")
+
+	keyOutput = open(KEYOUTPUTFILENAME,'w')
+	keyOutput.write("ASCIITOCOLOURKEY={")	
 
 	#Keep looping for all files in the folder Images
 	for fileName in os.listdir(os.getcwd()+FOLDERNAME):
-		# print(fileName,FOLDERNAME,output)
-		# imageList+=openImage(os.getcwd()+FOLDERNAME+fileName,output)
-		output.write(".align 4\n")
-		processImage(os.getcwd()+FOLDERNAME+fileName,output)
+		# print(fileName,FOLDERNAME,imageOutputs)
+		# imageList+=openImage(os.getcwd()+FOLDERNAME+fileName,imageOutputs)
+		imageOutputs.write(".align 4\n")
+		processImage(os.getcwd()+FOLDERNAME+fileName,imageOutputs,keyOutput)
 
-	output.close()
+	keyOutput.write("}")
+	keyOutput.close()
+	imageOutputs.close()
 	print("\n")
 	# print("Copy paste the following to the top of the image file:\n")
 	# print(imageList)
@@ -49,7 +56,7 @@ def trimImageName(imgName):
 	return trimmedName
 
 #Opens the image and converts to hex
-def processImage(imgName,output):
+def processImage(imgName,imageOutputs,keyOutput):
 	img = Image.open(imgName) #Can be many different formats.
 
 	pixels = img.convert('RGBA').load()
@@ -78,12 +85,12 @@ def processImage(imgName,output):
 			while imageSize[1]>=(CELLSIZE*(zones[1]+1)):
 				# print(trimmedName)
 				y = (zones[1]*32)
-				memLabel=trimmedName+"_"+str(zones[0])+"_"+str(zones[1])
+				memLabel="s_"+trimmedName+"_"+str(zones[0])+"_"+str(zones[1])
 				boundY=(32*(zones[1]+1))
 				
-				newImage.putpixel((zones[0],zones[1]), genPixel(memLabel))
+				newImage.putpixel((zones[0],zones[1]), genPixel(memLabel,keyOutput))
 	
-				writeToFile(output, pixels,x,y,memLabel,boundX,boundY, zones[0])
+				writeToFile(imageOutputs, pixels,x,y,memLabel,boundX,boundY, zones[0])
 				# print(trimmedName,zones[0],zones[1])
 				zones[1]+=1
 			zones[0]+=1
@@ -93,11 +100,11 @@ def processImage(imgName,output):
 		x=y=0
 		# zones=[imageSize[0]//32, imageSize[1]//32]
 		memLabel=trimmedName
-		writeToFile(output, pixels,x,y,memLabel,imageSize[0],imageSize[1])
+		writeToFile(imageOutputs, pixels,x,y,memLabel,imageSize[0],imageSize[1])
 
-def genPixel(memLabel):
+def genPixel(memLabel,keyOutput):
 	global staticColours
-	global staticASCII
+	global staticCounter
 	r,g,b=staticColours
 	b+=50
 	if b>255:
@@ -108,44 +115,40 @@ def genPixel(memLabel):
 			r+=50
 	staticColours=[r,g,b]
 	tempHex='{:02x}{:02x}{:02x}'.format(r, g, b)
-	# print("# 0x"+tempHex+" >> '"+chr(staticASCII)+"' = "+str(staticASCII)+" >> "+memLabel)
-	print("'"+tempHex+"':'"+chr(staticASCII)+"',",end="")
-	staticASCII+=1
-	if staticASCII>126:
-		# print("\n\n")
-		staticASCII=33
-	if staticASCII==92 or staticASCII==34:
-		staticASCII+=1
+	print("0x"+tempHex+" >> '"+str(staticCounter)+"' >> "+memLabel)
+	# print("'"+tempHex+"':'"+chr(staticASCII)+"',",end="")
+	keyOutput.write("'"+tempHex+"':'"+str(staticCounter)+"',")
+	staticCounter+=1
+	# if staticASCII>126:
+	# 	# print("\n\n")
+	# 	staticASCII=33
+	# if staticASCII==92 or staticASCII==34:
+	# 	staticASCII+=1
 	return r,g,b
 
-def genColour(colourParameter):
-	value=random.randrange(10)
-	if value>8:
-		colourParameter+=1
-
-def writeToFile(output,pixels,x,y,memLabel,imageSizeX,imageSizeY,zoneX=0):
+def writeToFile(imageOutputs,pixels,x,y,memLabel,imageSizeX,imageSizeY,zoneX=0):
 	##Write hex values to txt file
-	output.write(memLabel+":\n")
+	imageOutputs.write(memLabel+":\n")
 	# print(".globl "+memLabel)
 
-	# output.write("\t.int: #"+str(imageSize[0])+", #"+str(imageSize[1])+"\n")
-	output.write("\t.int: #32, #32\n")
+	# imageOutputs.write("\t.int: #"+str(imageSize[0])+", #"+str(imageSize[1])+"\n")
+	imageOutputs.write("\t.int: #32, #32\n")
 
 	# for x in range(imageSize[0]):
 	while y < imageSizeY:
-		output.write("\t.int: ")
+		imageOutputs.write("\t.int: ")
 		x=zoneX*32
 		# for y in range(imageSize[1]):
 		while x < imageSizeX:
 			tempHex=convertToHex(x, y, pixels)
 			# tempHex=hex(a+r+g+b)
 			if(x%32!=0):
-				output.write(", ")
-			output.write(tempHex)
+				imageOutputs.write(", ")
+			imageOutputs.write(tempHex)
 			x+=1
 		y+=1
 
-		output.write("\n")
+		imageOutputs.write("\n")
 
 def convertToHex(x, y, pixels):
 
@@ -164,7 +167,7 @@ def convertToHex(x, y, pixels):
 	# account the possibility of an alpha map.
 	# if there an alpha map the first value is F
 	# otherwise the first value doesn't exist
-	#	Thus in assembly just bit clear the last 4 bits and if the output is 0 
+	#	Thus in assembly just bit clear the last 4 bits and if the imageOutputs is 0 
 	#	then pass the hex value to be displayed, otherwise ignore the hex value
 	if a==255:
 		tempHex=("#0x0%0.4X" % ((int(r / 255 * 31) << 11) | (int(g / 255 * 63) << 5) | (int(b / 255 * 31))))

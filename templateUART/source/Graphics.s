@@ -29,7 +29,7 @@ effect: sets ever pixel on screen to a static colour
 format: xSize, ySize, colour
 use: for passing into drawElement
 */
-.globl rectangle
+.globl s_rectangle
 
 /*
 **Function**
@@ -71,7 +71,7 @@ _drawFunction:
 	pop	{r4-r8}		//get the 5 registers
 
 	_drawLoop:
-		ldr r3, =_isImage
+		ldr r3, =_s_isImage
 		ldr temp_, [r3]
 		cmp temp_, #0
 		ldreq r2, [colorMem_]//if not image, then colour is stored in rectangle aka colorMem
@@ -125,7 +125,7 @@ _core1Draw:
 	str r10, [r9]
 
 	//get stashed image parameters
-	ldr r0, =_stashedImage
+	ldr r0, =_s_stashedImage
 	ldmia r0, {r4-r9}
 
 	mov    	r8, r9 		//only draw half of the image
@@ -155,7 +155,7 @@ _core2Draw:
 	str r10, [r9]
 
 	//get stashed image parameters
-	ldr r0, =_stashedImage
+	ldr r0, =_s_stashedImage
 	ldmia r0, {r4-r9}
 
 	add 	r5, r9 		//skip to lower half of the image
@@ -190,7 +190,7 @@ drawElement:
 	mov r6, r2 		//image address
 
 	//r3 contains info for what is being drawn. Image vs rectangle
-	ldr r10, =_isImage
+	ldr r10, =_s_isImage
 	str r3, [r10]	//store it for when it matters
 	
 
@@ -203,7 +203,7 @@ drawElement:
 	lsr r9, #2	//divide copy of y value by 2
 
 	//save regs r4 to r9 in stashed image
-	ldr r10, =_stashedImage
+	ldr r10, =_s_stashedImage
 	stmia r10, {r4-r9}	
 
 	//gets base address to "core" mailbox
@@ -244,7 +244,7 @@ colourScreen:
 	ldr	r7,	=767		//Height of the screen
 	mov	r8,	r0 			//colour to set entire screen to
 	
-	ldr r9, =rectangle	
+	ldr r9, =s_rectangle	
 	stmia r9, {r6-r8}	//store in order of x, y, colour
 
 	mov r0, r4
@@ -295,14 +295,14 @@ drawPixel:
 .section .data  
 
 //Used for passing on what to print to the cores.
-_stashedImage:
+_s_stashedImage:
 	.int 0, 0, 0, 0, 0, 0
 	.align 4
 
-_isImage:
+_s_isImage:
 	.byte 0
 	.align 4
 
-rectangle:
+s_rectangle:
 	.int 0, 0, 0
 	.align 4
