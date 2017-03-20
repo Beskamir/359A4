@@ -27,7 +27,7 @@ effect: main loop function in gameplay logic.
 f_playingState:
 	push {r4-r10, fp, lr}
 
-	bl _newGame
+	bl _f_newGame
 
 	_playingLoop:	//Keep looping until game is over
 	
@@ -39,7 +39,7 @@ f_playingState:
 _f_newGame:
 	push {r4-r10, fp, lr}
 	
-	bl _copyMap
+	bl _f_copyMap
 	//set all variables in gameState to 0
 
 	pop {r4-r10, fp, lr}
@@ -92,6 +92,7 @@ Effect: draws the map
 */
 _f_drawMap:
 	push {r4-r10, fp, lr}
+
 	xCounter_r .req r4 //counts which x cell is being accessed
 	yCounter_r .req r5 //counts which y cell is being accessed
 
@@ -104,7 +105,7 @@ _f_drawMap:
 	ldr temp_r, =_s_cameraPosition
 	ldr xCameraPosition_r, [temp_r] //get camera position
 
-	ldr mapToDraw_r, =r0 //load the map to use for drawing
+	ldr mapToDraw_r, [r0] //load the map to use for drawing
 	add mapToDraw_r, xCameraPosition_r
 
 	mov temp_r, #32

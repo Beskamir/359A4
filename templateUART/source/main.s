@@ -24,7 +24,8 @@ main:
 	bl		init_GPIO	//Enable the GPIO pins
 	bl 		InitFrameBuffer //Enable Frame Buffer
 
-
+	ldr r0, =0xFFFF
+	bl f_colourScreen
 
 	// bl MainMenu
 	// mov r4,r0
@@ -40,8 +41,9 @@ haltLoop$:	//Halts the program
 	b	haltLoop$	//infinite loop
 
 
+.globl s_coreState
 .section .data  
-coreState:
+s_coreState:
 	.int 0
 
 

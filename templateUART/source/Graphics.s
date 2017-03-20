@@ -120,7 +120,7 @@ effect: displays half of an image
 */
 _f_core1Draw:
 	//mark the core as being used
-	ldr r9, =coreState
+	ldr r9, =s_coreState
 	ldr r10, [r9]
 	orr r10, #1
 	str r10, [r9]
@@ -135,7 +135,7 @@ _f_core1Draw:
 	bl    	_f_drawFunction
 
 	//mark core as being off
-	ldr r9, =coreState
+	ldr r9, =s_coreState
 	ldr r10, [r9]
 	bic r10, #0x1
 	str r10, [r9]
@@ -151,7 +151,7 @@ effect: displays half of an image
 */
 _f_core2Draw:
 	//mark the core as being used
-	ldr r9, =coreState
+	ldr r9, =s_coreState
 	ldr r10, [r9]
 	orr r10, #2
 	str r10, [r9]
@@ -166,7 +166,7 @@ _f_core2Draw:
 	bl    	_f_drawFunction	
 
 	//mark core as being off
-	ldr r9, =coreState
+	ldr r9, =s_coreState
 	ldr r10, [r9]
 	bic r10, #0x2
 	str r10, [r9]
@@ -223,10 +223,10 @@ f_drawElement:
 	//stall main core until core 1 and 2 finish.
 	_coreSync:
 		//core state hex number with one's representing on, 0's representing off
-		ldr r10, =_coreState 
+		ldr r10, =s_coreState 
 
 		cmp r10, #0	//thus if core state is all 0 then all cores are off
-		bne coreSync //so stop looping
+		bne _coreSync //so stop looping
 
 	pop {r4-r10, fp, lr}
 	bx	lr
