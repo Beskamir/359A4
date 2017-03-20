@@ -99,13 +99,20 @@ _f_drawMap:
 
 	xCameraPosition_r .req r7 //camera position in the world space
 
+	temp_r, .req r8	//scratch register for temp values
+
 	ldr temp_r, =_s_cameraPosition
 	ldr xCameraPosition_r, [temp_r] //get camera position
 
 	ldr mapToDraw_r, =r0 //load the map to use for drawing
 	add mapToDraw_r, xCameraPosition_r
 
-	.unreq xCameraPosition_r //only need it here
+	mov temp_r, #32
+
+	.unreq xCameraPosition_r //only need it for the above stuff
+
+	cellsize_r .req r7	
+	mov cellsize_r, #32
 
 	mov yCounter_r, #0 	//set y loop counter to 0
 	
@@ -119,8 +126,8 @@ _f_drawMap:
 
 			bl f_mapByteToArtLabel
 			//r0 currently has address of sprite to draw
-			mult r1, xCounter_r, #32 //compute starting x value for the image
-			mult r2, yCounter_r, #32 //compute starting y value for the image
+			mul r1, xCounter_r, cellsize_r//compute starting x value for the image
+			mul r2, yCounter_r, cellsize_r //compute starting y value for the image
 			mov r3, #1	//indicate that an image is being drawn
 			bl f_drawElement
 

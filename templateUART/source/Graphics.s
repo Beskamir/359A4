@@ -80,7 +80,8 @@ _f_drawFunction:
 			//Load pixel colour from memory
 			ldr temp_r, [colorMem_r], #4	//setting pixel color
 			mov r2, temp_r
-			bic temp_r, #0xFFFF 	//clear all bits other than first one and see if r9 is 0
+			// mov r3, #0x0000FFFF 
+			bic temp_r, #255	//clear all bits other than first one and see if r9 is 0
 			//ie 0xF043F is alpha mapped, 0x0FCE8 is not so if r9 is zero then draw pixel
 			cmp temp_r, #0
 			bne _skipDraw		//don't draw pixel
@@ -96,7 +97,7 @@ _f_drawFunction:
 		add	xValue_r, #1			//increment x by 1
 		cmp	xValue_r, xSize_r		//compare with width
 		blt	_drawLoop
-		mov	xValue,	#0			//reset x
+		mov	xValue_r,	#0			//reset x
 
 		add	yValue_r, #1			//increment Y by 1
 		cmp	yValue_r, ySize_r		//compare with height
@@ -139,8 +140,9 @@ _f_core1Draw:
 	bic r10, #0x1
 	str r10, [r9]
 
+	mov r9, #0x40000000
 	mov r10, #0
-	str r10, [#0x4000009C] //reset mailbox to 0 (should stop it... I hope)
+	str r10, [r9, #0x9C] //reset mailbox to 0 (should stop it... I hope)
 
 /*
 input: null
@@ -169,8 +171,9 @@ _f_core2Draw:
 	bic r10, #0x2
 	str r10, [r9]
 
+	mov r9, #0x40000000
 	mov r10, #0
-	str r10, [#0x400000AC] //reset mailbox to 0 (should stop it... I hope)
+	str r10, [r9, #0xAC] //reset mailbox to 0 (should stop it... I hope)
 //\\\\//////EXPERIMENTAL CODE
 
 /*
@@ -279,9 +282,9 @@ f_drawPixel:
 
 	// offset = (y * 1024) + x = x + (y << 10)
 	// add		offset,	r0, r1, lsl #10
-	add		offset,	xValue, yValue, lsl #10
+	add		offset_r,	xValue_r, yValue_r, lsl #10
 	// offset *= 2 (for 16 bits per pixel = 2 bytes per pixel)
-	lsl		offset, #1
+	lsl		offset_r, #1
 
 	// store the colour (half word) at framebuffer pointer + offset
 
