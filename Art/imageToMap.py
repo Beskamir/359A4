@@ -217,7 +217,7 @@ def writeToFile(output,pixels, memLabel, imageSize):
 	# output.write("\t.int: #32, #32\n")
 
 	for y in range(imageSize[1]):
-		output.write("\t.byte: ")
+		output.write("\t.byte ")
 		for x in range(imageSize[0]):
 			tempAscii=convertToAscii(x, y, pixels)
 			#convert to ascii

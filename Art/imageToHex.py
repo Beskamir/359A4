@@ -132,11 +132,11 @@ def writeToFile(imageOutputs,pixels,x,y,memLabel,imageSizeX,imageSizeY,zoneX=0):
 	# print(".globl "+memLabel)
 
 	# imageOutputs.write("\t.int: #"+str(imageSize[0])+", #"+str(imageSize[1])+"\n")
-	imageOutputs.write("\t.int: #32, #32\n")
+	imageOutputs.write("\t.int #32, #32\n")
 
 	# for x in range(imageSize[0]):
 	while y < imageSizeY:
-		imageOutputs.write("\t.int: ")
+		imageOutputs.write("\t.int ")
 		x=zoneX*32
 		# for y in range(imageSize[1]):
 		while x < imageSizeX:
