@@ -3,17 +3,17 @@
 /*
 **Function**
 input: 
-	top leftmost x coordinate indicating beginning of image
-	top leftmost y coordinate indicating beginning of image
 	image address. 
 		if drawing rectangle, store x, y,colour  in "rectangle: .int 0 0 0"
 		if drawing sprite, just pass in the address to that sprite
+	top leftmost x coordinate indicating beginning of image
+	top leftmost y coordinate indicating beginning of image
 	whether the colour is uniform. 0 if uniform, 1 if not. 
 		**Use 1 if using an image. 0 if using a static colour specified in "rectangle"
 return: null
 effect: display an image at specified coordinates on the screen
 */
-.globl drawElement
+.globl f_drawElement
 
 /*
 **Function**
@@ -22,12 +22,12 @@ input:
 return: null
 effect: sets ever pixel on screen to a static colour
 */
-.globl colourScreen
+.globl f_colourScreen
 
 /*
 **Array of 3 ints**
 format: xSize, ySize, colour
-use: for passing into drawElement
+use: for passing into f_drawElement
 */
 .globl s_rectangle
 
@@ -41,7 +41,7 @@ input:
 return: null
 effect: draw an individual pixel
 */
-.globl drawPixel
+.globl f_drawPixel
 
 // .section .init
 // .include "map.s"
@@ -50,59 +50,59 @@ effect: draw an individual pixel
     
 .section .text
 
-_drawFunction:
+_f_drawFunction:
 	push {r4-r10, fp, lr}
 
-	spSave_	.req	r10 //save sp for restoring it later
+	spSave_r .req	r10 //save sp for restoring it later
 
-	xValue_ .req 	r4 	//x screen position
-	yValue_	.req	r5	//y screen position
+	xValue_r .req 	r4 	//x screen position
+	yValue_r .req	r5	//y screen position
 
-	colorMem_ .req	r6 	//the address to the colour data
+	colorMem_r .req	r6 	//the address to the colour data
 
-	xSize_	.req	r7 	//x size of image to draw
-	ySize_	.req	r8 	//y size of image to draw
+	xSize_r	.req	r7 	//x size of image to draw
+	ySize_r	.req	r8 	//y size of image to draw
 
-	temp_ 	.req 	r9 	//temp register used for cmps
+	temp_r 	.req 	r9 	//temp register used for cmps
 
-	mov spSave_, sp		//save the sp
+	mov spSave_r, sp		//save the sp
 
 	mov	sp, r0 		//change sp to input parameter
 	pop	{r4-r8}		//get the 5 registers
 
 	_drawLoop:
 		ldr r3, =_s_isImage
-		ldr temp_, [r3]
-		cmp temp_, #0
-		ldreq r2, [colorMem_]//if not image, then colour is stored in rectangle aka colorMem
+		ldr temp_r, [r3]
+		cmp temp_r, #0
+		ldreq r2, [colorMem_r]//if not image, then colour is stored in rectangle aka colorMem
 		beq _notImage
 
 			//Load pixel colour from memory
-			ldr temp_, [colorMem_], #4	//setting pixel color
-			mov r2, temp_
-			bic temp_, #0xFFFF 	//clear all bits other than first one and see if r9 is 0
+			ldr temp_r, [colorMem_r], #4	//setting pixel color
+			mov r2, temp_r
+			bic temp_r, #0xFFFF 	//clear all bits other than first one and see if r9 is 0
 			//ie 0xF043F is alpha mapped, 0x0FCE8 is not so if r9 is zero then draw pixel
-			cmp temp_, #0
+			cmp temp_r, #0
 			bne _skipDraw		//don't draw pixel
 
 	_notImage:
-		mov	r0,	xValue_			//Setting x 
-		mov	r1,	yValue_			//Setting y
+		mov	r0,	xValue_r			//Setting x 
+		mov	r1,	yValue_r			//Setting y
 		push {lr}
-		bl	drawPixel
+		bl	f_drawPixel
 		pop {lr}
 
 	_skipDraw:
-		add	xValue_, #1			//increment x by 1
-		cmp	xValue_, xSize_		//compare with width
+		add	xValue_r, #1			//increment x by 1
+		cmp	xValue_r, xSize_r		//compare with width
 		blt	_drawLoop
 		mov	xValue,	#0			//reset x
 
-		add	yValue_, #1			//increment Y by 1
-		cmp	yValue_, ySize_		//compare with height
+		add	yValue_r, #1			//increment Y by 1
+		cmp	yValue_r, ySize_r		//compare with height
 		blt	_drawLoop
 
-	mov	sp, spSave_ 	//restore sp
+	mov	sp, spSave_r 	//restore sp
 	pop {r4-r10, fp, lr}
 	bx	lr
 
@@ -117,7 +117,7 @@ input: null
 return: null
 effect: displays half of an image
 */
-_core1Draw:
+_f_core1Draw:
 	//mark the core as being used
 	ldr r9, =coreState
 	ldr r10, [r9]
@@ -131,7 +131,7 @@ _core1Draw:
 	mov    	r8, r9 		//only draw half of the image
 	push   	{r4-r8}
 	mov    	r0, sp
-	bl    	_drawFunction
+	bl    	_f_drawFunction
 
 	//mark core as being off
 	ldr r9, =coreState
@@ -147,7 +147,7 @@ input: null
 return: null
 effect: displays half of an image
 */
-_core2Draw:
+_f_core2Draw:
 	//mark the core as being used
 	ldr r9, =coreState
 	ldr r10, [r9]
@@ -161,7 +161,7 @@ _core2Draw:
 	add 	r5, r9 		//skip to lower half of the image
 	push	{r4-r8}
 	mov    	r0, sp
-	bl    	_drawFunction	
+	bl    	_f_drawFunction	
 
 	//mark core as being off
 	ldr r9, =coreState
@@ -175,19 +175,19 @@ _core2Draw:
 
 /*
 input: 
+	image address. (if drawing rectangle store x, y,colour  in "rectangle: .int 0 0 0")
 	top leftmost x coordinate indicating beginning of image
 	top leftmost y coordinate indicating beginning of image
-	image address. (if drawing rectangle store x, y,colour  in "rectangle: .int 0 0 0")
 	whether the colour is uniform. 0 if uniform, 1 if not. 
 		**Use 1 if using an image. 0 if using a static colour specified in "rectangle"
 return: null
 effect: display an image at specified coordinates on the screen
 */
-drawElement:
+f_drawElement:
 	push {r4-r10, fp, lr}
-	mov r4, r0 		//x coordinate
-	mov r5, r1      //y coordinate
-	mov r6, r2 		//image address
+	mov r6, r0 		//image address
+	mov r4, r1 		//x coordinate
+	mov r5, r2      //y coordinate
 
 	//r3 contains info for what is being drawn. Image vs rectangle
 	ldr r10, =_s_isImage
@@ -210,11 +210,11 @@ drawElement:
 	mov r10, #0x40000000
 
 	//starts core 1
-	ldr r0, =_core1Draw
+	ldr r0, =_f_core1Draw
 	str r0, [r10, #0x9c]	
 
 	//starts core 2
-	ldr r0, =_core2Draw
+	ldr r0, =_f_core2Draw
 	str r0, [r10, #0xAC]
 
 	//stall main core until core 1 and 2 finish.
@@ -234,7 +234,7 @@ input:
 return: null
 effect: sets ever pixel on screen to a static colour
 */
-colourScreen:
+f_colourScreen:
 	push {r4-r9, fp, lr}
 
 	mov	r4,	#0			//x value
@@ -252,7 +252,7 @@ colourScreen:
 	mov r2, r9
 	mov r3, #0
 
-	bl drawElement
+	bl f_drawElement
 
 	pop {r4-r9,fp,lr}
 	bx	lr
@@ -266,16 +266,16 @@ input:
 return: null
 effect: draw an individual pixel
 */
-drawPixel:
+f_drawPixel:
 	push	{r4}
 	mov 	r3, #0 	////Init to 0 for now, not yet using it
 
 	// offset	.req	r4
-	xValue_	.req	r0
-	yValue_	.req	r1
-	colour_	.req	r2
-	offset_	.req	r3
-	temp_	.req	r4
+	xValue_r	.req	r0
+	yValue_r	.req	r1
+	colour_r	.req	r2
+	offset_r	.req	r3
+	temp_r 		.req	r4
 
 	// offset = (y * 1024) + x = x + (y << 10)
 	// add		offset,	r0, r1, lsl #10
@@ -285,9 +285,9 @@ drawPixel:
 
 	// store the colour (half word) at framebuffer pointer + offset
 
-	ldr		temp_, =FrameBufferPointer
-	ldr		temp_, [temp_]
-	strh	colour_, [temp_, offset_]
+	ldr		temp_r, =FrameBufferPointer
+	ldr		temp_r, [temp_r]
+	strh	colour_r, [temp_r, offset_r]
 
 	pop		{r4}
 	bx		lr

@@ -1,7 +1,10 @@
 //Contains all the map information in an array of bytes:
 //Foreground is where all the action happens and collisions are calculated
 //Background is where nobody cares about collisions
-
+.globl s_mapBackground_text
+.globl s_mapForeground_text
+.globl s_mapBackground_data
+.globl s_mapForeground_data
 
 //NOTE:
 //Currently the flagpole is in the background layer since mario will be overlayed 

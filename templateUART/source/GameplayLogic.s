@@ -11,7 +11,7 @@ input: null
 return: null
 effect: main loop function in gameplay logic.
 */
-.globl playingState
+.globl f_playingState
 
 
 .section    .init
@@ -24,7 +24,7 @@ input: null (in future could have something to stop _copyMap from executing)
 return: null
 effect: main loop function in gameplay logic.
 */
-playingState:
+f_playingState:
 	push {r4-r10, fp, lr}
 
 	bl _newGame
@@ -36,7 +36,7 @@ playingState:
 	pop {r4-r10, fp, lr}
 	bx	lr
 
-_newGame:
+_f_newGame:
 	push {r4-r10, fp, lr}
 	
 	bl _copyMap
@@ -45,7 +45,7 @@ _newGame:
 	pop {r4-r10, fp, lr}
 	bx	lr
 
-_copyMap:
+_f_copyMap:
 	push {r4-r10, fp, lr}
 	
 	//copy all the elements of the map arrays from .text to .data	
@@ -53,7 +53,7 @@ _copyMap:
 	pop {r4-r10, fp, lr}
 	bx	lr
 
-_moveMario:
+_f_moveMario:
 	push {r4-r10, fp, lr}
 	
 	//
@@ -61,7 +61,7 @@ _moveMario:
 	pop {r4-r10, fp, lr}
 	bx	lr
 
-_updateNPCs:
+_f_updateNPCs:
 	push {r4-r10, fp, lr}
 	
 	//read from the map and check collisions
@@ -69,7 +69,7 @@ _updateNPCs:
 	pop {r4-r10, fp, lr}
 	bx	lr
 
-_updateMap:
+_f_updateMap:
 	push {r4-r10, fp, lr}
 	
 	//update map position
@@ -77,7 +77,7 @@ _updateMap:
 	pop {r4-r10, fp, lr}
 	bx	lr
 
-_checkColisions:
+_f_checkColisions:
 	push {r4-r10, fp, lr}
 	
 	//update map position
@@ -85,11 +85,55 @@ _checkColisions:
 	pop {r4-r10, fp, lr}
 	bx	lr
 
-_drawMap:
+/*
+Input: address of map to draw
+Return: null
+Effect: draws the map
+*/
+_f_drawMap:
 	push {r4-r10, fp, lr}
-		
-	//draw the map using graphics
+	xCounter_r .req r4 //counts which x cell is being accessed
+	yCounter_r .req r5 //counts which y cell is being accessed
+
+	mapToDraw_r .req r6 //address of the map that will be drawn.
+
+	xCameraPosition_r .req r7 //camera position in the world space
+
+	ldr temp_r, =_s_cameraPosition
+	ldr xCameraPosition_r, [temp_r] //get camera position
+
+	ldr mapToDraw_r, =r0 //load the map to use for drawing
+	add mapToDraw_r, xCameraPosition_r
+
+	.unreq xCameraPosition_r //only need it here
+
+	mov yCounter_r, #0 	//set y loop counter to 0
 	
+	_drawMapLoopY:
+		mov xCounter_r, #0 //reset x loop counter to 0
+		_drawMapLoopX:
+
+			ldrb r0, [mapToDraw_r], #1
+			cmp r0, #0
+			beq _skipDrawing //skip drawing process if equal. 0 means theres no image there
+
+			bl f_mapByteToArtLabel
+			//r0 currently has address of sprite to draw
+			mult r1, xCounter_r, #32 //compute starting x value for the image
+			mult r2, yCounter_r, #32 //compute starting y value for the image
+			mov r3, #1	//indicate that an image is being drawn
+			bl f_drawElement
+
+			_skipDrawing:
+			add xCounter_r, #1	//increment x cell count by 1
+			cmp xCounter_r, #32	//x screen size is 32 cells 
+			blt _drawMapLoopX
+
+		add yCounter_r, #1 //increment y cell count by 1
+		add mapToDraw_r, #288 //map is 320 cells wide, so 320-32=288 which is the offset
+		cmp yCounter_r, #24 //y screen size is 24 cells
+		blt _drawMapLoopY
+
 
 	pop {r4-r10, fp, lr}
 	bx	lr
@@ -97,3 +141,6 @@ _drawMap:
 .section .data
 _s_gameState:	
 	.byte 0, 0, 0, 0
+	.align
+_s_cameraPosition:
+	.int 0
