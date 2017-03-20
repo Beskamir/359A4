@@ -31,7 +31,6 @@ def getAllImages():
 	for fileName in os.listdir(os.getcwd()+FOLDERNAME):
 		# print(fileName,FOLDERNAME,imageOutputs)
 		# imageList+=openImage(os.getcwd()+FOLDERNAME+fileName,imageOutputs)
-		imageOutputs.write(".align 4\n")
 		processImage(os.getcwd()+FOLDERNAME+fileName,imageOutputs,keyOutput)
 
 	keyOutput.write("}")
@@ -85,6 +84,7 @@ def processImage(imgName,imageOutputs,keyOutput):
 			while imageSize[1]>=(CELLSIZE*(zones[1]+1)):
 				# print(trimmedName)
 				y = (zones[1]*32)
+				imageOutputs.write(".align 4\n")
 				memLabel="s_"+trimmedName+"_"+str(zones[0])+"_"+str(zones[1])
 				boundY=(32*(zones[1]+1))
 				
