@@ -27,12 +27,15 @@ effect: main loop function in gameplay logic.
 f_playingState:
 	push {r4-r10, fp, lr}
 
-	bl _f_newGame
-
-	bl _f_drawMap
+	bl _f_newGame //reset all the stored data to the initial states
 
 	_playingLoop:	//Keep looping until game is over
-	
+		ldr r0, =s_mapBackground_data
+		bl _f_drawMap
+		ldr r0, =s_mapForeground_data
+		bl _f_drawMap
+
+
 	// b PlayingLoop
 
 	pop {r4-r10, fp, lr}
@@ -40,8 +43,9 @@ f_playingState:
 
 _f_newGame:
 	push {r4-r10, fp, lr}
-	
+
 	bl _f_copyMap
+
 	//set all variables in gameState to 0
 
 	pop {r4-r10, fp, lr}
@@ -160,7 +164,7 @@ _f_drawMap:
 	ldr mapToDraw_r, [r0] //load the map to use for drawing
 	add mapToDraw_r, xCameraPosition_r
 
-	mov temp_r, #32
+	// mov temp_r, #0
 
 	.unreq xCameraPosition_r //only need it for the above stuff
 
@@ -177,11 +181,13 @@ _f_drawMap:
 			cmp r0, #0
 			beq _skipDrawing //skip drawing process if equal. 0 means theres no image there
 		
-		////BUG: Possibly?
-	
-			sub r0, #1
-			lsl r0, #12 
-			//r0 currently has address of sprite to draw
+		////BUG: Possibly? Yeah since art doesn't have a master address that's being loaded
+			
+			ldr temp_r, =s_artSpritesAccess
+			sub r0, #1	//sync r0 with the addresses in art
+			lsl r0, #12 //(r0-1)>>12=(r0-1)*4096. 4096 is the difference between each label in art
+			add r0, temp_r //add the address of s_artSpritesAccess to the "offset" in r0
+			//Now r0 has address of sprite to draw
 			mul r1, xCounter_r, cellsize_r//compute starting x value for the image
 			mul r2, yCounter_r, cellsize_r //compute starting y value for the image
 			mov r3, #1	//indicate that an image is being drawn
@@ -212,5 +218,6 @@ _s_gameState:
 	.byte 0, 0, 0
 	.word 0
 	.align
-_s_cameraPosition:
-	.int 0
+
+_s_cameraPosition: //this contians the position of the left side of the camera. 
+	.int 0 //thus min value = 0 and max value = (size of map - 32)
