@@ -80,8 +80,8 @@ _f_drawFunction:
 			//Load pixel colour from memory
 			ldr temp_r, [colorMem_r], #4	//setting pixel color
 			mov r2, temp_r
-			// mov r3, #0x0000FFFF 
-			bic temp_r, #255	//clear all bits other than first one and see if r9 is 0
+			ldr r3, =0xFFFF 
+			bic temp_r, r3	//clear all bits other than first one and see if r9 is 0
 			//ie 0xF043F is alpha mapped, 0x0FCE8 is not so if r9 is zero then draw pixel
 			cmp temp_r, #0
 			bne _skipDraw		//don't draw pixel
@@ -97,7 +97,7 @@ _f_drawFunction:
 		add	xValue_r, #1			//increment x by 1
 		cmp	xValue_r, xSize_r		//compare with width
 		blt	_drawLoop
-		mov	xValue_r,	#0			//reset x
+		mov	xValue_r, #0			//reset x
 
 		add	yValue_r, #1			//increment Y by 1
 		cmp	yValue_r, ySize_r		//compare with height

@@ -24,8 +24,18 @@ main:
 	bl		init_GPIO	//Enable the GPIO pins
 	bl 		InitFrameBuffer //Enable Frame Buffer
 
+
+///Test Code
+
+	
+
+	
 	ldr r0, =0xFFFF
 	bl f_colourScreen
+
+
+
+///End Test Code
 
 	// bl MainMenu
 	// mov r4,r0
