@@ -15,11 +15,14 @@
 conversion table:
 	#Breaks indicate change from foreground to background or vice versa
 	All:
+	//Background
 	0xFFFFFF >> '0' >> sky/nothing
 
+	//Foreground
 	0x000032 >> '1' >> s_UpMushroom_0_0
 	0x000064 >> '2' >> s_Bricks_0_0
 
+	//Background
 	0x000096 >> '3' >> s_BushDouble_0_0
 	0x0000c8 >> '4' >> s_BushDouble_1_0
 	0x0000fa >> '5' >> s_BushDouble_2_0
@@ -73,16 +76,19 @@ conversion table:
 	0x3264fa >> '53' >> s_CloudTriple_3_0
 	0x329600 >> '54' >> s_CloudTriple_3_1
 
+	//Foreground
 	0x329632 >> '55' >> s_Coin00_0_0
 	0x329664 >> '56' >> s_Coin01_0_0
 	0x329696 >> '57' >> s_Coin02_0_0
 	0x3296c8 >> '58' >> s_DirtGround_0_0
 	0x3296fa >> '59' >> s_EmptyBlock_0_0
 
+	//Background
 	0x32c800 >> '60' >> s_FlagPoleBeam_0_0
 	0x32c832 >> '61' >> s_FlagPoleFlag_0_0
 	0x32c864 >> '62' >> s_FlagPoleTop_0_0
 
+	//Foreground
 	0x32c896 >> '63' >> s_Goomba00_0_0
 	0x32c8c8 >> '64' >> s_Goomba01_0_0
 	0x32c8fa >> '65' >> s_Goomba02_0_0
@@ -95,6 +101,7 @@ conversion table:
 	0x640000 >> '72' >> s_GreenKoopaTroopa01_0_0
 	0x640032 >> '73' >> s_GreenKoopaTroopa01_0_1
 
+	//Background
 	0x640064 >> '74' >> s_HillLarge_0_0
 	0x640096 >> '75' >> s_HillLarge_0_1
 	0x6400c8 >> '76' >> s_HillLarge_0_2
@@ -117,6 +124,7 @@ conversion table:
 	0x649696 >> '93' >> s_HillSmall_2_0
 	0x6496c8 >> '94' >> s_HillSmall_2_1
 
+	//Foreground
 	0x6496fa >> '95' >> s_MarioClimb1_0_0
 	0x64c800 >> '96' >> s_MarioClimb2_0_0
 	0x64c832 >> '97' >> s_MarioDead_0_0
