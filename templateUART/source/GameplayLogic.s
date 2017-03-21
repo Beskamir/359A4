@@ -84,6 +84,56 @@ _f_checkColisions:
 
 	pop {r4-r10, fp, lr}
 	bx	lr
+	
+//Input: null
+//Output: null
+//Effect: Add a coin to coin count, increment score, check if extra life earned
+_f_addCoin:
+	push {r4-r10, fp, lr}
+	
+	//Load addresses
+	ldr 	r4, =gameState	//Load the address of the number of coins
+	add		r5, r4, #1		//Load the address of the number of lives
+	add 	r6, r4, #3		//Load the address of the score
+
+	//Coins++
+	ldrb	r7, [r4]		//Load the number of coins
+	add		r7, #1			//Add an extra coin
+	strb	r7, [r4]		//Store the number of coins
+	
+	//Check if need to increment lives and reset coins
+	cmp		r7, #100		//Compare the number of coins to 100
+	bne		incScore		//If it's not 100, no need to add a life
+	mov		r7, #0			//Otherwise, reset the number of coins
+	strb	r7, [r4]		//Store the number of coins
+	ldrb	r7, [r5]		//Load the number of lives
+	add		r7, #1			//Add an extra life
+	strb	r7, [r5]		//Store the number of lives
+	
+	incScore:
+	mov		r0, #200		//Add 200 points
+	bl		addScore		//Call addScore
+	
+	pop {r4-r10, fp, lr}
+	mov	pc, lr
+
+//Input: Amount to increase score by in r0
+//Output: null
+//Effect: Increase score by amount in r0
+_f_addScore:
+	push {r4-r10, fp, lr}
+	
+	mov	r4, r0				//Store the score to be added in a safe register
+	
+	ldr r5, =gameState		//Load the address of the number of coins
+	add	r5, #3				//Load the address of the score
+	ldr	r6, [r5]			//Load the score
+	
+	add	r6, r4				//Increase the score
+	str	r6, [r5]			//Store the score
+	
+	pop {r4-r10, fp, lr}
+	mov	pc, lr
 
 /*
 Input: address of map to draw
@@ -147,8 +197,15 @@ _f_drawMap:
 	bx	lr
 
 .section .data
+//Stores the game variables
+//First byte is number of coins
+//Second byte is number of lives
+//Third byte stores the win and lose flags
+	//Bit 0 is the lose flag, Bit 1 is the win flag
+//Word at the end stores the score
 _s_gameState:	
-	.byte 0, 0, 0, 0
+	.byte 0, 0, 0
+	.word 0
 	.align
 _s_cameraPosition:
 	.int 0
