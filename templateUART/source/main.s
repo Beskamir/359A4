@@ -30,9 +30,7 @@ main:
 	
 
 	
-	ldr r0, =0xFFFF
-	bl f_colourScreen
-
+	bl f_tests
 
 
 ///End Test Code

@@ -53,6 +53,7 @@ effect: draw an individual pixel
 _f_drawFunction:
 	push {r4-r10, fp, lr}
 
+	breakpointInnerDraw:
 	spSave_r .req	r10 //save sp for restoring it later
 
 	xValue_r .req 	r4 	//x screen position
@@ -119,6 +120,7 @@ return: null
 effect: displays half of an image
 */
 _f_core1Draw:
+	push {r4-r10, fp, lr}
 	//mark the core as being used
 	ldr r9, =s_coreState
 	ldr r10, [r9]
@@ -140,9 +142,12 @@ _f_core1Draw:
 	bic r10, #0x1
 	str r10, [r9]
 
-	mov r9, #0x40000000
+	ldr r9, =0x40000000
 	mov r10, #0
 	str r10, [r9, #0x9C] //reset mailbox to 0 (should stop it... I hope)
+	pop {r4-r10, fp, lr}
+	bx	lr
+
 
 /*
 input: null
@@ -174,6 +179,44 @@ _f_core2Draw:
 	mov r9, #0x40000000
 	mov r10, #0
 	str r10, [r9, #0xAC] //reset mailbox to 0 (should stop it... I hope)
+
+
+/*
+input: null
+return: null
+effect: displays half of an image
+*/
+_f_core0Draw:
+	push {r4-r10, fp, lr}
+	//mark the core as being used
+	ldr r9, =s_coreState
+	ldr r10, [r9]
+	orr r10, #2
+	str r10, [r9]
+
+	//get stashed image parameters
+	ldr r0, =_s_stashedImage
+	ldmia r0, {r4-r9}
+
+	add 	r5, r9 		//skip to lower half of the image
+	push	{r4-r8}
+	mov    	r0, sp
+	bl    	_f_drawFunction	
+
+	//mark core as being off
+	ldr r9, =s_coreState
+	ldr r10, [r9]
+	bic r10, #0x2
+	str r10, [r9]
+
+	breakpointCore0:
+
+	pop {r4-r10, fp, lr}
+	bx lr
+
+	// mov r9, #0x40000000
+	// mov r10, #0
+	// str r10, [r9, #0xAC] //reset mailbox to 0 (should stop it... I hope)
 //\\\\//////EXPERIMENTAL CODE
 
 /*
@@ -200,30 +243,49 @@ f_drawElement:
 	ldr r7, [r6], #4	//get the image's x size
 	ldr r8, [r6], #4	//get the image's y size
 
-	mov r9, r8 	//copy r8 to r9
-	//currently assuming all images are gonna be even
+	// push	{r4-r8}
+	// mov    	r0, sp
+	// bl    	_f_drawFunction	
 
-	lsr r9, #2	//divide copy of y value by 2
+	r9Break:
+
+	mov r9, r8 	//copy r8 to r9
+	add r9, #1
+	//currently assuming all images are gonna be even
+	lsr r9, #1	//divide copy of y value by 2
+
+	breakpoint:
+
+	// breakpoint:
+	// add 	r5, r9 		//skip to lower half of the image
+	// push	{r4-r8}
+	// mov    	r0, sp
+	// bl    	_f_drawFunction	
+
 
 	//save regs r4 to r9 in stashed image
 	ldr r10, =_s_stashedImage
 	stmia r10, {r4-r9}	
 
 	//gets base address to "core" mailbox
-	mov r10, #0x40000000
+	ldr r10, =0x40000000
 
 	//starts core 1
 	ldr r0, =_f_core1Draw
 	str r0, [r10, #0x9c]	
 
-	//starts core 2
-	ldr r0, =_f_core2Draw
-	str r0, [r10, #0xAC]
+
+	bl _f_core0Draw
+
+	// //starts core 2
+	// ldr r0, =_f_core2Draw
+	// str r0, [r10, #0xAC]
 
 	//stall main core until core 1 and 2 finish.
 	_coreSync:
 		//core state hex number with one's representing on, 0's representing off
 		ldr r10, =s_coreState 
+		ldr r10, [r10]
 
 		cmp r10, #0	//thus if core state is all 0 then all cores are off
 		bne _coreSync //so stop looping
@@ -247,12 +309,32 @@ f_colourScreen:
 	ldr	r7,	=767		//Height of the screen
 	mov	r8,	r0 			//colour to set entire screen to
 	
+	breakInit:
+	mov r9, #0
 	ldr r9, =s_rectangle	
 	stmia r9, {r6-r8}	//store in order of x, y, colour
+	
+	// str r6, [r9]
+	// add r9, #4
+	// str r7, [r9]
+	// add r9, #4
+	// str r8, [r9]
+	// add r9, #4
 
-	mov r0, r4
-	mov r1, r5
-	mov r2, r9
+
+
+	breakStore:
+	mov r6, #0
+	mov r7, #0
+	mov r8, #0
+
+	breakLoad:
+	ldr r9, =s_rectangle	
+	ldmia r9, {r6-r8}	//store in order of x, y, colour
+
+	mov r0, r9
+	mov r1, r4
+	mov r2, r5
 	mov r3, #0
 
 	bl f_drawElement

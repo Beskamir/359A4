@@ -29,6 +29,8 @@ f_playingState:
 
 	bl _f_newGame
 
+	bl _f_drawMap
+
 	_playingLoop:	//Keep looping until game is over
 	
 	// b PlayingLoop
@@ -124,8 +126,11 @@ _f_drawMap:
 			ldrb r0, [mapToDraw_r], #1
 			cmp r0, #0
 			beq _skipDrawing //skip drawing process if equal. 0 means theres no image there
-
-			bl f_mapByteToArtLabel
+		
+		////BUG: Possibly?
+	
+			sub r0, #1
+			lsl r0, #12 
 			//r0 currently has address of sprite to draw
 			mul r1, xCounter_r, cellsize_r//compute starting x value for the image
 			mul r2, yCounter_r, cellsize_r //compute starting y value for the image
