@@ -27,11 +27,13 @@ effect: main loop function in gameplay logic.
 f_playingState:
 	push {r4-r10, fp, lr}
 
-	bl _f_newGame //reset all the stored data to the initial states
+	// bl _f_newGame //reset all the stored data to the initial states
 
 	_playingLoop:	//Keep looping until game is over
 		ldr r0, =0x00FF
 		bl f_colourScreen
+		// ldr r0, =0x0FF0
+		// bl f_colourScreen
 		ldr r0, =s_mapBackground_data
 		bl _f_drawMap
 		ldr r0, =s_mapForeground_data
@@ -100,7 +102,7 @@ _f_addCoin:
 	push {r4-r10, fp, lr}
 	
 	//Load addresses
-	ldr 	r4, =gameState	//Load the address of the number of coins
+	ldr 	r4, =_s_gameState	//Load the address of the number of coins
 	add		r5, r4, #1		//Load the address of the number of lives
 	add 	r6, r4, #3		//Load the address of the score
 
@@ -120,7 +122,7 @@ _f_addCoin:
 	
 	incScore:
 	mov		r0, #200		//Add 200 points
-	bl		addScore		//Call addScore
+	bl		_f_addScore		//Call addScore
 	
 	pop {r4-r10, fp, lr}
 	mov	pc, lr
@@ -133,7 +135,7 @@ _f_addScore:
 	
 	mov	r4, r0				//Store the score to be added in a safe register
 	
-	ldr r5, =gameState		//Load the address of the number of coins
+	ldr r5, =_s_gameState		//Load the address of the number of coins
 	add	r5, #3				//Load the address of the score
 	ldr	r6, [r5]			//Load the score
 	
@@ -158,20 +160,26 @@ _f_drawMap:
 
 	xCameraPosition_r .req r7 //camera position in the world space
 
-	temp_r, .req r8	//scratch register for temp values
+	spriteAccess_r .req r8
+
+	temp_r .req r9	//scratch register for temp values
+
 
 	ldr temp_r, =_s_cameraPosition
 	ldr xCameraPosition_r, [temp_r] //get camera position
 
-	ldr mapToDraw_r, [r0] //load the map to use for drawing
+	ldr spriteAccess_r, =s_artSpritesAccess
+
+
+	mov mapToDraw_r, r0				 //load the map to use for drawing
 	add mapToDraw_r, xCameraPosition_r
 
 	// mov temp_r, #0
 
 	.unreq xCameraPosition_r //only need it for the above stuff
 
-	cellsize_r .req r7	
-	mov cellsize_r, #32
+	// cellsize_r .req r7	
+	// mov cellsize_r, #32
 
 	mov yCounter_r, #0 	//set y loop counter to 0
 	
@@ -183,14 +191,22 @@ _f_drawMap:
 			cmp r0, #0
 			beq _skipDrawing //skip drawing process if equal. 0 means theres no image there
 		
-
-			ldr temp_r, =s_artSpritesAccess
 			sub r0, #1	//sync r0 with the addresses in art
-			lsl r0, #12 //(r0-1)>>12=(r0-1)*4096. 4096 is the difference between each label in art
-			add r0, temp_r //add the address of s_artSpritesAccess to the "offset" in r0
+			//// lsl r0, #12 //(r0-1)>>12=(r0-1)*4096. 4096 is the difference between each label in art
+			// ldr r1, =4104
+			// mul r0, r1
+			//Following faster than using mul
+			lsl r0, #10	//r0>>12==r0*(32*32)
+			add r0, #2  //r0+2
+			lsl r0, #2  //r0>>2==r0*4
+			add r0, spriteAccess_r //add the address of s_artSpritesAccess to the "offset" in r0
 			//Now r0 has address of sprite to draw
-			mul r1, xCounter_r, cellsize_r//compute starting x value for the image
-			mul r2, yCounter_r, cellsize_r //compute starting y value for the image
+			// mul r1, xCounter_r, cellsize_r//compute starting x value for the image
+			mov r1, xCounter_r
+			lsl r1, #5
+			// mul r2, yCounter_r, cellsize_r //compute starting y value for the image
+			mov r2, yCounter_r
+			lsl r2, #5
 			mov r3, #1	//indicate that an image is being drawn
 			bl f_drawElement
 
@@ -203,6 +219,14 @@ _f_drawMap:
 		add mapToDraw_r, #288 //map is 320 cells wide, so 320-32=288 which is the offset
 		cmp yCounter_r, #24 //y screen size is 24 cells
 		blt _drawMapLoopY
+
+	//only need it for the above stuff, so unreq everything
+	.unreq xCounter_r 
+	.unreq yCounter_r 
+	.unreq mapToDraw_r
+	// .unreq cellsize_r
+	.unreq spriteAccess_r
+	.unreq temp_r
 
 
 	pop {r4-r10, fp, lr}

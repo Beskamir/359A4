@@ -104,7 +104,19 @@ _f_drawFunction:
 		cmp	yValue_r, ySize_r		//compare with height
 		blt	_drawLoop
 
+	drawBreak:
+
 	mov	sp, spSave_r 	//restore sp
+
+	//unreq everything
+	.unreq spSave_r 
+	.unreq xValue_r 
+	.unreq yValue_r 
+	.unreq colorMem_r 
+	.unreq xSize_r	
+	.unreq ySize_r	
+	.unreq temp_r 	
+
 	pop {r4-r10, fp, lr}
 	bx	lr
 
@@ -189,28 +201,32 @@ effect: displays half of an image
 _f_core0Draw:
 	push {r4-r10, fp, lr}
 	//mark the core as being used
-	ldr r9, =s_coreState
-	ldr r10, [r9]
-	orr r10, #2
-	str r10, [r9]
+	// ldr r9, =s_coreState
+	// ldr r10, [r9]
+	// orr r10, #2
+	// str r10, [r9]
+	mov r10, sp
 
 	//get stashed image parameters
 	ldr r0, =_s_stashedImage
 	ldmia r0, {r4-r9}
 
-	add 	r5, r9 		//skip to lower half of the image
+//Temp removed:
+	// add 	r5, r9 		//skip to lower half of the image
+//End
 	push	{r4-r8}
 	mov    	r0, sp
 	bl    	_f_drawFunction	
 
 	//mark core as being off
-	ldr r9, =s_coreState
-	ldr r10, [r9]
-	bic r10, #0x2
-	str r10, [r9]
+	// ldr r9, =s_coreState
+	// ldr r10, [r9]
+	// bic r10, #0x2
+	// str r10, [r9]
 
 	breakpointCore0:
 
+	mov sp, r10
 	pop {r4-r10, fp, lr}
 	bx lr
 
@@ -267,12 +283,15 @@ f_drawElement:
 	ldr r10, =_s_stashedImage
 	stmia r10, {r4-r9}	
 
-	//gets base address to "core" mailbox
-	ldr r10, =0x40000000
 
-	//starts core 1
-	ldr r0, =_f_core1Draw
-	str r0, [r10, #0x9c]	
+//Temp removed:
+	// //gets base address to "core" mailbox
+	// ldr r10, =0x40000000
+
+	// //starts core 1
+	// ldr r0, =_f_core1Draw
+	// str r0, [r10, #0x9c]	
+//End
 
 
 	bl _f_core0Draw
@@ -282,13 +301,15 @@ f_drawElement:
 	// str r0, [r10, #0xAC]
 
 	//stall main core until core 1 and 2 finish.
-	_coreSync:
-		//core state hex number with one's representing on, 0's representing off
-		ldr r10, =s_coreState 
-		ldr r10, [r10]
+//Temp removed:
+	// _coreSync:
+	// 	//core state hex number with one's representing on, 0's representing off
+	// 	ldr r10, =s_coreState 
+	// 	ldr r10, [r10]
 
-		cmp r10, #0	//thus if core state is all 0 then all cores are off
-		bne _coreSync //so stop looping
+	// 	cmp r10, #0	//thus if core state is all 0 then all cores are off
+	// 	bne _coreSync //so stop looping
+//End
 
 	pop {r4-r10, fp, lr}
 	bx	lr
@@ -310,7 +331,7 @@ f_colourScreen:
 	mov	r8,	r0 			//colour to set entire screen to
 	
 	breakInit:
-	mov r9, #0
+	// mov r9, #0
 	ldr r9, =s_rectangle	
 	stmia r9, {r6-r8}	//store in order of x, y, colour
 	
@@ -373,6 +394,13 @@ f_drawPixel:
 	ldr		temp_r, =FrameBufferPointer
 	ldr		temp_r, [temp_r]
 	strh	colour_r, [temp_r, offset_r]
+
+	//unreq everything
+	.unreq xValue_r
+	.unreq yValue_r	
+	.unreq colour_r	
+	.unreq offset_r	
+	.unreq temp_r 		
 
 	pop		{r4}
 	bx		lr
