@@ -30,6 +30,8 @@ f_playingState:
 	bl _f_newGame //reset all the stored data to the initial states
 
 	_playingLoop:	//Keep looping until game is over
+		ldr r0, =0x00FF
+		bl f_colourScreen
 		ldr r0, =s_mapBackground_data
 		bl _f_drawMap
 		ldr r0, =s_mapForeground_data
@@ -181,8 +183,7 @@ _f_drawMap:
 			cmp r0, #0
 			beq _skipDrawing //skip drawing process if equal. 0 means theres no image there
 		
-		////BUG: Possibly? Yeah since art doesn't have a master address that's being loaded
-			
+
 			ldr temp_r, =s_artSpritesAccess
 			sub r0, #1	//sync r0 with the addresses in art
 			lsl r0, #12 //(r0-1)>>12=(r0-1)*4096. 4096 is the difference between each label in art
