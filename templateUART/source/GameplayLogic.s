@@ -17,6 +17,20 @@ effect: main loop function in gameplay logic.
 .section    .init
     
 .section .text
+//Stores the game variables
+//First byte is number of coins
+//Second byte is number of lives
+//Third byte stores the win and lose flags
+	//Bit 0 is the lose flag, Bit 1 is the win flag
+//Word at the end stores the score
+_s_gameState_text:	
+	.byte 0, 0, 0
+	.word 0
+	.align
+
+_s_cameraPosition_text: //this contians the position of the left side of the camera. 
+	.int 0 //thus min value = 0 and max value = (size of map - 32)
+
 
 /*
 Keep looping this until the game ends or user quits
@@ -30,15 +44,29 @@ f_playingState:
 	bl _f_newGame //reset all the stored data to the initial states
 
 	_playingLoop:	//Keep looping until game is over
-		ldr r0, =0x00FF
-		bl f_colourScreen
+		//each loop is a frame
+		ldr r0, =0x14FF		//hopefully a nice blueish colour.
+		bl f_colourScreen	//drawing over the entire screen is sort of inefficent
 		// ldr r0, =0x0FF0
 		// bl f_colourScreen
+		//draw the sprites located on the background map
 		ldr r0, =s_mapBackground_data
 		bl _f_drawMap
+		//draw the sprites located on the foreground map
 		ldr r0, =s_mapForeground_data
 		bl _f_drawMap
 
+		//player input
+		//check collisions
+		//update map
+		//update score/coins
+
+		//AI input
+		//check collisions
+		//update map
+
+		//check end state
+		//loop or break
 
 	// b PlayingLoop
 
@@ -48,39 +76,64 @@ f_playingState:
 _f_newGame:
 	push {r4-r10, fp, lr}
 
+	//copy maps
+	//Technically background doesn't need to be copied as it
+	// probably won't be changed but just incase the clouds 
+	// are to move or something...
+	/// Actually now I want to make the clouds move :P
+	ldr r0, =s_mapBackground_text
+	ldr r1, =s_mapBackground_data
 	bl _f_copyMap
 
-	//set all variables in gameState to 0
+	//copy the foreground map from text to data so it can 
+	// be modified as the game is played
+	ldr r0, =s_mapForeground_text
+	ldr r1, =s_mapForeground_data
+	bl _f_copyMap
+
+	ldr r0, =_s_cameraPosition_text
+	ldr r1, [r0]
+	ldr r0, =_s_cameraPosition
+	str r1, [r0]
+
+	//set all variables in gameState to what they are in gameState_text
 
 	pop {r4-r10, fp, lr}
 	bx	lr
-
+/*
+Input: 
+	r0: address of source map to copy from
+	r1: address of destination map to copy to
+Return: null
+Effect: copies map in r0 to map in r1
+*/
 _f_copyMap:
-	push {r4-r10, fp, lr}
+	push {r4-r6, fp, lr}
 	
 	sourceMap_r 		.req r4
 	destinationMap_r 	.req r5
 
-	loopCounter_r		.req r6
-	
+	cellCounter_r		.req r6
 
-	_copyMapLoop:
-		mov xCounter_r, #0 //reset x loop counter to 0
-		_drawMapLoopX:
+	mov sourceMap_r, r0			//store the .text map address in sourceMap_r
+	mov destinationMap_r, r0    //store the .data map address in destinationMap_r
 
-			ldrb r0, [mapToDraw_r], #1
-			strb r0, []
-			add xCounter_r, #1	//increment x cell count by 1
-			cmp xCounter_r, #32	//x screen size is 32 cells 
-			blt _drawMapLoopX
-
-		add yCounter_r, #1 //increment y cell count by 1
-		add mapToDraw_r, #288 //map is 320 cells wide, so 320-32=288 which is the offset
-		cmp yCounter_r, #24 //y screen size is 24 cells
-		blt _drawMapLoopY
 	//copy all the elements of the map arrays from .text to .data	
+	_copyMapLoop:
+		ldrb r0, [sourceMap_r, cellCounter_r]		//load byte from source map
+		strb r0, [destinationMap_r, cellCounter_r]	//store that byte in destination map
+		//r0 is only used for these to instructions and changes each loop
 
-	pop {r4-r10, fp, lr}
+		add cellCounter_r, #1 //increment  map cell count by 1
+		cmp cellCounter_r, #7680 //map has 7680 elements or "cells". (24*320)
+		blt _copyMapLoop
+
+	//Unreq everything that was used in this subroutine
+	.unreq sourceMap_r 
+	.unreq destinationMap_r 
+	.unreq cellCounter_r
+
+	pop {r4-r6, fp, lr}
 	bx	lr
 
 _f_moveMario:
@@ -240,7 +293,7 @@ _f_drawMap:
 		cmp yCounter_r, #24 //y screen size is 24 cells
 		blt _drawMapLoopY
 
-	//only need it for the above stuff, so unreq everything
+	//only need it for the above stuff, so unreq everything that was used in this subroutine
 	.unreq xCounter_r 
 	.unreq yCounter_r 
 	.unreq mapToDraw_r
@@ -253,6 +306,7 @@ _f_drawMap:
 	bx	lr
 
 .section .data
+
 //Stores the game variables
 //First byte is number of coins
 //Second byte is number of lives
