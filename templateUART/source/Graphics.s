@@ -87,22 +87,25 @@ _f_drawFunction:
 			cmp temp_r, #0
 			bne _skipDraw		//don't draw pixel
 
-	_notImage:
-		mov	r0,	xValue_r			//Setting x 
-		mov	r1,	yValue_r			//Setting y
-		push {lr}
-		bl	f_drawPixel
-		pop {lr}
+		_notImage:
+			mov	r0,	xValue_r			//Setting x 
+			mov	r1,	yValue_r			//Setting y
+			push {lr}
+			bl	f_drawPixel
+			pop {lr}
 
-	_skipDraw:
-		add	xValue_r, #1			//increment x by 1
-		cmp	xValue_r, xSize_r		//compare with width
-		blt	_drawLoop
-		mov	xValue_r, #0			//reset x
+		_skipDraw:
+			add	xValue_r, #1			//increment x by 1
+			cmp	xValue_r, xSize_r		//compare with width
+			blt	_drawLoop
+			
+			ldr temp_r, =_s_stashedImage
+			ldr xValue_r, [temp_r]		//reset x to what it initially was. Should fix the row alignment bug.
+			// mov	xValue_r, #0			//reset x
 
-		add	yValue_r, #1			//increment Y by 1
-		cmp	yValue_r, ySize_r		//compare with height
-		blt	_drawLoop
+			add	yValue_r, #1			//increment Y by 1
+			cmp	yValue_r, ySize_r		//compare with height
+			blt	_drawLoop
 
 	drawBreak:
 
