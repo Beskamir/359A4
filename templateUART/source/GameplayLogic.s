@@ -27,7 +27,7 @@ effect: main loop function in gameplay logic.
 f_playingState:
 	push {r4-r10, fp, lr}
 
-	// bl _f_newGame //reset all the stored data to the initial states
+	bl _f_newGame //reset all the stored data to the initial states
 
 	_playingLoop:	//Keep looping until game is over
 		ldr r0, =0x00FF
@@ -58,6 +58,26 @@ _f_newGame:
 _f_copyMap:
 	push {r4-r10, fp, lr}
 	
+	sourceMap_r 		.req r4
+	destinationMap_r 	.req r5
+
+	loopCounter_r		.req r6
+	
+
+	_copyMapLoop:
+		mov xCounter_r, #0 //reset x loop counter to 0
+		_drawMapLoopX:
+
+			ldrb r0, [mapToDraw_r], #1
+			strb r0, []
+			add xCounter_r, #1	//increment x cell count by 1
+			cmp xCounter_r, #32	//x screen size is 32 cells 
+			blt _drawMapLoopX
+
+		add yCounter_r, #1 //increment y cell count by 1
+		add mapToDraw_r, #288 //map is 320 cells wide, so 320-32=288 which is the offset
+		cmp yCounter_r, #24 //y screen size is 24 cells
+		blt _drawMapLoopY
 	//copy all the elements of the map arrays from .text to .data	
 
 	pop {r4-r10, fp, lr}
