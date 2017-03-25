@@ -49,13 +49,11 @@ haltLoop$:	//Halts the program
 	b	haltLoop$	//infinite loop
 
 
-.globl s_coreState
+.globl d_coreState
 .section .data  
-s_coreState:
+d_coreState:
 	.int 0
 
 
-.align 4
-font: .incbin "font.bin"
-// snes: .incbin "snes.bin"
-// framebuffer: .incbin "framebuffer.bin"
+// .align 4
+// font: .incbin "font.bin"

@@ -23,12 +23,12 @@ effect: main loop function in gameplay logic.
 //Third byte stores the win and lose flags
 	//Bit 0 is the lose flag, Bit 1 is the win flag
 //Word at the end stores the score
-_s_gameState_text:	
-	.byte 0, 0, 0
+_t_gameState:	
+	.byte 0, 3, 0
 	.word 0
 	.align
 
-_s_cameraPosition_text: //this contians the position of the left side of the camera. 
+_t_cameraPosition: //this contians the position of the left side of the camera. 
 	.int 0 //thus min value = 0 and max value = (size of map - 32)
 
 
@@ -50,11 +50,13 @@ f_playingState:
 		// ldr r0, =0x0FF0
 		// bl f_colourScreen
 		//draw the sprites located on the background map
-		ldr r0, =s_mapBackground_data
+		ldr r0, =d_mapBackground
 		bl _f_drawMap
 		//draw the sprites located on the foreground map
-		ldr r0, =s_mapForeground_data
+		ldr r0, =d_mapForeground
 		bl _f_drawMap
+
+		//draw HUD
 
 		//player input
 		//check collisions
@@ -73,32 +75,44 @@ f_playingState:
 	pop {r4-r10, fp, lr}
 	bx	lr
 
+/*
+Input: null
+Return: null
+Effect: resets the game to the initial setup.
+*/
 _f_newGame:
-	push {r4-r10, fp, lr}
+	push {r4-r7, fp, lr}
 
 	//copy maps
 	//Technically background doesn't need to be copied as it
 	// probably won't be changed but just incase the clouds 
 	// are to move or something...
 	/// Actually now I want to make the clouds move :P
-	ldr r0, =s_mapBackground_text
-	ldr r1, =s_mapBackground_data
+	ldr r0, =t_mapBackground
+	ldr r1, =d_mapBackground
 	bl _f_copyMap
 
 	//copy the foreground map from text to data so it can 
 	// be modified as the game is played
-	ldr r0, =s_mapForeground_text
-	ldr r1, =s_mapForeground_data
+	ldr r0, =t_mapForeground
+	ldr r1, =d_mapForeground
 	bl _f_copyMap
 
-	ldr r0, =_s_cameraPosition_text
+	//reset the camera position to whatever is in the .text copy.
+	ldr r0, =_t_cameraPosition
 	ldr r1, [r0]
-	ldr r0, =_s_cameraPosition
+	ldr r0, =_d_cameraPosition
 	str r1, [r0]
 
-	//set all variables in gameState to what they are in gameState_text
+	//reset the game state to the contents of the one that's in .text
+	ldr r0, =_t_gameState
+	ldmiab r0, {r4-r6}
+	ldr r7, [r0, #3]
+	ldr r0, =_d_gameState
+	stmiab r0, {r4-r6}
+	str r7, [r0, #3]
 
-	pop {r4-r10, fp, lr}
+	pop {r4-r7, fp, lr}
 	bx	lr
 /*
 Input: 
@@ -175,7 +189,7 @@ _f_addCoin:
 	push {r4-r10, fp, lr}
 	
 	//Load addresses
-	ldr 	r4, =_s_gameState	//Load the address of the number of coins
+	ldr 	r4, =_d_gameState	//Load the address of the number of coins
 	add		r5, r4, #1		//Load the address of the number of lives
 	add 	r6, r4, #3		//Load the address of the score
 
@@ -208,7 +222,7 @@ _f_addScore:
 	
 	mov	r4, r0				//Store the score to be added in a safe register
 	
-	ldr r5, =_s_gameState		//Load the address of the number of coins
+	ldr r5, =_d_gameState		//Load the address of the number of coins
 	add	r5, #3				//Load the address of the score
 	ldr	r6, [r5]			//Load the score
 	
@@ -238,7 +252,7 @@ _f_drawMap:
 	temp_r .req r9	//scratch register for temp values
 
 
-	ldr temp_r, =_s_cameraPosition
+	ldr temp_r, =_d_cameraPosition
 	ldr xCameraPosition_r, [temp_r] //get camera position
 
 	ldr spriteAccess_r, =s_artSpritesAccess
@@ -313,10 +327,10 @@ _f_drawMap:
 //Third byte stores the win and lose flags
 	//Bit 0 is the lose flag, Bit 1 is the win flag
 //Word at the end stores the score
-_s_gameState:	
+_d_gameState:	
 	.byte 0, 0, 0
 	.word 0
 	.align
 
-_s_cameraPosition: //this contians the position of the left side of the camera. 
+_d_cameraPosition: //this contians the position of the left side of the camera. 
 	.int 0 //thus min value = 0 and max value = (size of map - 32)
