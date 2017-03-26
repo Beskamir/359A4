@@ -72,7 +72,7 @@ return: null
 effect: display an image at specified coordinates on the screen
 */
 _f_drawArt:
-	push {r4-r10, fp, lr}
+	push {r4-r10, lr}
 
 	xValue_r .req 	r4 	//x screen position
 	yValue_r .req	r5	//y screen position
@@ -140,8 +140,7 @@ _f_drawArt:
 	.unreq type_r	
 	.unreq xInit_r 	
 
-	pop {r4-r10, fp, lr}
-	bx	lr
+	pop {r4-r10, pc}
 
 /* 
 Draw the character 'B' to (0,0)
@@ -224,7 +223,7 @@ return: null
 effect: display an image at specified coordinates on the screen
 */
 f_drawElement:
-	push {r4-r10, fp, lr}
+	push {r4-r10, lr}
 
 	mov r4, r0 		//image, rectangle, or text address.
 	mov r5, r1 		//x coordinate
@@ -281,8 +280,7 @@ f_drawElement:
 
 	_doneDraw:
 
-	pop {r4-r10, fp, lr}
-	bx	lr
+	pop {r4-r10, pc}
 
 /*
 input: 
@@ -291,7 +289,7 @@ return: null
 effect: sets ever pixel on screen to a static colour
 */
 f_colourScreen:
-	push {r4-r9, fp, lr}
+	push {r4-r9, lr}
 
 	mov	r4,	#0			//x value
 	mov	r5,	#0			//Y value
@@ -310,8 +308,7 @@ f_colourScreen:
 
 	bl f_drawElement
 
-	pop {r4-r9,fp,lr}
-	bx	lr
+	pop {r4-r9, pc}
 
 // /*
 // input: 

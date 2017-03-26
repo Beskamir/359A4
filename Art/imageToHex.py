@@ -8,10 +8,10 @@ from PIL import ImageColor
 import os
 import random
 
-FOLDERNAME="\\Sprites\\ImagesConvert\\" #folder containing images
-OUTPUTNAMEFILENAME="imageOutputs.txt" #File imageOutputs location
-KEYOUTPUTFILENAME="keyOutputs.txt" #File imageOutputs location
-SPLIT=True #Change this to either generate several 32*32 images or 1 unspecified image size. 
+FOLDERNAME="\\Titlescreen\\Done\\" #folder containing images
+OUTPUTNAMEFILENAME="imageOutputsTitle.txt" #File imageOutputs location
+KEYOUTPUTFILENAME="keyOutputsTitle.txt" #File imageOutputs location
+SPLIT=False #Change this to either generate several 32*32 images or 1 unspecified image size. 
 	#*for 32^2 generation to work, (x and y) % 32 must be 0
 CELLSIZE=32 #in theory should determine image size for the above mentioned split.
 	#Not actually tested with anything other than 32
@@ -129,10 +129,10 @@ def genPixel(memLabel,keyOutput):
 def writeToFile(imageOutputs,pixels,x,y,memLabel,imageSizeX,imageSizeY,zoneX=0):
 	##Write hex values to txt file
 	imageOutputs.write(memLabel+":\n")
-	# print(".globl "+memLabel)
+	print(".globl "+memLabel)
 
-	# imageOutputs.write("\t.int: #"+str(imageSize[0])+", #"+str(imageSize[1])+"\n")
-	imageOutputs.write("\t.int #32, #32\n")
+	imageOutputs.write("\t.int: #"+str(imageSizeX)+", #"+str(imageSizeY)+"\n")
+	# imageOutputs.write("\t.int #32, #32\n")
 
 	# for x in range(imageSize[0]):
 	while y < imageSizeY:
@@ -142,7 +142,7 @@ def writeToFile(imageOutputs,pixels,x,y,memLabel,imageSizeX,imageSizeY,zoneX=0):
 		while x < imageSizeX:
 			tempHex=convertToHex(x, y, pixels)
 			# tempHex=hex(a+r+g+b)
-			if(x%32!=0):
+			if(x%32!=0 or not (SPLIT and x!=imageSizeY-1)):
 				imageOutputs.write(", ")
 			imageOutputs.write(tempHex)
 			x+=1

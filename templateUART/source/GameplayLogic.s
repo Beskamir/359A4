@@ -13,6 +13,21 @@ effect: main loop function in gameplay logic.
 */
 .globl f_playingState
 
+/*
+**Function**
+Input: 
+	r0: address of map to draw
+	r1: address to camera position int
+Return: null
+Effect: draws the map
+*/
+.globl f_drawMap
+
+/*
+**single int**
+contains the position of the left most side of the camera.
+*/
+.globl t_cameraPosition
 
 .section    .init
     
@@ -28,7 +43,7 @@ _t_gameState:
 	.word 0
 	.align
 
-_t_cameraPosition: //this contians the position of the left side of the camera. 
+t_cameraPosition: //this contains the position of the left side of the camera. 
 	.int 0 //thus min value = 0 and max value = (size of map - 32)
 
 
@@ -45,16 +60,18 @@ f_playingState:
 
 	_playingLoop:	//Keep looping until game is over
 		//each loop is a frame
-		ldr r0, =0x14FF		//hopefully a nice blueish colour.
+		ldr r0, =0x64FE		//Blueish colour based on an image of the original game.
 		bl f_colourScreen	//drawing over the entire screen is sort of inefficent
 		// ldr r0, =0x0FF0
 		// bl f_colourScreen
 		//draw the sprites located on the background map
 		ldr r0, =d_mapBackground
-		bl _f_drawMap
+		ldr r1, =_d_cameraPosition
+		bl f_drawMap
 		//draw the sprites located on the foreground map
 		ldr r0, =d_mapForeground
-		bl _f_drawMap
+		ldr r1, =_d_cameraPosition
+		bl f_drawMap
 
 		//draw HUD
 
@@ -233,11 +250,13 @@ _f_addScore:
 	mov	pc, lr
 
 /*
-Input: address of map to draw
+Input: 
+	r0: address of map to draw
+	r1: address to camera position int
 Return: null
 Effect: draws the map
 */
-_f_drawMap:
+f_drawMap:
 	push {r4-r10, fp, lr}
 
 	xCounter_r .req r4 //counts which x cell is being accessed
@@ -252,13 +271,12 @@ _f_drawMap:
 	temp_r .req r9	//scratch register for temp values
 
 
-	ldr temp_r, =_d_cameraPosition
-	ldr xCameraPosition_r, [temp_r] //get camera position
 
 	ldr spriteAccess_r, =s_artSpritesAccess
 
 
 	mov mapToDraw_r, r0				 //load the map to use for drawing
+	ldr xCameraPosition_r, [r1] 	 //get camera position based on input parameter
 	add mapToDraw_r, xCameraPosition_r
 
 	// mov temp_r, #0
