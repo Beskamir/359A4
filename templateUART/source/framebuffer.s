@@ -14,13 +14,13 @@ InitFrameBuffer:
 	fbinit	.req	r3
 	ldr		fbinit,	=FrameBufferInit
 
-mBoxFullLoop$:
-	// load the value of the mailbox status register
-	ldr		r0,		[mbox, #0x18]
+	mBoxFullLoop$:
+		// load the value of the mailbox status register
+		ldr		r0,		[mbox, #0x18]
 
-	// loop while bit 31 (Full) is set
-	tst		r0,		#0x80000000
-	bne		mBoxFullLoop$
+		// loop while bit 31 (Full) is set
+		tst		r0,		#0x80000000
+		bne		mBoxFullLoop$
 
 	// add 0x40000000 to address of framebuffer init struct, store in r0
 	add		r0, 	fbinit,	#0x40000000
@@ -31,39 +31,40 @@ mBoxFullLoop$:
 	// write this value to the mailbox write register
 	str		r0,		[mbox, #0x20]
 
-mBoxEmptyLoop$:
-	// load the value of the mailbox status register
-	ldr		r0,		[mbox, #0x18]
+	mBoxEmptyLoop$:
+		// load the value of the mailbox status register
+		ldr		r0,		[mbox, #0x18]
 
-	// loop while bit 30 (Empty) is set
-	tst		r0,		#0x40000000
-	bne		mBoxEmptyLoop$
+		// loop while bit 30 (Empty) is set
+		tst		r0,		#0x40000000
+		bne		mBoxEmptyLoop$
 
-	// read the response from the mailbox read register
-	ldr		r0,		[mbox, #0x00]
 
-	// and-mask out the channel information (lowest 4 bits)
-	and		r1,		r0, #0xF
+		// read the response from the mailbox read register
+		ldr		r0,		[mbox, #0x00]
 
-	// test if this message is for the framebuffer channel (1)
-	teq		r1,		#0b1000
+		// and-mask out the channel information (lowest 4 bits)
+		and		r1,		r0, #0xF
 
-	// if not, we need to read another message from the mailbox
-	bne		mBoxEmptyLoop$
+		// test if this message is for the framebuffer channel (1)
+		teq		r1,		#0b1000
+
+		// if not, we need to read another message from the mailbox
+		bne		mBoxEmptyLoop$
 	
 	ldr		r0,	=FrameBufferInit
 	ldr		r1,	[r0, #0x04]	//load the request/response word from buffer
 	teq		r1,	#0x80000000	//test is the request was successful
 	beq		pointerWaitLoop$	
-	movne		r0, 	#0		//return 0 if the request failed
-	bxne		lr	
+		movne		r0, 	#0		//return 0 if the request failed
+		bxne		lr	
 
-pointerWaitLoop$:
-	ldr	r0, 	=FrameBuffer 
-	ldr	r0, 	[r0]
-	teq	r0,	#0	//test if framebuffer pointer has been set
-	
-	beq	pointerWaitLoop$
+	pointerWaitLoop$:
+		ldr	r0, 	=FrameBuffer 
+		ldr	r0, 	[r0]
+		teq	r0,	#0	//test if framebuffer pointer has been set
+		
+		beq	pointerWaitLoop$
 	
 	ldr 	r3, =FrameBufferPointer
 	str	r0, [r3]
@@ -90,7 +91,7 @@ FrameBufferInit:
 	.int	8			//size of buffer
 	.int	8			//length of value
 	.int 	1024		//same as physical display width and height
-	.int 	768
+	.int 	768 		///double the vertical virtual frame buffer for buffer swapping
 
 	.int	0x00048005	//Set bits per pixel
 	.int 	4			//size of value buffer

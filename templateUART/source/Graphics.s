@@ -50,7 +50,8 @@ input:
 return: null
 effect: draw an individual pixel
 */
-.globl f_drawPixel
+// .globl f_drawPixel
+.include "drawPixel.c"
 
 // .section .init
 // .include "map.s"
@@ -312,47 +313,47 @@ f_colourScreen:
 	pop {r4-r9,fp,lr}
 	bx	lr
 
-/*
-input: 
-	int x value, 
-	int y value, 
-	hex pixel colour
-	//buffer offset may not end up using this
-return: null
-effect: draw an individual pixel
-*/
-f_drawPixel:
-	push	{r4}
-	mov 	r3, #0 	////Init to 0 for now, not yet using it
+// /*
+// input: 
+// 	int x value, 
+// 	int y value, 
+// 	hex pixel colour
+// 	//buffer offset may not end up using this
+// return: null
+// effect: draw an individual pixel
+// */
+// f_drawPixel:
+// 	push	{r4}
+// 	mov 	r3, #0 	////Init to 0 for now, not yet using it
 
-	// offset	.req	r4
-	xValue_r	.req	r0
-	yValue_r	.req	r1
-	colour_r	.req	r2
-	offset_r	.req	r3
-	temp_r 		.req	r4
+// 	// offset	.req	r4
+// 	xValue_r	.req	r0
+// 	yValue_r	.req	r1
+// 	colour_r	.req	r2
+// 	offset_r	.req	r3
+// 	temp_r 		.req	r4
 
-	// offset = (y * 1024) + x = x + (y << 10)
-	// add		offset,	r0, r1, lsl #10
-	add		offset_r,	xValue_r, yValue_r, lsl #10
-	// offset *= 2 (for 16 bits per pixel = 2 bytes per pixel)
-	lsl		offset_r, #1
+// 	// offset = (y * 1024) + x = x + (y << 10)
+// 	// add		offset,	r0, r1, lsl #10
+// 	add		offset_r,	xValue_r, yValue_r, lsl #10
+// 	// offset *= 2 (for 16 bits per pixel = 2 bytes per pixel)
+// 	lsl		offset_r, #1
 
-	// store the colour (half word) at framebuffer pointer + offset
+// 	// store the colour (half word) at framebuffer pointer + offset
 
-	ldr		temp_r, =FrameBufferPointer
-	ldr		temp_r, [temp_r]
-	strh	colour_r, [temp_r, offset_r]
+// 	ldr		temp_r, =FrameBufferPointer
+// 	ldr		temp_r, [temp_r]
+// 	strh	colour_r, [temp_r, offset_r]
 
-	//unreq everything
-	.unreq xValue_r
-	.unreq yValue_r	
-	.unreq colour_r	
-	.unreq offset_r	
-	.unreq temp_r 		
+// 	//unreq everything
+// 	.unreq xValue_r
+// 	.unreq yValue_r	
+// 	.unreq colour_r	
+// 	.unreq offset_r	
+// 	.unreq temp_r 		
 
-	pop		{r4}
-	bx		lr
+// 	pop		{r4}
+// 	bx		lr
 
 .section .data  
 
