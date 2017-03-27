@@ -123,10 +123,10 @@ _f_newGame:
 
 	//reset the game state to the contents of the one that's in .text
 	ldr r0, =_t_gameState
-	ldmiab r0, {r4-r6}
+	ldmia r0, {r4-r6}
 	ldr r7, [r0, #3]
 	ldr r0, =_d_gameState
-	stmiab r0, {r4-r6}
+	stmia r0, {r4-r6}
 	str r7, [r0, #3]
 
 	pop {r4-r7, fp, lr}

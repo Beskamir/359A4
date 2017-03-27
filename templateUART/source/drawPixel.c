@@ -1,4 +1,4 @@
-extern unsigned short * FrameBufferPointer
+extern unsigned short * FrameBufferPointer;
 void f_drawPixel(int x_int, int y_int, int colour_int){
 	//calculate the offset at which to write to the frame buffer
 	/*
@@ -22,4 +22,4 @@ void f_drawPixel(int x_int, int y_int, int colour_int){
 	strh	colour_r, [temp_r, offset_r]
     */
     (FrameBufferPointer + offest_int) = colour_int;
-}
+};

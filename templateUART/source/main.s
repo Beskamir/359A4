@@ -78,7 +78,7 @@ _f_core1Init:
 	orr r0,#0xC00000
 	mrc p15,0,r0,c1,c0,2
 	mov r0,#0x40000000
-	vmsr fpexc,r0
+	// vmsr fpexc,r0
 	ldr sp,=0xFFF //Must be unique for CPU1
 	_core1_Loop:
 			//core 1 code here
@@ -97,7 +97,7 @@ _f_core2Init:
 	orr r0,#0xC00000
 	mrc p15,0,r0,c1,c0,2
 	mov r0,#0x40000000
-	vmsr fpexc,r0
+	// vmsr fpexc,r0
 	ldr sp,=0xFF //Must be unique for CPU2
 	_core2_Loop:
 			//core 2 code here
@@ -116,7 +116,7 @@ _f_core3Init:
 	orr r0,#0xC00000
 	mrc p15,0,r0,c1,c0,2
 	mov r0,#0x40000000
-	vmsr fpexc,r0
+	// vmsr fpexc,r0
 	ldr sp,=0xF //Must be unique for CPU3
 	_core3_Loop:
 			//core 3 code here
@@ -132,9 +132,9 @@ haltLoop$:	//Halts the program
 _f_enableCache:
 	push {lr}
 
-    .equ    SCTLR_ENABLE_DATA_CACHE         0x4
-    .equ    SCTLR_ENABLE_BRANCH_PREDICTION  0x800
-    .equ    SCTLR_ENABLE_INstrUCTION_CACHE  0x1000
+    .equ    SCTLR_ENABLE_DATA_CACHE,         0x4
+    .equ    SCTLR_ENABLE_BRANCH_PREDICTION,  0x800
+    .equ    SCTLR_ENABLE_INstrUCTION_CACHE,  0x1000
 
     // Enable L1 Cache -------------------------------------------------------
 

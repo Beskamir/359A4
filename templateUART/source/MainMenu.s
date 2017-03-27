@@ -14,7 +14,7 @@ MainMenu:
 	//r7 = SNES joy-pad UP mask
 	//r8 = SNES joy-pad DOWN mask
 	
-	push	{r4-r12, fp, lr}		//Push all the general purpose registers along with fp and lr to the stack
+	push	{r4-r10, lr}		//Push all the general purpose registers along with fp and lr to the stack
 	
 	bl		_f_drawMenu				//Draw the menu
 	
@@ -64,8 +64,7 @@ MainMenu:
 	
 	mov		r0, r4					//Return the menu state
 	
-	pop		{r4-r12, fp, lr}		//Return all the previous registers
-	mov		pc, lr					//Return
+	pop		{r4-r10, pc}		//Return all the previous registers
 	
 	
 //Input: Menu state in r0 (0 for quit game hover, 1 for start game hover)
@@ -89,7 +88,7 @@ _f_drawSelection:
 		//draw regular quit option
 		ldr r0, =t_QuitNorm
 		mov r1, #412
-		mov r2, #438
+		ldr r2, =438
 		mov r3, #1
 		bl f_drawElement
 
@@ -108,7 +107,7 @@ _f_drawSelection:
 		//draw selected quit option
 		ldr r0, =t_QuitSelect
 		mov r1, #412
-		mov r2, #438
+		ldr r2, =438
 		mov r3, #1
 		bl f_drawElement
 

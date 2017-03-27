@@ -3,23 +3,22 @@
 .section	.init
 .globl	InitInterrupts		//The only public method
 
-.setcion	.text
+.section	.text
 //Input: null
 //Output: null
 //Effect: Set up interrupts
 //Usage: Should be the first instruction in the program
 InitInterrupts:
-	push	{r4-r12, fp, lr}		//Push registers onto stack
+	push	{r4-r10, lr}		//Push registers onto stack
 	bl		InstallIntTable			//Install the interrupt tabel
 	bl		EnableIRQ				//Enable IRQ interrupt
-	pop		{r4-r12, fp, lr}		//Pop registers from stack
-	mov		pc, lr					//Return
+	pop		{r4-r10, pc}		//Pop registers from stack
 
 //Input: null
 //Output: null
 //Effect: installs the interrupt table
 _InstallIntTable:
-	push	{r4-r12, fp, lr}		//Push registers onto stack
+	push	{r4-r10, lr}		//Push registers onto stack
 	ldr		r0, =IntTable
 	mov		r1, #0x00000000
 
@@ -41,16 +40,14 @@ _InstallIntTable:
 	msr		cpsr_c, r0
 	mov		sp, #0x8000000
 
-	pop		{r4-r12, fp, lr}		//Pop registers from stack
+	pop		{r4-r10, pc}		//Pop registers from stack
 	
-	bx		lr	
-
 
 //Input: null
 //Output: null
 //Effect: enables IRQ
 _EnableIRQ:
-	push	{r4-r12, fp, lr}		//Push registers onto stack
+	push	{r4-r10, lr}		//Push registers onto stack
 	
 	//a		Update timer value
 	ldr		r4, =0x20003004			//Load address of CLO
@@ -72,15 +69,15 @@ _EnableIRQ:
 	mov		r1, #0					//Move 0 to r1
 	str		r1, [r0]				//Store the value of r1 in r0
 	//d.	For cpsr_c register
-	mrs		r0, cpsr_c				//mrs r0,cpscr		Possible typo?
-	bic		r0, #0x80				//bic r0, #0x80
-	msr		cpsr_c, r0				//msr cpsr_c, r0
+	//cpsr_c is not defined/equated anywhere. Gonna have to disable this code -SK
+	// mrs		r0, cpsr_c				//mrs r0,cpscr		Possible typo?
+	// bic		r0, #0x80				//bic r0, #0x80
+	// msr		cpsr_c, r0				//msr cpsr_c, r0
 	
-	pop		{r4-r12, fp, lr}		//Pop register from the stack
-	mov		pc, lr					//Return
+	pop		{r4-r10, pc}		//Pop register from the stack
 	
 _Doirq:
-	push	{r4-r12, fp, lr}		//Push registers from the stack
+	push	{r4-r10, lr}		//Push registers from the stack
 	
 	//IRQ interrupt code here
 	
@@ -99,8 +96,7 @@ _Doirq:
 	// f. Repeat (2)
 	// g. Then subs pc, lr, #4
 	
-	pop		{r4-r12, fp, lr}		//Pop register from the stack
-	mov		pc, lr					//Return
+	pop		{r4-r10, pc}		//Pop register from the stack
 	
 .section	.data
 
