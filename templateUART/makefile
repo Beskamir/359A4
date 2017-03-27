@@ -29,7 +29,8 @@ LINKER = kernel.ld
 
 # The names of all object files that must be generated. Deduced from the 
 # assembly code files in source.
-OBJECTS := $(patsubst $(SOURCE)%.s,$(BUILD)%.o,$(wildcard $(SOURCE)*.s))
+OBJECTS := $(patsubst $(SOURCE)%.s,$(BUILD)%.o,$(wildcard $(SOURCE)*.s)),$(patsubst $(SOURCE)%.c,$(BUILD)%.o,$(wildcard $(SOURCE)*.c))
+
 
 # Rule to make everything.
 all: $(TARGET) $(LIST)

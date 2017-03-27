@@ -33,7 +33,7 @@ f_tests:
 	bl f_drawElement
 	// bl f_playingState
 
-	///Buggy 9001:
+	///Buggy 9001: Probably fixed now
 		//After x loops during the drawing stuff it goes back to 
 		//the start of the screen rather than stay at the position it 
 		//should be at. 
