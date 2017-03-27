@@ -54,7 +54,7 @@ return: null
 effect: main loop function in gameplay logic.
 */
 f_playingState:
-	push {r4-r10, fp, lr}
+	push {r4-r10, lr}
 
 	bl _f_newGame //reset all the stored data to the initial states
 
@@ -89,8 +89,7 @@ f_playingState:
 
 	// b PlayingLoop
 
-	pop {r4-r10, fp, lr}
-	bx	lr
+	pop {r4-r10, pc}
 
 /*
 Input: null
@@ -98,7 +97,7 @@ Return: null
 Effect: resets the game to the initial setup.
 */
 _f_newGame:
-	push {r4-r7, fp, lr}
+	push {r4-r7, lr}
 
 	//copy maps
 	//Technically background doesn't need to be copied as it
@@ -129,8 +128,7 @@ _f_newGame:
 	stmia r0, {r4-r6}
 	str r7, [r0, #3]
 
-	pop {r4-r7, fp, lr}
-	bx	lr
+	pop {r4-r7, pc}
 /*
 Input: 
 	r0: address of source map to copy from
@@ -139,7 +137,7 @@ Return: null
 Effect: copies map in r0 to map in r1
 */
 _f_copyMap:
-	push {r4-r6, fp, lr}
+	push {r4-r6, lr}
 	
 	sourceMap_r 		.req r4
 	destinationMap_r 	.req r5
@@ -147,7 +145,7 @@ _f_copyMap:
 	cellCounter_r		.req r6
 
 	mov sourceMap_r, r0			//store the .text map address in sourceMap_r
-	mov destinationMap_r, r0    //store the .data map address in destinationMap_r
+	mov destinationMap_r, r1    //store the .data map address in destinationMap_r
 
 	//copy all the elements of the map arrays from .text to .data	
 	_copyMapLoop:
@@ -164,8 +162,7 @@ _f_copyMap:
 	.unreq destinationMap_r 
 	.unreq cellCounter_r
 
-	pop {r4-r6, fp, lr}
-	bx	lr
+	pop {r4-r6, pc}
 
 _f_moveMario:
 	push {r4-r10, fp, lr}
@@ -257,7 +254,7 @@ Return: null
 Effect: draws the map
 */
 f_drawMap:
-	push {r4-r10, fp, lr}
+	push {r4-r10, lr}
 
 	xCounter_r .req r4 //counts which x cell is being accessed
 	yCounter_r .req r5 //counts which y cell is being accessed
@@ -334,8 +331,7 @@ f_drawMap:
 	.unreq temp_r
 
 
-	pop {r4-r10, fp, lr}
-	bx	lr
+	pop {r4-r10, pc}
 
 .section .data
 

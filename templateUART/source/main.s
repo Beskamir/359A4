@@ -32,9 +32,9 @@ main:
 	bl 		InitFrameBuffer //Enable Frame Buffer
 	bl		init_GPIO	//Enable the GPIO pins
 
-	bl f_tests
+	bl f_tests1
 
-	b haltLoop$
+	// b haltLoop$
 
 
 	/// In theory this will stop the cpu's from fighting over resources
@@ -47,14 +47,15 @@ main:
 	ldr r1,=_f_core3Init
 	str r1,[r0,#0x30]
 
+	bl f_tests2	//second test file
 
-	ldr sp,=0xFFFF //Must be unique for CPU0
+	// ldr sp,=0xFFFF //Must be unique for CPU0
 
 	bl 	_f_enableCache //should help with performance
 
 	_core0_loop:
 
-		bl f_tests //Test code here
+		bl f_tests3 //third test file
 		//core 0 code here
 		///End Test Code
 		// bl MainMenu //branch to main menu
@@ -83,7 +84,8 @@ _f_core1Init:
 	mrc p15,0,r0,c1,c0,2
 	mov r0,#0x40000000
 	// vmsr fpexc,r0
-	ldr sp,=0xFFF //Must be unique for CPU1
+    mov		sp, #0x00F // Initializing the stack pointer
+	// ldr sp,=0xFFF //Must be unique for CPU1
 	_core1_Loop:
 			//core 1 code here
 		b _core1_Loop
@@ -102,7 +104,8 @@ _f_core2Init:
 	mrc p15,0,r0,c1,c0,2
 	mov r0,#0x40000000
 	// vmsr fpexc,r0
-	ldr sp,=0xFF //Must be unique for CPU2
+    mov		sp, #0x0FF // Initializing the stack pointer
+	// ldr sp,=0xFF //Must be unique for CPU2
 	_core2_Loop:
 			//core 2 code here
 		b _core2_Loop
@@ -121,7 +124,8 @@ _f_core3Init:
 	mrc p15,0,r0,c1,c0,2
 	mov r0,#0x40000000
 	// vmsr fpexc,r0
-	ldr sp,=0xF //Must be unique for CPU3
+    mov		sp, #0x0F0 // Initializing the stack pointer
+	// ldr sp,=0xF //Must be unique for CPU3
 	_core3_Loop:
 			//core 3 code here
 		b _core3_Loop
