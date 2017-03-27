@@ -116,7 +116,7 @@ _f_newGame:
 	bl _f_copyMap
 
 	//reset the camera position to whatever is in the .text copy.
-	ldr r0, =_t_cameraPosition
+	ldr r0, =t_cameraPosition
 	ldr r1, [r0]
 	ldr r0, =_d_cameraPosition
 	str r1, [r0]
@@ -272,7 +272,7 @@ f_drawMap:
 
 
 
-	ldr spriteAccess_r, =s_artSpritesAccess
+	ldr spriteAccess_r, =t_artSpritesAccess
 
 
 	mov mapToDraw_r, r0				 //load the map to use for drawing

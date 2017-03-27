@@ -1,3 +1,5 @@
+#include <stdio.h>
+// #include <drawPixel.h>
 extern unsigned short * FrameBufferPointer;
 void f_drawPixel(int x_int, int y_int, int colour_int){
 	//calculate the offset at which to write to the frame buffer
@@ -8,7 +10,7 @@ void f_drawPixel(int x_int, int y_int, int colour_int){
 	// offset *= 2 (for 16 bits per pixel = 2 bytes per pixel)
 	lsl		offset_r, #1
 	*/
-	unsigned int offest_int = (x_int + (y_int << 10)) << 1;
+	unsigned int offest_int = (x_int + (y_int << 10));
 
     // offset by the current buffer start
     // For buffer swapping
@@ -21,5 +23,5 @@ void f_drawPixel(int x_int, int y_int, int colour_int){
 	ldr		temp_r, [temp_r]
 	strh	colour_r, [temp_r, offset_r]
     */
-    (FrameBufferPointer + offest_int) = colour_int;
+    FrameBufferPointer[offest_int] = colour_int;
 };

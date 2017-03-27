@@ -128,11 +128,11 @@ _f_drawMenu:
 	//draw the sprites located on the background map
 	ldr r0, =t_mapBackground
 	ldr r1, =t_cameraPosition
-	bl _f_drawMap
+	bl f_drawMap
 	//draw the sprites located on the foreground map
 	ldr r0, =t_mapForeground
 	ldr r1, =t_cameraPosition
-	bl _f_drawMap
+	bl f_drawMap
 
 	//draw the main menu logo. (contains title and names)
 	ldr r0, =t_MainMenuLogo

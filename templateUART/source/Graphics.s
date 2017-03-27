@@ -51,7 +51,7 @@ return: null
 effect: draw an individual pixel
 */
 // .globl f_drawPixel
-.include "drawPixel.c"
+.extern f_drawPixel
 
 // .section .init
 // .include "map.s"
@@ -116,9 +116,9 @@ _f_drawArt:
 		_notImage:
 			mov	r0,	xValue_r			//Setting x 
 			mov	r1,	yValue_r			//Setting y
-			push {lr}
+			// push {lr}
 			bl	f_drawPixel
-			pop {lr}
+			// pop {lr}
 
 		_skipDraw:
 			add	xValue_r, #1			//increment x by 1
@@ -152,7 +152,7 @@ input:
 return: null
 effect: display a character at specified coordinates on the screen
 */
-DrawCharB:
+_f_drawChar:
 	push	{r4-r8, lr}
 
 
@@ -270,7 +270,8 @@ f_drawElement:
 
 		//rest to default text colour
 		ldr r0, =d_textColour
-		str #0, [r0]
+		mov r1, #0
+		str r1, [r0]
 
 		b _doneDraw
 
@@ -293,11 +294,12 @@ f_colourScreen:
 
 	mov	r4,	#0			//x value
 	mov	r5,	#0			//Y value
-	mov	r6,	r0 			//colour to set entire screen to
 
-	ldr	r7,	=1023		//Width of screen
-	ldr	r8,	=767		//Height of the screen
+	ldr	r6,	=1023		//Width of screen
+	ldr	r7,	=767		//Height of the screen
 
+	mov	r8,	r0 			//colour to set entire screen to
+	
 	ldr r9, =d_rectangle	
 	stmia r9, {r6-r8}	//store in order of x end, y end, colour 
 	
@@ -352,7 +354,7 @@ f_colourScreen:
 // 	pop		{r4}
 // 	bx		lr
 
-.section .data  
+// .section .data  
 
 //The type of element that will be drawn.
 // 0 = rectangle with a single static colour
@@ -364,7 +366,7 @@ _d_type:
 	.align 4
 
 //specification for end points and colour of a rectangle
-//order of x end, y end, colour 
+//order of x size, y size, colour 
 d_rectangle:
 	.int 0, 0, 0
 	.align 4
