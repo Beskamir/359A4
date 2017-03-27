@@ -29,7 +29,7 @@ LINKER = kernel.ld
 
 # The names of all object files that must be generated. Deduced from the 
 # assembly code files in source.
-OBJECTS := $(patsubst $(SOURCE)%.s,$(BUILD)%.o,$(wildcard $(SOURCE)*.s) $(patsubst $(SOURCE)%.c,$(BUILD)%.o,$(wildcard $(SOURCE)*.c))) 
+OBJECTS := $(patsubst $(SOURCE)%.s,$(BUILD)%.o,$(wildcard $(SOURCE)*.s)) $(patsubst $(SOURCE)%.c,$(BUILD)%.o,$(wildcard $(SOURCE)*.c))
 
 
 # Rule to make everything.
@@ -55,7 +55,7 @@ $(BUILD)%.o: $(SOURCE)%.s
 	$(ARMGNU)-as -g -mcpu=cortex-a7 -I $(SOURCE) $< -o $@
 
 $(BUILD)%.o: $(SOURCE)%.c
-	$(ARMGNU)-gcc -c -04 -mcpu=cortex-a7 -I $(SOURCE) $< -o $@
+	$(ARMGNU)-gcc -c -O4 -mcpu=cortex-a7 -I $(SOURCE) $< -o $@
 
 # Rule to clean files.
 clean : 
