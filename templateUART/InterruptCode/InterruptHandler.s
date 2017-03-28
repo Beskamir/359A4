@@ -13,8 +13,8 @@
 //Usage: Should be the first instruction in the program
 InitInterrupts:
 	push	{r4-r10, lr}		//Push registers onto stack
-	bl		InstallIntTable			//Install the interrupt tabel
-	bl		EnableIRQ				//Enable IRQ interrupt
+	bl		_InstallIntTable	//Install the interrupt tabel
+	bl		_EnableIRQ			//Enable IRQ interrupt
 	pop		{r4-r10, pc}		//Pop registers from stack
 
 //Input: null
@@ -114,7 +114,7 @@ IntTable:
 	ldr		pc, irq_handler
 	ldr		pc, fiq_handler
 
-reset_handler:		.word InstallIntTable
+reset_handler:		.word _InstallIntTable
 undefined_handler:	.word hang
 swi_handler:		.word hang
 prefetch_handler:	.word hang
