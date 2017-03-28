@@ -32,9 +32,9 @@ main:
 	bl 		InitFrameBuffer //Enable Frame Buffer
 	bl		init_GPIO	//Enable the GPIO pins
 
-	bl f_tests1
 
 	// b haltLoop$
+	// bl f_tests2	//second test file
 
 
 	/// In theory this will stop the cpu's from fighting over resources
@@ -47,7 +47,7 @@ main:
 	ldr r1,=_f_core3Init
 	str r1,[r0,#0x30]
 
-	bl f_tests2	//second test file
+	// bl f_tests1
 
 	// ldr sp,=0xFFFF //Must be unique for CPU0
 
@@ -157,7 +157,7 @@ _f_enableCache:
     // System Control Register = R0
     mcr p15,0,r0,c1,c0,0
 
-	push {pc}
+	pop {pc}
 
 .globl d_coreState
 .section .data  

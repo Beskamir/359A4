@@ -57,7 +57,7 @@ LOAD gpio.o
 .igot.plt       0x0000cd10        0x0
  .igot.plt      0x00000000        0x0 build/MainMenu.o
 
-.text           0x0000cd10   0x17faf4
+.text           0x0000cd10   0x17fb14
  *.c.o(.text)
  *(.text)
  .text          0x0000cd10      0x154 build/MainMenu.o
@@ -71,213 +71,214 @@ LOAD gpio.o
                 0x000e6730                t_QuitSelect
                 0x000ef6f8                t_StartNorm
                 0x000f86c0                t_StartSelect
- .text          0x00101688       0x18 build/TestCode.o
-                0x00101688                f_tests
- .text          0x001016a0       0xe4 build/main.o
- .text          0x00101784      0x1ec build/GameplayLogic.o
-                0x0010178c                t_cameraPosition
-                0x00101790                f_playingState
-                0x001018d0                f_drawMap
- .text          0x00101970      0x9b0 build/Graphics.o
-                0x00101a44                f_drawElement
-                0x00101aa4                f_colourScreen
-                0x00101ae0                d_rectangle
-                0x00101af0                d_textColour
- .text          0x00102320     0x3c00 build/map.o
-                0x00102320                t_mapBackground
-                0x00104120                t_mapForeground
- .text          0x00105f20       0x30 build/strings.o
-                0x00105f20                t_scoreLabel
-                0x00105f30                t_livesLabel
-                0x00105f40                t_coinsLable
- .text          0x00105f50      0x1d8 build/snes.o
-                0x00105f50                snes
-                0x00105fa8                init_GPIO
- .text          0x00106128    0x86430 build/art.o
-                0x00106128                t_UpMushroom_0_0
-                0x00106128                t_artSpritesAccess
-                0x00107130                t_Brickt_0_0
-                0x00108138                t_BushDouble_0_0
-                0x00109140                t_BushDouble_1_0
-                0x0010a148                t_BushDouble_2_0
-                0x0010b150                t_BushSingle_0_0
-                0x0010c158                t_BushSingle_1_0
-                0x0010d160                t_BushTriple_0_0
-                0x0010e168                t_BushTriple_1_0
-                0x0010f170                t_BushTriple_2_0
-                0x00110178                t_BushTriple_3_0
-                0x00111180                t_Castle_0_0
-                0x00112188                t_Castle_0_1
-                0x00113190                t_Castle_0_2
-                0x00114198                t_Castle_0_3
-                0x001151a0                t_Castle_0_4
-                0x001161a8                t_Castle_1_0
-                0x001171b0                t_Castle_1_1
-                0x001181b8                t_Castle_1_2
-                0x001191c0                t_Castle_1_3
-                0x0011a1c8                t_Castle_1_4
-                0x0011b1d0                t_Castle_2_0
-                0x0011c1d8                t_Castle_2_1
-                0x0011d1e0                t_Castle_2_2
-                0x0011e1e8                t_Castle_2_3
-                0x0011f1f0                t_Castle_2_4
-                0x001201f8                t_Castle_3_0
-                0x00121200                t_Castle_3_1
-                0x00122208                t_Castle_3_2
-                0x00123210                t_Castle_3_3
-                0x00124218                t_Castle_3_4
-                0x00125220                t_Castle_4_0
-                0x00126228                t_Castle_4_1
-                0x00127230                t_Castle_4_2
-                0x00128238                t_Castle_4_3
-                0x00129240                t_Castle_4_4
-                0x0012a248                t_CloudDouble_0_0
-                0x0012b250                t_CloudDouble_0_1
-                0x0012c258                t_CloudDouble_1_0
-                0x0012d260                t_CloudDouble_1_1
-                0x0012e268                t_CloudDouble_2_0
-                0x0012f270                t_CloudDouble_2_1
-                0x00130278                t_CloudSingle_0_0
-                0x00131280                t_CloudSingle_0_1
-                0x00132288                t_CloudSingle_1_0
-                0x00133290                t_CloudSingle_1_1
-                0x00134298                t_CloudTriple_0_0
-                0x001352a0                t_CloudTriple_0_1
-                0x001362a8                t_CloudTriple_1_0
-                0x001372b0                t_CloudTriple_1_1
-                0x001382b8                t_CloudTriple_2_0
-                0x001392c0                t_CloudTriple_2_1
-                0x0013a2c8                t_CloudTriple_3_0
-                0x0013b2d0                t_CloudTriple_3_1
-                0x0013c2d8                t_Coin00_0_0
-                0x0013d2e0                t_Coin01_0_0
-                0x0013e2e8                t_Coin02_0_0
-                0x0013f2f0                t_DirtGround_0_0
-                0x001402f8                t_EmptyBlock_0_0
-                0x00141300                t_FlagPoleBeam_0_0
-                0x00142308                t_FlagPoleFlag_0_0
-                0x00143310                t_FlagPoleTop_0_0
-                0x00144318                t_Goomba00_0_0
-                0x00145320                t_Goomba01_0_0
-                0x00146328                t_Goomba02_0_0
-                0x00147330                t_Goomba03_0_0
-                0x00148338                t_GrassGround_0_0
-                0x00149340                t_GreenKoopaTroopaShell1_0_0
-                0x0014a348                t_GreenKoopaTroopaShell2_0_0
-                0x0014b350                t_GreenKoopaTroopa00_0_0
-                0x0014c358                t_GreenKoopaTroopa00_0_1
-                0x0014d360                t_GreenKoopaTroopa01_0_0
-                0x0014e368                t_GreenKoopaTroopa01_0_1
-                0x0014f370                t_HillLarge_0_0
-                0x00150378                t_HillLarge_0_1
-                0x00151380                t_HillLarge_0_2
-                0x00152388                t_HillLarge_1_0
-                0x00153390                t_HillLarge_1_1
-                0x00154398                t_HillLarge_1_2
-                0x001553a0                t_HillLarge_2_0
-                0x001563a8                t_HillLarge_2_1
-                0x001573b0                t_HillLarge_2_2
-                0x001583b8                t_HillLarge_3_0
-                0x001593c0                t_HillLarge_3_1
-                0x0015a3c8                t_HillLarge_3_2
-                0x0015b3d0                t_HillLarge_4_0
-                0x0015c3d8                t_HillLarge_4_1
-                0x0015d3e0                t_HillLarge_4_2
-                0x0015e3e8                t_HillSmall_0_0
-                0x0015f3f0                t_HillSmall_0_1
-                0x001603f8                t_HillSmall_1_0
-                0x00161400                t_HillSmall_1_1
-                0x00162408                t_HillSmall_2_0
-                0x00163410                t_HillSmall_2_1
-                0x00164418                t_MarioClimb1_0_0
-                0x00165420                t_MarioClimb2_0_0
-                0x00166428                t_MarioDead_0_0
-                0x00167430                t_MarioJump_0_0
-                0x00168438                t_MarioSkid_0_0
-                0x00169440                t_MarioWalk1_0_0
-                0x0016a448                t_MarioWalk2_0_0
-                0x0016b450                t_MarioWalk3_0_0
-                0x0016c458                t_Mario_0_0
-                0x0016d460                t_Pipe_0_0
-                0x0016e468                t_Pipe_0_1
-                0x0016f470                t_Pipe_1_0
-                0x00170478                t_Pipe_1_1
-                0x00171480                t_QuestionBlock00_0_0
-                0x00172488                t_QuestionBlock01_0_0
-                0x00173490                t_QuestionBlock02_0_0
-                0x00174498                t_SolidBlock_0_0
-                0x001754a0                t_Starman00_0_0
-                0x001764a8                t_Starman01_0_0
-                0x001774b0                t_Starman02_0_0
-                0x001784b8                t_Starman03_0_0
-                0x001794c0                t_SuperMarioClimb1_0_0
-                0x0017a4c8                t_SuperMarioClimb1_0_1
-                0x0017b4d0                t_SuperMarioClimb2_0_0
-                0x0017c4d8                t_SuperMarioClimb2_0_1
-                0x0017d4e0                t_SuperMarioDuck_0_0
-                0x0017e4e8                t_SuperMarioDuck_0_1
-                0x0017f4f0                t_SuperMarioJump_0_0
-                0x001804f8                t_SuperMarioJump_0_1
-                0x00181500                t_SuperMarioSkid_0_0
-                0x00182508                t_SuperMarioSkid_0_1
-                0x00183510                t_SuperMarioWalk1_0_0
-                0x00184518                t_SuperMarioWalk1_0_1
-                0x00185520                t_SuperMarioWalk2_0_0
-                0x00186528                t_SuperMarioWalk2_0_1
-                0x00187530                t_SuperMarioWalk3_0_0
-                0x00188538                t_SuperMarioWalk3_0_1
-                0x00189540                t_SuperMario_0_0
-                0x0018a548                t_SuperMario_0_1
-                0x0018b550                t_SuperMushroom_0_0
- .text          0x0018c558       0x1c build/drawPixel.o
-                0x0018c558                f_drawPixel
- .text          0x0018c574      0x1b8 uart.o
-                0x0018c574                InitUART
-                0x0018c634                PutCharUART
-                0x0018c650                GetCharUART
-                0x0018c66c                WriteStringUART
-                0x0018c69c                ReadLineUART
- .text          0x0018c72c       0xd8 gpio.o
-                0x0018c72c                GetGpioAddress
-                0x0018c734                SetGpioFunction
-                0x0018c780                SetGpio
-                0x0018c7bc                GetGpio
+ .text          0x00101688       0x54 build/TestCode.o
+                0x00101688                f_tests3
+ .text          0x001016dc       0xd0 build/main.o
+ .text          0x001017ac      0x1dc build/GameplayLogic.o
+                0x001017b4                t_cameraPosition
+                0x001017b8                f_playingState
+                0x001018ec                f_drawMap
+ *fill*         0x00101988        0x8 3f3f3f3f
+ .text          0x00101990      0x9b0 build/Graphics.o
+                0x00101a64                f_drawElement
+                0x00101ac4                f_colourScreen
+                0x00101b00                d_rectangle
+                0x00101b10                d_textColour
+ .text          0x00102340     0x3c00 build/map.o
+                0x00102340                t_mapBackground
+                0x00104140                t_mapForeground
+ .text          0x00105f40       0x30 build/strings.o
+                0x00105f40                t_scoreLabel
+                0x00105f50                t_livesLabel
+                0x00105f60                t_coinsLable
+ .text          0x00105f70      0x1d8 build/snes.o
+                0x00105f70                snes
+                0x00105fc8                init_GPIO
+ .text          0x00106148    0x86430 build/art.o
+                0x00106148                t_UpMushroom_0_0
+                0x00106148                t_artSpritesAccess
+                0x00107150                t_Brickt_0_0
+                0x00108158                t_BushDouble_0_0
+                0x00109160                t_BushDouble_1_0
+                0x0010a168                t_BushDouble_2_0
+                0x0010b170                t_BushSingle_0_0
+                0x0010c178                t_BushSingle_1_0
+                0x0010d180                t_BushTriple_0_0
+                0x0010e188                t_BushTriple_1_0
+                0x0010f190                t_BushTriple_2_0
+                0x00110198                t_BushTriple_3_0
+                0x001111a0                t_Castle_0_0
+                0x001121a8                t_Castle_0_1
+                0x001131b0                t_Castle_0_2
+                0x001141b8                t_Castle_0_3
+                0x001151c0                t_Castle_0_4
+                0x001161c8                t_Castle_1_0
+                0x001171d0                t_Castle_1_1
+                0x001181d8                t_Castle_1_2
+                0x001191e0                t_Castle_1_3
+                0x0011a1e8                t_Castle_1_4
+                0x0011b1f0                t_Castle_2_0
+                0x0011c1f8                t_Castle_2_1
+                0x0011d200                t_Castle_2_2
+                0x0011e208                t_Castle_2_3
+                0x0011f210                t_Castle_2_4
+                0x00120218                t_Castle_3_0
+                0x00121220                t_Castle_3_1
+                0x00122228                t_Castle_3_2
+                0x00123230                t_Castle_3_3
+                0x00124238                t_Castle_3_4
+                0x00125240                t_Castle_4_0
+                0x00126248                t_Castle_4_1
+                0x00127250                t_Castle_4_2
+                0x00128258                t_Castle_4_3
+                0x00129260                t_Castle_4_4
+                0x0012a268                t_CloudDouble_0_0
+                0x0012b270                t_CloudDouble_0_1
+                0x0012c278                t_CloudDouble_1_0
+                0x0012d280                t_CloudDouble_1_1
+                0x0012e288                t_CloudDouble_2_0
+                0x0012f290                t_CloudDouble_2_1
+                0x00130298                t_CloudSingle_0_0
+                0x001312a0                t_CloudSingle_0_1
+                0x001322a8                t_CloudSingle_1_0
+                0x001332b0                t_CloudSingle_1_1
+                0x001342b8                t_CloudTriple_0_0
+                0x001352c0                t_CloudTriple_0_1
+                0x001362c8                t_CloudTriple_1_0
+                0x001372d0                t_CloudTriple_1_1
+                0x001382d8                t_CloudTriple_2_0
+                0x001392e0                t_CloudTriple_2_1
+                0x0013a2e8                t_CloudTriple_3_0
+                0x0013b2f0                t_CloudTriple_3_1
+                0x0013c2f8                t_Coin00_0_0
+                0x0013d300                t_Coin01_0_0
+                0x0013e308                t_Coin02_0_0
+                0x0013f310                t_DirtGround_0_0
+                0x00140318                t_EmptyBlock_0_0
+                0x00141320                t_FlagPoleBeam_0_0
+                0x00142328                t_FlagPoleFlag_0_0
+                0x00143330                t_FlagPoleTop_0_0
+                0x00144338                t_Goomba00_0_0
+                0x00145340                t_Goomba01_0_0
+                0x00146348                t_Goomba02_0_0
+                0x00147350                t_Goomba03_0_0
+                0x00148358                t_GrassGround_0_0
+                0x00149360                t_GreenKoopaTroopaShell1_0_0
+                0x0014a368                t_GreenKoopaTroopaShell2_0_0
+                0x0014b370                t_GreenKoopaTroopa00_0_0
+                0x0014c378                t_GreenKoopaTroopa00_0_1
+                0x0014d380                t_GreenKoopaTroopa01_0_0
+                0x0014e388                t_GreenKoopaTroopa01_0_1
+                0x0014f390                t_HillLarge_0_0
+                0x00150398                t_HillLarge_0_1
+                0x001513a0                t_HillLarge_0_2
+                0x001523a8                t_HillLarge_1_0
+                0x001533b0                t_HillLarge_1_1
+                0x001543b8                t_HillLarge_1_2
+                0x001553c0                t_HillLarge_2_0
+                0x001563c8                t_HillLarge_2_1
+                0x001573d0                t_HillLarge_2_2
+                0x001583d8                t_HillLarge_3_0
+                0x001593e0                t_HillLarge_3_1
+                0x0015a3e8                t_HillLarge_3_2
+                0x0015b3f0                t_HillLarge_4_0
+                0x0015c3f8                t_HillLarge_4_1
+                0x0015d400                t_HillLarge_4_2
+                0x0015e408                t_HillSmall_0_0
+                0x0015f410                t_HillSmall_0_1
+                0x00160418                t_HillSmall_1_0
+                0x00161420                t_HillSmall_1_1
+                0x00162428                t_HillSmall_2_0
+                0x00163430                t_HillSmall_2_1
+                0x00164438                t_MarioClimb1_0_0
+                0x00165440                t_MarioClimb2_0_0
+                0x00166448                t_MarioDead_0_0
+                0x00167450                t_MarioJump_0_0
+                0x00168458                t_MarioSkid_0_0
+                0x00169460                t_MarioWalk1_0_0
+                0x0016a468                t_MarioWalk2_0_0
+                0x0016b470                t_MarioWalk3_0_0
+                0x0016c478                t_Mario_0_0
+                0x0016d480                t_Pipe_0_0
+                0x0016e488                t_Pipe_0_1
+                0x0016f490                t_Pipe_1_0
+                0x00170498                t_Pipe_1_1
+                0x001714a0                t_QuestionBlock00_0_0
+                0x001724a8                t_QuestionBlock01_0_0
+                0x001734b0                t_QuestionBlock02_0_0
+                0x001744b8                t_SolidBlock_0_0
+                0x001754c0                t_Starman00_0_0
+                0x001764c8                t_Starman01_0_0
+                0x001774d0                t_Starman02_0_0
+                0x001784d8                t_Starman03_0_0
+                0x001794e0                t_SuperMarioClimb1_0_0
+                0x0017a4e8                t_SuperMarioClimb1_0_1
+                0x0017b4f0                t_SuperMarioClimb2_0_0
+                0x0017c4f8                t_SuperMarioClimb2_0_1
+                0x0017d500                t_SuperMarioDuck_0_0
+                0x0017e508                t_SuperMarioDuck_0_1
+                0x0017f510                t_SuperMarioJump_0_0
+                0x00180518                t_SuperMarioJump_0_1
+                0x00181520                t_SuperMarioSkid_0_0
+                0x00182528                t_SuperMarioSkid_0_1
+                0x00183530                t_SuperMarioWalk1_0_0
+                0x00184538                t_SuperMarioWalk1_0_1
+                0x00185540                t_SuperMarioWalk2_0_0
+                0x00186548                t_SuperMarioWalk2_0_1
+                0x00187550                t_SuperMarioWalk3_0_0
+                0x00188558                t_SuperMarioWalk3_0_1
+                0x00189560                t_SuperMario_0_0
+                0x0018a568                t_SuperMario_0_1
+                0x0018b570                t_SuperMushroom_0_0
+ .text          0x0018c578       0x1c build/drawPixel.o
+                0x0018c578                f_drawPixel
+ .text          0x0018c594      0x1b8 uart.o
+                0x0018c594                InitUART
+                0x0018c654                PutCharUART
+                0x0018c670                GetCharUART
+                0x0018c68c                WriteStringUART
+                0x0018c6bc                ReadLineUART
+ .text          0x0018c74c       0xd8 gpio.o
+                0x0018c74c                GetGpioAddress
+                0x0018c754                SetGpioFunction
+                0x0018c7a0                SetGpio
+                0x0018c7dc                GetGpio
 OUTPUT(build/output.elf elf32-littlearm)
 
-.glue_7         0x0018c804        0x0
+.glue_7         0x0018c824        0x0
  .glue_7        0x00000000        0x0 linker stubs
 
-.glue_7t        0x0018c804        0x0
+.glue_7t        0x0018c824        0x0
  .glue_7t       0x00000000        0x0 linker stubs
 
-.vfp11_veneer   0x0018c804        0x0
+.vfp11_veneer   0x0018c824        0x0
  .vfp11_veneer  0x00000000        0x0 linker stubs
 
-.v4_bx          0x0018c804        0x0
+.v4_bx          0x0018c824        0x0
  .v4_bx         0x00000000        0x0 linker stubs
 
-.iplt           0x0018c804        0x0
+.iplt           0x0018c824        0x0
  .iplt          0x00000000        0x0 build/MainMenu.o
 
-.rel.dyn        0x0018c804        0x0
+.rel.dyn        0x0018c824        0x0
  .rel.iplt      0x00000000        0x0 build/MainMenu.o
 
-.bss            0x0018c804        0x0
- .bss           0x0018c804        0x0 build/MainMenu.o
- .bss           0x0018c804        0x0 build/jtag.o
- .bss           0x0018c804        0x0 build/framebuffer.o
- .bss           0x0018c804        0x0 build/MainMenuArt.o
- .bss           0x0018c804        0x0 build/TestCode.o
- .bss           0x0018c804        0x0 build/main.o
- .bss           0x0018c804        0x0 build/GameplayLogic.o
- .bss           0x0018c804        0x0 build/Graphics.o
- .bss           0x0018c804        0x0 build/map.o
- .bss           0x0018c804        0x0 build/strings.o
- .bss           0x0018c804        0x0 build/snes.o
- .bss           0x0018c804        0x0 build/art.o
- .bss           0x0018c804        0x0 build/drawPixel.o
- .bss           0x0018c804        0x0 uart.o
- .bss           0x0018c804        0x0 gpio.o
+.bss            0x0018c824        0x0
+ .bss           0x0018c824        0x0 build/MainMenu.o
+ .bss           0x0018c824        0x0 build/jtag.o
+ .bss           0x0018c824        0x0 build/framebuffer.o
+ .bss           0x0018c824        0x0 build/MainMenuArt.o
+ .bss           0x0018c824        0x0 build/TestCode.o
+ .bss           0x0018c824        0x0 build/main.o
+ .bss           0x0018c824        0x0 build/GameplayLogic.o
+ .bss           0x0018c824        0x0 build/Graphics.o
+ .bss           0x0018c824        0x0 build/map.o
+ .bss           0x0018c824        0x0 build/strings.o
+ .bss           0x0018c824        0x0 build/snes.o
+ .bss           0x0018c824        0x0 build/art.o
+ .bss           0x0018c824        0x0 build/drawPixel.o
+ .bss           0x0018c824        0x0 uart.o
+ .bss           0x0018c824        0x0 gpio.o
 
 .ARM.attributes
                 0x00000000       0x37
@@ -316,17 +317,17 @@ OUTPUT(build/output.elf elf32-littlearm)
  .comment       0x00000000       0x70 build/drawPixel.o
                                  0x71 (size before relaxing)
 
-.debug_line     0x00000000      0x5b3
+.debug_line     0x00000000      0x5c1
  .debug_line    0x00000000       0x9d build/MainMenu.o
  .debug_line    0x0000009d       0x61 build/jtag.o
  .debug_line    0x000000fe       0x67 build/framebuffer.o
- .debug_line    0x00000165       0x48 build/TestCode.o
- .debug_line    0x000001ad       0x8d build/main.o
- .debug_line    0x0000023a       0xd1 build/GameplayLogic.o
- .debug_line    0x0000030b       0xbb build/Graphics.o
- .debug_line    0x000003c6       0xbd build/snes.o
- .debug_line    0x00000483       0xb7 uart.o
- .debug_line    0x0000053a       0x79 gpio.o
+ .debug_line    0x00000165       0x5f build/TestCode.o
+ .debug_line    0x000001c4       0x88 build/main.o
+ .debug_line    0x0000024c       0xcd build/GameplayLogic.o
+ .debug_line    0x00000319       0xbb build/Graphics.o
+ .debug_line    0x000003d4       0xbd build/snes.o
+ .debug_line    0x00000491       0xb7 uart.o
+ .debug_line    0x00000548       0x79 gpio.o
 
 .debug_info     0x00000000      0x46a
  .debug_info    0x00000000       0x73 build/MainMenu.o
