@@ -269,7 +269,7 @@ f_drawMap:
 
 
 
-	ldr spriteAccess_r, =t_artSpritesAccess
+	ldr spriteAccess_r, =t_UpMushroom_0_0
 
 
 	mov mapToDraw_r, r0				 //load the map to use for drawing
