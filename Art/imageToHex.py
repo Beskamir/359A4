@@ -1,24 +1,27 @@
 #http://www.barth-dev.de/online/rgb565-color-picker/ use this
 
 #This will need the python imaging library. This can be done with 
-# "easy_install Pillow" on windows. 
-# (trivially without quotes and through a console)
+# "easy_install Pillow" on windows, google for other OSes 
+# (trivially without quotes and through a console/terminal)
 from PIL import Image
 from PIL import ImageColor
 import os
 import random
 
 FOLDERNAME="\\Titlescreen\\Done\\" #folder containing images
-OUTPUTNAMEFILENAME="imageOutputsTitle.txt" #File imageOutputs location
-KEYOUTPUTFILENAME="keyOutputsTitle.txt" #File imageOutputs location
+OUTPUTNAMEFILENAME="imageOutputsTitle.txt" #creates an assembly file with all the image data
+KEYOUTPUTFILENAME="keyOutputsTitle.txt" #stores the dictionary for generating the map tiles
 SPLIT=False #Change this to either generate several 32*32 images or 1 unspecified image size. 
 	#*for 32^2 generation to work, (x and y) % 32 must be 0
 CELLSIZE=32 #in theory should determine image size for the above mentioned split.
 	#Not actually tested with anything other than 32
+
+#used in creating the map tiles
 staticColours=[0,0,0]
 staticCounter=1
 
 
+#opens all the images in a given folder
 def getAllImages():
 	#imageOutputss to imageOutputs.txt
 	imageOutputs = open(OUTPUTNAMEFILENAME, 'w')
@@ -131,8 +134,9 @@ def writeToFile(imageOutputs,pixels,x,y,memLabel,imageSizeX,imageSizeY,zoneX=0):
 	imageOutputs.write(memLabel+":\n")
 	print(".globl "+memLabel)
 
-	imageOutputs.write("\t.int: #"+str(imageSizeX)+", #"+str(imageSizeY)+"\n")
-	# imageOutputs.write("\t.int #32, #32\n")
+	imageOutputs.write("\t.int "+str(imageSizeX)+", "+str(imageSizeY)+"\n")
+	#If breaking images down into 32*32 portions, use code below instead of the code above
+	# imageOutputs.write("\t.int 32, 32\n")
 
 	# for x in range(imageSize[0]):
 	while y < imageSizeY:
