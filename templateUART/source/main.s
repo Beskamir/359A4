@@ -54,6 +54,7 @@ main:
 	bl 	_f_enableCache //should help with performance
 
 	_core0_loop:
+		// bl f_mainMenu
 
 		bl f_tests3 //third test file
 		//core 0 code here
