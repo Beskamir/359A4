@@ -34,12 +34,12 @@ f_mainMenu:
 	mov		r5, r0					//Move the input into r5
 	b	selectionLoopTest
 		
-		top:						//Top of the loop
+		SLtop:						//Top of the loop
 		
 		bl		snes				//Call snes
 		mov		r5, r0				//Move the output into r5
 		
-		checkUp:					//
+		checkUp:
 		tst		r5, r7				//Check if joy-pad UP was pressed
 		bne		checkDown			//If it wasn't, go to checkDown
 		cmp		r4, #1				//Check if the game is in state 1
@@ -60,7 +60,7 @@ f_mainMenu:
 		
 		selectionLoopTest:
 		tst		r5, r6				//AND the input with r5 
-		bne		selectionLoop		//If A hasn't been pressed, move back into the loop
+		bne		SLtop				//If A hasn't been pressed, move back into the loop
 	
 	mov		r0, r4					//Return the menu state
 	
