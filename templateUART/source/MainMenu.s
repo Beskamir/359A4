@@ -14,7 +14,7 @@ f_mainMenu:
 	//r7 = SNES joy-pad UP mask
 	//r8 = SNES joy-pad DOWN mask
 	
-	push	{r4-r10, lr}		//Push all the general purpose registers along with fp and lr to the stack
+	push	{r4-r10, lr}			//Push all the general purpose registers along with fp and lr to the stack
 	
 	bl		_f_drawMenu				//Draw the menu
 	
@@ -31,7 +31,7 @@ f_mainMenu:
 	mov		r8, #1					//Move 1 into r8
 	lsl		r8, #6					//Shift to bit 6 (joy-pad DOWN)
 	bl		snes					//Get input from the SNES
-	mov		r8, r0					//Move the input into r5
+	mov		r5, r0					//Move the input into r5
 	b	selectionLoopTest
 		
 		top:						//Top of the loop
