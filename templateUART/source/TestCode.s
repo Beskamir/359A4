@@ -59,23 +59,45 @@ f_tests3:
 		bl f_colourScreen
 
 
-		ldr r0, =t_BushDouble_0_0 //add the address of s_artSpritesAccess to the "offset" in r0
-		//Now r0 has address of sprite to draw
-		// mul r1, xCounter_r, cellsize_r//compute starting x value for the image
-		mov r1, #0
-		// mul r2, yCounter_r, cellsize_r //compute starting y value for the image
-		mov r2, #0
-		mov r3, #1	//indicate that an image is being drawn
-		bl f_drawElement
+		bl f_mainMenu
 
-	//draw the background map bypassing playingState using the drawMap function
-		ldr r0, =t_mapBackground
-		ldr r1, =t_cameraPosition
-		bl f_drawMap
+
+		// ldr r0, =t_Brickt_0_0 //add the address of s_artSpritesAccess to the "offset" in r0
+		// //Now r0 has address of sprite to draw
+		// // mul r1, xCounter_r, cellsize_r//compute starting x value for the image
+		// mov r1, #0
+		// // mul r2, yCounter_r, cellsize_r //compute starting y value for the image
+		// mov r2, #0
+		// mov r3, #1	//indicate that an image is being drawn
+		// bl f_drawElement
+
+		// ldr r0, =t_Brickt_0_0 //add the address of s_artSpritesAccess to the "offset" in r0
+		// //Now r0 has address of sprite to draw
+		// // mul r1, xCounter_r, cellsize_r//compute starting x value for the image
+		// mov r1, #50
+		// // mul r2, yCounter_r, cellsize_r //compute starting y value for the image
+		// mov r2, #70
+		// mov r3, #1	//indicate that an image is being drawn
+		// bl f_drawElement
+
+
+		// ldr r0, =t_BushDouble_0_0 //add the address of s_artSpritesAccess to the "offset" in r0
+		// //Now r0 has address of sprite to draw
+		// // mul r1, xCounter_r, cellsize_r//compute starting x value for the image
+		// mov r1, #100
+		// // mul r2, yCounter_r, cellsize_r //compute starting y value for the image
+		// mov r2, #300
+		// mov r3, #1	//indicate that an image is being drawn
+		// bl f_drawElement
+
+	// //draw the background map bypassing playingState using the drawMap function
+	// 	ldr r0, =t_mapBackground
+	// 	ldr r1, =t_cameraPosition
+	// 	bl f_drawMap
 
 	//test playing state which includes cloning the elements from .text to .data
 	//and displying the maps
-		bl f_playingState	//may wish to disable if it doesn't work
+		// bl f_playingState	//may wish to disable if it doesn't work
 
 
 	// bl f_playingState

@@ -285,9 +285,9 @@ f_drawMap:
 
 	mov yCounter_r, #0 	//set y loop counter to 0
 	
-	_drawMapLoopY:
-		mov xCounter_r, #0 //reset x loop counter to 0
-		_drawMapLoopX:
+	// _drawMapLoopY:
+	_drawMapLoop:
+		// _drawMapLoopX:
 
 			ldrb r0, [mapToDraw_r], #1
 			cmp r0, #0
@@ -315,12 +315,14 @@ f_drawMap:
 			_skipDrawing:
 			add xCounter_r, #1	//increment x cell count by 1
 			cmp xCounter_r, #32	//x screen size is 32 cells 
-			blt _drawMapLoopX
+			blt _drawMapLoop
+
+		mov xCounter_r, #0 //reset x loop counter to 0
 
 		add yCounter_r, #1 //increment y cell count by 1
 		add mapToDraw_r, #288 //map is 320 cells wide, so 320-32=288 which is the offset
 		cmp yCounter_r, #24 //y screen size is 24 cells
-		blt _drawMapLoopY
+		blt _drawMapLoop
 
 	//only need it for the above stuff, so unreq everything that was used in this subroutine
 	.unreq xCounter_r 

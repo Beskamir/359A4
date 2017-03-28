@@ -107,7 +107,7 @@ _f_drawArt:
 			//Load pixel colour from memory
 			ldr r2, [colorMem_r], #4	//setting pixel color
 			mov r0, r2 					//duplicate r2 into r0
-			ldr r0, =0xFFFF 			//load 4 bytes of 1's
+			ldr r3, =0xFFFF 			//load 4 bytes of 1's
 			bic r0, r3	//clear all bits other than first one and see if r9 is 0
 			//ie 0xF043F is alpha mapped, 0x0FCE8 is not so if r9 is zero then draw pixel
 			cmp r0, #0 			//check if r0 is 0, if so that means r2 contains valuable info.

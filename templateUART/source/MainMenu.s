@@ -1,13 +1,13 @@
 //This file handles the main menu
 
-.globl mainMenu								//Menu is the only public function in this file
+.globl f_mainMenu								//Menu is the only public function in this file
 
 .section .text
 
 //input: null
 //return: r0 - 0 if user wants to quit, 1 if user wants to start the game
 //effect: Runs the menu
-MainMenu:
+f_mainMenu:
 	//r4 = menu state
 	//r5 = snes output
 	//r6 = SNES A mask
@@ -125,14 +125,15 @@ _f_drawMenu:
 	//Draw the initial map
 	ldr r0, =0x64FE		//Blueish colour based on an image of the original game.
 	bl f_colourScreen	//drawing over the entire screen is sort of inefficent
-	//draw the sprites located on the background map
-	ldr r0, =t_mapBackground
-	ldr r1, =t_cameraPosition
-	bl f_drawMap
-	//draw the sprites located on the foreground map
-	ldr r0, =t_mapForeground
-	ldr r1, =t_cameraPosition
-	bl f_drawMap
+	
+	// //draw the sprites located on the background map
+	// ldr r0, =t_mapBackground
+	// ldr r1, =t_cameraPosition
+	// bl f_drawMap
+	// //draw the sprites located on the foreground map
+	// ldr r0, =t_mapForeground
+	// ldr r1, =t_cameraPosition
+	// bl f_drawMap
 
 	//draw the main menu logo. (contains title and names)
 	ldr r0, =t_MainMenuLogo
