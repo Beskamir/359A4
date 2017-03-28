@@ -24,10 +24,10 @@
 //Effect: Writes raw input to previousButtons
 //Usage: Make sure that init_GPIO has been called before using
 snes:
-	push {r4-r11, fp, lr}			//Push all the registers we might want to rewrite onto the stack
+	push {r4-r10, lr}			//Push all the registers we might want to rewrite onto the stack
 
-	ldr		r11, =previousButtons	//Load the address of the previously pressed buttons into r11
-	ldrh	r4, [r11]				//Load the previously pressed buttons into r11
+	ldr		r7, =previousButtons	//Load the address of the previously pressed buttons into r7
+	ldrh	r4, [r7]				//Load the previously pressed buttons into r7
 	//r4 previous register
 	//r5 current register
 	//r6 register containing info of which button states changed from the last press
@@ -50,23 +50,20 @@ snes:
 	biceq r6, r10			//If it's pressed, turn the 1 in r6 in that position into a 0 
 	
 	
-	ldr r7, =0xFFFF
-
-	strh	r5, [r11]		//Store the buttons that were just pressed into previousButtons
+	strh	r5, [r7]		//Store the buttons that were just pressed into previousButtons
 	
 	mov r0, #10
 	bl Wait	
 	
 	mov	r0, r6				//Prepare to return output
 	
-	pop {r4-r11, fp, lr}	//Pop the previous registers from the stack
-	mov	pc, lr				//Return
+	pop {r4-r10, pc}	//Pop the previous registers from the stack
 
 //Input: Nothing
 //Return: Nothing
 //Effect: Initialize pins
 init_GPIO:
-	push	{r4-r10, fp, lr}	//Push registers onto the stack
+	push	{r4-r10, lr}	//Push registers onto the stack
 	
 	//Set pin 11 to output and pin 10 to input
 	ldr		r4, =0x3F200004		//Load GPFSEL1 address into r4
@@ -92,15 +89,14 @@ init_GPIO:
 	str		r5, [r4]			//Store GPFSEL0
 
 	
-	pop		{r4-r10, fp, lr}	//Load previous registers from the stack
-	bx 		lr					//Return
+	pop		{r4-r10, pc}	//Load previous registers from the stack
 
 //Writes Latch
 //input: what will be written. (1 or 0)
 //return: null
 //effect: pin 9 set to input.
 Write_Latch:
-	push {r4-r10, fp, lr} //Push registers onto the stack
+	push {r4-r10, lr} //Push registers onto the stack
 
 	ldr r4, =0x3F200000	//Base GPIO reg
 	mov r5, #1			//value to be written
@@ -109,15 +105,14 @@ Write_Latch:
 	streq r5, [r4, #40]	//GPCLR0 (0x28) writes 0 if input was a 0
 	strne r5, [r4, #28]	//GPSET0 (0x1C) writes 1 if input was a 1
 
-	pop	{r4-r10, fp, lr}	//Load the original registers from the stack
-	bx 		lr					//Return
+	pop	{r4-r10, pc}	//Load the original registers from the stack
 
 //Writes Clock
 //input: what will be written. (1 or 0)
 //return: null
 //effect: pin 11 set to input.
 Write_Clock:
-	push {r4-r10, fp, lr}	//Push registers onto the stack
+	push {r4-r10, lr}	//Push registers onto the stack
 
 	ldr r4, =0x3F200000	//Base GPIO reg
 	mov r5, #1			//value to be written
@@ -126,14 +121,13 @@ Write_Clock:
 	streq r5, [r4, #40]	//GPCLR0 (0x28) writes 0 if input was a 0
 	strne r5, [r4, #28]	//GPSET0 (0x1C) writes 1 if input was a 1
 
-	pop	{r4-r10, fp, lr}	//Load the original registers from the stack
-	bx 		lr					//Return
+	pop	{r4-r10, pc}	//Load the original registers from the stack
 
 //Input: Nothing
 //Return: Data bit in r0
 //Effect: None 
 Read_Data:
-	push	{r4-r10, fp, lr}	//Push registers onto the stack
+	push	{r4-r10, lr}		//Push registers onto the stack
 
 	ldr		r4, =0x3F200034		//Load the base address into r4
 	ldr		r5, [r4]			//Load GPLEV0 into r5
@@ -148,14 +142,13 @@ Read_Data:
 	//likely due to gpio not being initialized well?
 	// mov 	r0, #1	//TEMP! DEBUGGING!
 
-	pop		{r4-r10, fp, lr}	//Load previous registers from the stack
-	bx 		lr					//Return
+	pop		{r4-r10, pc}		//Load previous registers from the stack
 
 //input: number of micros to wait
 //return: null
 //output: wait for at least 12 micros
 Wait:
-	push	{r4-r10, fp, lr}	//Push registers onto the stack
+	push	{r4-r10, lr}	//Push registers onto the stack
 
 	ldr r4, =0x3F003004 //address of CLO
 	ldr r5, [r4]		//read CLO
@@ -166,14 +159,13 @@ Wait:
 		cmp r5, r6 		//stop when CLO = r5
 		bhi waitLoop	//loop back otherwise
 
-	pop		{r4-r10, fp, lr}	//Load the original registers from the stack
-	bx 		lr					//Return
+	pop		{r4-r10, pc}	//Load the original registers from the stack
 
 //Input: Nothing
 //Return: Which buttons were pressed in r0, in order, bits with 0 are pressed
 //Effect: Nothing
 Read_SNES:
-	push	{r4-r10, fp, lr}	//Push registers onto the stack
+	push	{r4-r10, lr}	//Push registers onto the stack
 
 	//Initiate read
 	mov		r0, #1				//Write 1 to latch
@@ -216,8 +208,7 @@ Read_SNES:
 
 	mov		r0, r5				//Return the button register
 
-	pop		{r4-r10, fp, lr}	//Load previous registers from the stack
-	bx 		lr					//Return
+	pop		{r4-r10, pc}	//Load previous registers from the stack
 
 
 .section .data  
