@@ -2,6 +2,7 @@
 .section	.init
 
 .globl	f_modulo
+.globl	f_digToASCII
 
 .section	.text
 
