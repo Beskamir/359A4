@@ -37,12 +37,17 @@ contains the position of the left most side of the camera.
 //Second byte is number of lives
 //Third byte stores the win and lose flags
 	//Bit 0 is the lose flag, Bit 1 is the win flag
-//Word at the end stores the score
+.align 4
 _t_gameState:	
 	.byte 0, 3, 0
+
+.align 4
+//Word stores the score
+_t_gameScore:
 	.word 0
 	.align
 
+.align 4
 t_cameraPosition: //this contains the position of the left side of the camera. 
 	.int 0 //thus min value = 0 and max value = (size of map - 32)
 
@@ -55,6 +60,8 @@ effect: main loop function in gameplay logic.
 */
 f_playingState:
 	push {r4-r10, lr}
+
+	// mov r4, #0
 
 	bl _f_newGame //reset all the stored data to the initial states
 
@@ -72,6 +79,14 @@ f_playingState:
 		ldr r0, =d_mapForeground
 		ldr r1, =_d_cameraPosition
 		bl f_drawMap
+
+		ldr r0, =_d_cameraPosition
+		ldr r4, [r0]
+		add r4, #1
+		str r4, [r0]
+
+		cmp r4, #32
+		blt _playingLoop
 
 		//draw HUD
 
@@ -122,11 +137,24 @@ _f_newGame:
 
 	//reset the game state to the contents of the one that's in .text
 	ldr r0, =_t_gameState
-	ldmia r0, {r4-r6}
-	ldr r7, [r0, #3]
+	// ldmia r0, {r4-r6} //shortcut doesn't seem to work with load byte.
+	ldrb r4, [r0], #1
+	ldrb r5, [r0], #1
+	ldrb r6, [r0], #1
+
 	ldr r0, =_d_gameState
-	stmia r0, {r4-r6}
-	str r7, [r0, #3]
+	// stmia r0, {r4-r6} 
+	strb r4, [r0], #1
+	strb r5, [r0], #1
+	strb r6, [r0], #1
+
+	ldr r0, =_t_gameScore
+	ldr r4, [r0]
+
+	ldr r0, =_d_gameScore
+	str r4, [r0]
+
+	// str r7, [r0, #3]
 
 	pop {r4-r7, pc}
 /*
@@ -146,6 +174,8 @@ _f_copyMap:
 
 	mov sourceMap_r, r0			//store the .text map address in sourceMap_r
 	mov destinationMap_r, r1    //store the .data map address in destinationMap_r
+
+	mov cellCounter_r, #0
 
 	//copy all the elements of the map arrays from .text to .data	
 	_copyMapLoop:
@@ -269,12 +299,17 @@ f_drawMap:
 
 
 
-	ldr spriteAccess_r, =t_UpMushroom_0_0
+	ldr spriteAccess_r, =t_artSpritesAccess
 
 
 	mov mapToDraw_r, r0				 //load the map to use for drawing
 	ldr xCameraPosition_r, [r1] 	 //get camera position based on input parameter
-	add mapToDraw_r, xCameraPosition_r
+	
+	//This is currently broken, it'll slowly shift the map left rather than right if
+	//value initalized to something greater than 0, also this seems to be why
+	//the map will loop around to the end point...
+	add mapToDraw_r, xCameraPosition_r //Shift map to the correct camera position 
+
 
 	// mov temp_r, #0
 
@@ -298,9 +333,11 @@ f_drawMap:
 			// ldr r1, =4104
 			// mul r0, r1
 			//Following faster than using mul
-			lsl r0, #10	//r0>>12==r0*(32*32)
-			add r0, #2  //r0+2
-			lsl r0, #2  //r0>>2==r0*4
+			// lsl r0, #10	//r0>>12==r0*(32*32)
+			// add r0, #2  //r0+2
+			// lsl r0, #2  //r0>>2==r0*4
+			ldr r1, =4104
+			mul r0, r1
 			add r0, spriteAccess_r //add the address of s_artSpritesAccess to the "offset" in r0
 			//Now r0 has address of sprite to draw
 			// mul r1, xCounter_r, cellsize_r//compute starting x value for the image
@@ -337,16 +374,22 @@ f_drawMap:
 
 .section .data
 
+
 //Stores the game variables
 //First byte is number of coins
 //Second byte is number of lives
 //Third byte stores the win and lose flags
 	//Bit 0 is the lose flag, Bit 1 is the win flag
-//Word at the end stores the score
+.align 4
 _d_gameState:	
-	.byte 0, 0, 0
+	.byte 0, 3, 0
+
+.align 4
+//Word stores the score
+_d_gameScore:
 	.word 0
 	.align
 
-_d_cameraPosition: //this contians the position of the left side of the camera. 
+.align 4
+_d_cameraPosition: //this contains the position of the left side of the camera. 
 	.int 0 //thus min value = 0 and max value = (size of map - 32)

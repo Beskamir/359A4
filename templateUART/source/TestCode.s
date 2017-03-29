@@ -54,14 +54,29 @@ f_tests3:
 	// 	mov r3, #0 
 	// 	bl f_drawElement
 
-	//basic clear screen function, test if colour screen works
-		ldr r0, =0x64FE
+		ldr r0, =0x0
 		bl f_colourScreen
 
-	//draw the background map bypassing playingState using the drawMap function
-		ldr r0, =t_mapBackground
-		ldr r1, =t_cameraPosition
-		bl f_drawMap
+
+		bl f_playingState
+
+
+		// bl f_mainMenu
+
+	// // //basic clear screen function, test if colour screen works
+	// 	ldr r0, =0x64FE
+	// 	bl f_colourScreen
+
+	// //draw the background map bypassing playingState using the drawMap function
+	// 	ldr r0, =t_mapBackground
+	// 	ldr r1, =t_cameraPosition
+	// 	bl f_drawMap
+
+	// 	ldr r0, =t_mapForeground
+	// 	ldr r1, =t_cameraPosition
+	// 	bl f_drawMap
+
+		// bl f_playingState
 
 	pop {r4-r10, pc}
 
