@@ -13,7 +13,7 @@
 //Output: new buttons pressed in r0, left and right joystick buttons always returned as pressed if they are pressed on the controller
 //Effect: none
 //Usage: ALWAYS call init_GPIO first
-.globl	snes
+.globl	Read_SNES
 .globl	previousButtons
 
     
@@ -23,41 +23,41 @@
 //Output: Newly pressed buttons pressed in r0; left and right joystick buttons always returned as pressed if they are pressed on the controller even if they were pressed before
 //Effect: Writes raw input to previousButtons
 //Usage: Make sure that init_GPIO has been called before using
-snes:
-	push {r4-r10, lr}			//Push all the registers we might want to rewrite onto the stack
+// snes:
+	// push {r4-r10, lr}			//Push all the registers we might want to rewrite onto the stack
 
-	ldr		r7, =previousButtons	//Load the address of the previously pressed buttons into r7
-	ldrh	r4, [r7]				//Load the previously pressed buttons into r7
-	//r4 previous register
-	//r5 current register
-	//r6 register containing info of which button states changed from the last press
+	// ldr		r7, =previousButtons	//Load the address of the previously pressed buttons into r7
+	// ldrh	r4, [r7]				//Load the previously pressed buttons into r7
+	// //r4 previous register
+	// //r5 current register
+	// //r6 register containing info of which button states changed from the last press
 	
-	ldr r4, =0xFFFF	//set r4 to 16 one's
-	mov r8, r4		//left half of registers is ones
+	// ldr r4, =0xFFFF	//set r4 to 16 one's
+	// mov r8, r4		//left half of registers is ones
 
-	bl Read_SNES	//branch to read snes
-	mov r5, r0		//store read_snes output in r5
-	eor r9, r8		//negate r4 bottom 16 bits
-	orr r6, r5, r9	//newly pressed buttons stored in r6
+	// bl Read_SNES	//branch to read snes
+	// mov r5, r0		//store read_snes output in r5
+	// eor r9, r8		//negate r4 bottom 16 bits
+	// orr r6, r5, r9	//newly pressed buttons stored in r6
 	
-	//Special case: If left or right on D-pad being held, they should still be counted as pressed!
-	mov r10, #0x40			//r10 = ... 0000 0100 0000
-	tst	r4, r10				//Check what the value of joy pad left was previously
-	biceq r6, r10			//If it's pressed, turn the 1 in r6 in that position into a 0 
-	//Now check for right
-	mov r10, #0x80			//r10 = ... 0000 1000 0000
-	tst	r4, r10				//Check what the value of joy pad right was previous
-	biceq r6, r10			//If it's pressed, turn the 1 in r6 in that position into a 0 
+	// //Special case: If left or right on D-pad being held, they should still be counted as pressed!
+	// mov r10, #0x40			//r10 = ... 0000 0100 0000
+	// tst	r4, r10				//Check what the value of joy pad left was previously
+	// biceq r6, r10			//If it's pressed, turn the 1 in r6 in that position into a 0 
+	// //Now check for right
+	// mov r10, #0x80			//r10 = ... 0000 1000 0000
+	// tst	r4, r10				//Check what the value of joy pad right was previous
+	// biceq r6, r10			//If it's pressed, turn the 1 in r6 in that position into a 0 
 	
 	
-	strh	r5, [r7]		//Store the buttons that were just pressed into previousButtons
+	// strh	r5, [r7]		//Store the buttons that were just pressed into previousButtons
 	
-	mov r0, #10
-	bl Wait	
+	// mov r0, #10
+	// bl Wait	
 	
-	mov	r0, r6				//Prepare to return output
+	// mov	r0, r6				//Prepare to return output
 	
-	pop {r4-r10, pc}	//Pop the previous registers from the stack
+	// pop {r4-r10, pc}	//Pop the previous registers from the stack
 
 //Input: Nothing
 //Return: Nothing
@@ -213,4 +213,4 @@ Read_SNES:
 
 .section .data  
 
-previousButtons: .hword
+// previousButtons: .hword
