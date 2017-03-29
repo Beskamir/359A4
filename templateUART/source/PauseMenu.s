@@ -5,7 +5,7 @@
 .section .text
 
 //input: null
-//return: r0 - 0 if user wants to quit, 1 if user wants to resume the game
+//return: r0 - 0 if user wants to quit, 1 if user wants to restart the game, 2 if user wants to close the menu and resume the game
 //effect: Runs the menu
 f_pauseMenu:
 	//r4 = menu state
@@ -13,6 +13,7 @@ f_pauseMenu:
 	//r6 = SNES A mask
 	//r7 = SNES joy-pad UP mask
 	//r8 = SNES joy-pad DOWN mask
+	//r9 = SNES Start mask
 	
 	push	{r4-r10, lr}			//Push all the general purpose registers along with fp and lr to the stack
 	
@@ -34,6 +35,8 @@ f_pauseMenu:
 	lsl		r7, #4					//Shift to bit 4 (joy-pad UP)
 	mov		r8, #1					//Move 1 into r8
 	lsl		r8, #5					//Shift to bit 5 (joy-pad DOWN)
+	mov		r9, #1					//Move 1 into r9
+	lsl		r9, #3					//Shift to bit 3 (Start)
 	bl		Read_SNES				//Get input from the SNES
 	mov		r5, r0					//Move the input into r5
 	b	selectionLoopTest
@@ -42,6 +45,11 @@ f_pauseMenu:
 		
 		bl		Read_SNES			//Read input
 		mov		r5, r0				//Move the output into r5
+		
+		checkStart:
+		tst		r5, r7				//Check if Start was pressed
+		bne		checkUp				//If it wasn't, go to checkUp
+		b		selectionLoopEnd	//Instantly end the loop
 		
 		checkUp:
 		tst		r5, r7				//Check if joy-pad UP was pressed
@@ -66,8 +74,8 @@ f_pauseMenu:
 		tst		r5, r6				//AND the input with r5 
 		bne		SLtop				//If A hasn't been pressed, move back into the loop
 	
+	SelectionLoopEnd:				//Branched to if Start is pressed
 	mov		r0, r4					//Return the menu state
-	
 	ldr		r4, =isPaused			//Load the paused boolean register
 	mov		r5, #0					//r5 = 0
 	str		r5, [r4]				//isPaused = 0
