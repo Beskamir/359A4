@@ -57,8 +57,9 @@ f_tests3:
 		ldr r0, =0x0
 		bl f_colourScreen
 
+		// bl f_mainMenu
 
-		bl f_playingState
+		// bl f_playingState
 
 
 		// bl f_mainMenu

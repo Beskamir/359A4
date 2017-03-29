@@ -85,7 +85,7 @@ f_playingState:
 		add r4, #1
 		str r4, [r0]
 
-		cmp r4, #32
+		cmp r4, #320
 		blt _playingLoop
 
 		//draw HUD
@@ -291,9 +291,10 @@ f_drawMap:
 
 	mapToDraw_r .req r6 //address of the map that will be drawn.
 
-	xCameraPosition_r .req r7 //camera position in the world space
+	spriteAccess_r .req r7
 
-	spriteAccess_r .req r8
+	// xCameraPosition_r .req r7 //camera position in the world space
+
 
 	temp_r .req r9	//scratch register for temp values
 
@@ -303,17 +304,17 @@ f_drawMap:
 
 
 	mov mapToDraw_r, r0				 //load the map to use for drawing
-	ldr xCameraPosition_r, [r1] 	 //get camera position based on input parameter
-	
+	ldr r2, [r1] 	 	//get camera position based on input parameter
+
 	//This is currently broken, it'll slowly shift the map left rather than right if
 	//value initalized to something greater than 0, also this seems to be why
 	//the map will loop around to the end point...
-	add mapToDraw_r, xCameraPosition_r //Shift map to the correct camera position 
+	add mapToDraw_r, r2 //Shift map to the correct camera position 
 
 
 	// mov temp_r, #0
 
-	.unreq xCameraPosition_r //only need it for the above stuff
+	// .unreq xCameraPosition_r //only need it for the above stuff
 
 	// cellsize_r .req r7	
 	// mov cellsize_r, #32
