@@ -9,7 +9,7 @@
 //effect: Runs the menu
 f_mainMenu:
 	//r4 = menu state
-	//r5 = snes output
+	//r5 = SNES output
 	//r6 = SNES A mask
 	//r7 = SNES joy-pad UP mask
 	//r8 = SNES joy-pad DOWN mask
@@ -30,13 +30,13 @@ f_mainMenu:
 	lsl		r7, #5					//Shift to bit 5 (joy-pad UP)
 	mov		r8, #1					//Move 1 into r8
 	lsl		r8, #6					//Shift to bit 6 (joy-pad DOWN)
-	bl		snes					//Get input from the SNES
+	bl		Read_SNES				//Get input from the SNES
 	mov		r5, r0					//Move the input into r5
 	b	selectionLoopTest
 		
 		SLtop:						//Top of the loop
 		
-		bl		snes				//Call snes
+		bl		Read_SNES			//Read input
 		mov		r5, r0				//Move the output into r5
 		
 		checkUp:
