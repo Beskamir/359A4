@@ -9,12 +9,16 @@
 //effect: Runs the menu
 f_pauseMenu:
 	//r4 = menu state
-	//r5 = snes output
+	//r5 = SNES output
 	//r6 = SNES A mask
 	//r7 = SNES joy-pad UP mask
 	//r8 = SNES joy-pad DOWN mask
 	
 	push	{r4-r10, lr}			//Push all the general purpose registers along with fp and lr to the stack
+	
+	ldr		r4, =isPaused			//Load the paused boolean register
+	mov		r5, #1					//r5 = 1
+	str		r5, [r4]				//isPaused = 1
 	
 	bl		_f_drawMenu				//Draw the menu
 	
@@ -25,18 +29,18 @@ f_pauseMenu:
 	
 	selectionLoop:					//This loop changes input
 	mov		r6, #1					//Move 1 into r6
-	lsl		r6, #9					//Shift that 1 to bit 9 (A)
+	lsl		r6, #8					//Shift that 1 to bit 8 (A)
 	mov		r7, #1					//Move 1 into r7
-	lsl		r7, #5					//Shift to bit 5 (joy-pad UP)
+	lsl		r7, #4					//Shift to bit 4 (joy-pad UP)
 	mov		r8, #1					//Move 1 into r8
-	lsl		r8, #6					//Shift to bit 6 (joy-pad DOWN)
-	bl		snes					//Get input from the SNES
+	lsl		r8, #5					//Shift to bit 5 (joy-pad DOWN)
+	bl		Read_SNES				//Get input from the SNES
 	mov		r5, r0					//Move the input into r5
 	b	selectionLoopTest
 		
 		SLtop:						//Top of the loop
 		
-		bl		snes				//Call snes
+		bl		Read_SNES			//Read input
 		mov		r5, r0				//Move the output into r5
 		
 		checkUp:
@@ -63,6 +67,10 @@ f_pauseMenu:
 		bne		SLtop				//If A hasn't been pressed, move back into the loop
 	
 	mov		r0, r4					//Return the menu state
+	
+	ldr		r4, =isPaused			//Load the paused boolean register
+	mov		r5, #0					//r5 = 0
+	str		r5, [r4]				//isPaused = 0
 	
 	pop		{r4-r10, pc}		//Return all the previous registers
 	
