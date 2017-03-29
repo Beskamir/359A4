@@ -75,44 +75,46 @@ f_pauseMenu:
 	//quit game at: x = 412, y = 438
 _f_drawSelection:
 	push	{lr}	//Push lr to the stack
+	/*
 	
-	// cmp r0, #0
-	// beq _drawSelectionQuit
-		// //draw selected start option
-		// ldr r0, =t_StartSelect
-		// mov r1, #412
-		// mov r2, #384
-		// mov r3, #1
-		// bl f_drawElement
+	cmp r0, #0
+	beq _drawSelectionQuit
+		//draw selected start option
+		ldr r0, =t_StartSelect
+		mov r1, #412
+		mov r2, #384
+		mov r3, #1
+		bl f_drawElement
 
-		// //draw regular quit option
-		// ldr r0, =t_QuitNorm
-		// mov r1, #412
-		// ldr r2, =438
-		// mov r3, #1
-		// bl f_drawElement
+		//draw regular quit option
+		ldr r0, =t_QuitNorm
+		mov r1, #412
+		ldr r2, =438
+		mov r3, #1
+		bl f_drawElement
 
-		// b _drawSelectionEnd
+		b _drawSelectionEnd
 
 
 
-	// _drawSelectionQuit:
-		// //draw regular start option
-		// ldr r0, =t_StartNorm
-		// mov r1, #412
-		// mov r2, #384
-		// mov r3, #1
-		// bl f_drawElement
+	_drawSelectionQuit:
+		//draw regular start option
+		ldr r0, =t_StartNorm
+		mov r1, #412
+		mov r2, #384
+		mov r3, #1
+		bl f_drawElement
 
-		// //draw selected quit option
-		// ldr r0, =t_QuitSelect
-		// mov r1, #412
-		// ldr r2, =438
-		// mov r3, #1
-		// bl f_drawElement
+		//draw selected quit option
+		ldr r0, =t_QuitSelect
+		mov r1, #412
+		ldr r2, =438
+		mov r3, #1
+		bl f_drawElement
 
-	// _drawSelectionEnd:
+	_drawSelectionEnd:
 	
+	*/
 	pop		{pc}	//Return to caller popping pc
 
 
@@ -122,25 +124,27 @@ _f_drawSelection:
 _f_drawMenu:
 	push	{lr}	//only need to push lr
 	
-	// //Draw the initial map
-	// ldr r0, =0x64FE		//Blueish colour based on an image of the original game.
-	// bl f_colourScreen	//drawing over the entire screen is sort of inefficent
+	/*
+	//Draw the initial map
+	ldr r0, =0x64FE		//Blueish colour based on an image of the original game.
+	bl f_colourScreen	//drawing over the entire screen is sort of inefficent
 	
-	// //draw the sprites located on the background map
-	// ldr r0, =t_mapBackground
-	// ldr r1, =t_cameraPosition
-	// bl f_drawMap
-	// //draw the sprites located on the foreground map
-	// ldr r0, =t_mapForeground
-	// ldr r1, =t_cameraPosition
-	// bl f_drawMap
+	//draw the sprites located on the background map
+	ldr r0, =t_mapBackground
+	ldr r1, =t_cameraPosition
+	bl f_drawMap
+	//draw the sprites located on the foreground map
+	ldr r0, =t_mapForeground
+	ldr r1, =t_cameraPosition
+	bl f_drawMap
 
-	// //draw the main menu logo. (contains title and names)
-	// ldr r0, =t_MainMenuLogo
-	// mov r1, #162
-	// mov r2, #65
-	// mov r3, #1
-	// bl f_drawElement
+	//draw the main menu logo. (contains title and names)
+	ldr r0, =t_MainMenuLogo
+	mov r1, #162
+	mov r2, #65
+	mov r3, #1
+	bl f_drawElement	
+	*/
 
 	pop		{pc}	//return by popping pc
 	
