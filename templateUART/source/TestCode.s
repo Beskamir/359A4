@@ -59,7 +59,7 @@ f_tests3:
 
 		// bl f_mainMenu
 
-		// bl f_playingState
+		bl f_playingState
 
 
 		// bl f_mainMenu
