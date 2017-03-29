@@ -25,11 +25,11 @@ f_mainMenu:
 	
 	selectionLoop:					//This loop changes input
 	mov		r6, #1					//Move 1 into r6
-	lsl		r6, #9					//Shift that 1 to bit 9 (A)
+	lsl		r6, #8					//Shift that 1 to bit 8 (A)
 	mov		r7, #1					//Move 1 into r7
-	lsl		r7, #5					//Shift to bit 5 (joy-pad UP)
+	lsl		r7, #4					//Shift to bit 4 (joy-pad UP)
 	mov		r8, #1					//Move 1 into r8
-	lsl		r8, #6					//Shift to bit 6 (joy-pad DOWN)
+	lsl		r8, #5					//Shift to bit 5 (joy-pad DOWN)
 	bl		Read_SNES				//Get input from the SNES
 	mov		r5, r0					//Move the input into r5
 	b	selectionLoopTest
