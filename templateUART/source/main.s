@@ -41,7 +41,15 @@ main:
 	str r1,[r0,#0x20]
 	ldr r1,=_f_core3Init
 	str r1,[r0,#0x30]
-	
+
+	// //Idea for initing cores, move this code after they've been activated. Also test using print console debugging
+ //    mov		sp, #0x8000 // Initializing the stack pointer
+	// bl		EnableJTAG 	// Enable JTAG
+	// bl		InitUART 	//This is important to be  able to use UART
+
+	// bl 		InitFrameBuffer //Enable Frame Buffer
+	// bl		init_GPIO	//Enable the GPIO pins
+
 	//Idea for initing cores, move this code after they've been activated. Also test using print console debugging
     mov		sp, #0x8000 // Initializing the stack pointer
 	bl		EnableJTAG 	// Enable JTAG
@@ -49,10 +57,9 @@ main:
 
 	bl 		InitFrameBuffer //Enable Frame Buffer
 	bl		init_GPIO	//Enable the GPIO pins
-
-
-	//TestCode
 		b f_tests3
+	//TestCode
+		// b f_tests3
 		b haltLoop$
 	///Test Code
 
@@ -69,7 +76,6 @@ main:
 ////End of Actual coreLoop
 
 _f_core1Init:
-
 	//Set up core 1
 	bl _f_enableCache
 	// MRC p15,0,r0,c1,c0,0
