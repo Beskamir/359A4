@@ -12,7 +12,7 @@ f_updateAIs:
 	push {r4-r10, lr}
 
 	mapLayerCount_r	.req r7
-	mapLayerMem_r	.req r8
+	// mapLayerMem_r	.req r8
 
 
 	mov mapLayerCount_r, #0
@@ -20,13 +20,17 @@ f_updateAIs:
 	_mapLayer:
 		//scan the middle and foreground maps
 		cmp mapLayerCount_r, #0
-		ldreq r0, =d_mapMiddleground
+		// ldreq r0, =d_mapMiddleground
 		ldrne r0, =d_mapForeground
 		bl _f_updateNPCsOnSpecifiedMap
 
-		add mapLayer_r, #1
+		add mapLayerCount_r, #1
 		cmp mapLayerCount_r, #1
 		ble _mapLayer
+
+	.unreq mapLayerCount_r 
+	// .unreq mapLayerMem_r 
+	// .unreq isAI_r 
 
 	pop {r4-r10, pc}
 
@@ -56,7 +60,7 @@ _f_updateNPCsOnSpecifiedMap:
 		//restore from memory
 		mov r0, xCellChecked_r
 		mov r1, yCellChecked_r
-		ldr r2, =mapLayerMem_r
+		mov r2, mapLayerMem_r
 		//Read the map
 		bl _f_findNPCorItem 
 		//Store following for ease of use and memory
@@ -84,6 +88,7 @@ _f_updateNPCsOnSpecifiedMap:
 	.unreq xCellChecked_r 
 	.unreq yCellChecked_r 
 	.unreq isAI_r 
+	.unreq mapLayerMem_r 
 
 
 
@@ -137,7 +142,7 @@ _f_findNPCorItem:
 	mov yCellCheck_r, r1
 
 	//get foreground map address
-	ldr mapOffset_r, =r2
+	mov mapOffset_r, r2 
  
  	//load the camera offset
 	ldr cameraOffset_r, =d_cameraPosition

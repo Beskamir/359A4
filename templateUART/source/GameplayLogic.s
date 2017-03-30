@@ -193,7 +193,7 @@ f_addCoin:
 	
 	incScore:
 	mov		r0, #200		//Add 200 points
-	bl		_f_addScore		//Call addScore
+	bl		f_addScore		//Call addScore
 	
 	pop {r4-r10, fp, lr}
 	mov	pc, lr
