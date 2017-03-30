@@ -1,8 +1,11 @@
 //This file handles the pause menu
 
-.globl f_pauseMenu								//Menu is the only public function in this file
+.section	.init
 
-.section .text
+.globl	f_pauseMenu								//Menu is the only public function in this file
+.globl	isPaused								//public boolean whether game is paused or not
+
+.section	.text
 
 //input: null
 //return: r0 - 0 if user wants to quit, 1 if user wants to restart the game, 2 if user wants to close the menu and resume the game
