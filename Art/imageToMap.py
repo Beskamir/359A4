@@ -223,6 +223,7 @@ def convertToAscii(x, y, pixels):
 	# print(ASCIITOCOLOURKEY.keys())
 	numericValue=int(ASCIITOCOLOURKEY[tempHex])
 	if (numericValue>=103 and numericValue<=107):
+		# print(tempHex,numericValue)
 		numericValue-=102
 	return str(numericValue)
 
