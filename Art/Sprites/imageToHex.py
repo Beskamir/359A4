@@ -122,7 +122,8 @@ def genPixel(memLabel,keyOutput):
 			r+=50
 	staticColours=[r,g,b]
 	tempHex='{:02x}{:02x}{:02x}'.format(r, g, b)
-	print("0x"+tempHex+" >> '"+str(staticCounter)+"' >> "+memLabel)
+	print("'"+str(staticCounter)+"' >> "+memLabel)
+	# print("0x"+tempHex+" >> '"+str(staticCounter)+"' >> "+memLabel)
 	# print("'"+tempHex+"':'"+chr(staticASCII)+"',",end="")
 	keyOutput.write("'"+tempHex+"':'"+str(staticCounter)+"',")
 	staticCounter+=1

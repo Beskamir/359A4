@@ -9,6 +9,12 @@ FOLDERNAME="\\Maps\\Complete\\" #folder containing images
 OUTPUTNAMEFILENAME="map.txt" #File output location
 CONVERSIONKEYUSED = """
 /*
+Notes: Items are in the background map until the player hits the corresponding box.
+	meaning that a coin is on the layer behind the box that will be hit. 
+	If needed the item can be moved to the foreground layer.
+
+	Otherwise unless labeled "background" everything else is on the foreground
+
 conversion table:
 	In all maps:	
 	0xFFFFFF >> '0' >> sky/nothing
@@ -20,6 +26,8 @@ conversion table:
 	0x64c832 >> '4' >> t_Items_Coin01_0_0
 	0x64c864 >> '5' >> t_Items_Coin02_0_0
 
+	//Still have room for 5 more "easy to implement" offscreen stuff
+	
 	0x000032 >> '10' >> t_Background_Castle_0_0
 	0x000064 >> '11' >> t_Background_Castle_0_1
 	0x000096 >> '12' >> t_Background_Castle_0_2
@@ -225,6 +233,11 @@ def convertToAscii(x, y, pixels):
 	if (numericValue>=103 and numericValue<=107):
 		# print(tempHex,numericValue)
 		numericValue-=102
+	elif (numericValue>86): #hack for making space
+		# print(tempHex,numericValue)
+		if (numericValue>89):
+			numericValue+=3
+		numericValue+=3
 	return str(numericValue)
 
 #Trims the filepath to a label friendly string
