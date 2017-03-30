@@ -8,6 +8,12 @@
 .globl d_mapForeground_data
 
 /*
+Notes: Items are in the background map until the player hits the corresponding box.
+	meaning that a coin is on the layer behind the box that will be hit. 
+	If needed the item can be moved to the foreground layer.
+
+	Otherwise unless labeled "background" everything else is on the foreground
+
 conversion table:
 	In all maps:	
 	0xFFFFFF >> '0' >> sky/nothing
