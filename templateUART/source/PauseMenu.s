@@ -3,7 +3,7 @@
 .section	.init
 
 .globl	f_pauseMenu								//Menu is the only public function in this file
-.globl	isPaused								//public boolean whether game is paused or not
+.globl	isPaused								//Public boolean whether game is paused or not
 
 .section	.text
 
@@ -11,7 +11,7 @@
 //return: r0 - 0 if user wants to quit, 1 if user wants to restart the game, 2 if user wants to close the menu and resume the game
 //effect: Runs the menu
 f_pauseMenu:
-	//r4 = menu state
+	//r4 = Menu state
 	//r5 = SNES output
 	//r6 = SNES A mask
 	//r7 = SNES joy-pad UP mask

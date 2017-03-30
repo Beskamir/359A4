@@ -86,16 +86,28 @@ _Doirq:
 	
 	// a. Test if timer1 did the interrupt
 		// i. Load the values stored in 0x3F00B204 to r1
+		ldr		r4, =0xF00B204
+		ldr		r1, [r4]
 		// ii. Tst bit 2
+		mov		r5, #1
+		lsl		r5, #2
+		tst		r1, r5
 		// iii. If result is zero go to e
+		beq		e
 	// b. Check if the game was paused
 		// i. You should have a label in memory where you store in it if the game is paused or not
+		ldr		r4, =isPaused
+		ldrb	r5, [r4]
+		cmp		r5, #1
 		// ii. If paused you go to e
+		beq		e
 	// c. If a,b,c are all valid you draw your value pack.
+//TODO		f_drawValuePack
 	// d. Enable CS timer Control
 		// i. Load the value stored in 0x3F003000
 		// ii. Put 1 in bit 1 and the rest are zeroes
 	// e. Update time in C1
+	e:
 	// f. Repeat (2)
 	// g. Then subs pc, lr, #4
 	
