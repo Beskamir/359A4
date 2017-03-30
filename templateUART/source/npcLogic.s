@@ -40,7 +40,7 @@ _f_updateNPCsOnSpecifiedMap:
 	xCellChecked_r 	.req r4
 	yCellChecked_r	.req r5
 	isAI_r			.req r6
-	mapLayerCount_r	.req r7
+	// mapLayerCount_r	.req r7
 	mapLayerMem_r	.req r7
 
 
@@ -48,7 +48,7 @@ _f_updateNPCsOnSpecifiedMap:
 	mov xCellChecked_r, #0
 	mov yCellChecked_r, #0
 
-	mov mapLayerCount_r, #0
+	// mov mapLayerCount_r, #0
 	mov mapLayerMem_r, r0
 
 

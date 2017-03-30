@@ -11,6 +11,16 @@ effect: main loop function in gameplay logic.
 */
 .globl f_playingState
 
+//Input: null
+//Output: null
+//Effect: Add a coin to coin count, increment score, check if extra life earned
+.globl f_addCoin
+
+//Input: Amount to increase score by in r0
+//Output: null
+//Effect: Increase score by amount in r0
+.globl f_addScore
+
 .section    .init
     
 .section .text
