@@ -74,7 +74,7 @@ f_pauseMenu:
 		tst		r5, r6				//AND the input with r5 
 		bne		SLtop				//If A hasn't been pressed, move back into the loop
 	
-	SelectionLoopEnd:				//Branched to if Start is pressed
+	selectionLoopEnd:				//Branched to if Start is pressed
 	mov		r0, r4					//Return the menu state
 	ldr		r4, =isPaused			//Load the paused boolean register
 	mov		r5, #0					//r5 = 0

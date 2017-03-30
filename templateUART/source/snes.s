@@ -76,7 +76,7 @@ f_playInput:
 	lsl		r5, #3			//Shift to bit 3 (Start)
 	tst		r4, r5			//AND the two registers and set flags accordingly
 	bne		noPause			//If Start was not pressed, handle the result of the input
-	bl		f_pausemenu		//If Start was pressed, activate the start menu
+	bl		f_pauseMenu		//If Start was pressed, activate the start menu
 	b		end_playInput	//After running the pause menu, don't handle any more input until the next play loop
 	
 	noPause:
