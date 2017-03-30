@@ -159,7 +159,7 @@ _f_updateNPCs:
 //Input: null
 //Output: null
 //Effect: Add a coin to coin count, increment score, check if extra life earned
-_f_addCoin:
+f_addCoin:
 	push {r4-r10, fp, lr}
 	
 	//Load addresses
@@ -191,7 +191,7 @@ _f_addCoin:
 //Input: Amount to increase score by in r0
 //Output: null
 //Effect: Increase score by amount in r0
-_f_addScore:
+f_addScore:
 	push {r4-r10, fp, lr}
 	
 	mov	r4, r0				//Store the score to be added in a safe register

@@ -26,6 +26,13 @@ _start:
 
 main:
 
+	//Idea for initing cores, move this code after they've been activated. Also test using print console debugging
+    mov		sp, #0x8000 // Initializing the stack pointer
+	bl		EnableJTAG 	// Enable JTAG
+	bl		InitUART 	//This is important to be  able to use UART
+
+	bl 		InitFrameBuffer //Enable Frame Buffer
+	bl		init_GPIO	//Enable the GPIO pins
 
 
 	// b haltLoop$
@@ -34,32 +41,18 @@ main:
 
 	/// In theory this will stop the cpu's from fighting over resources
 	//and make things faster
-	ldr r0,=0x4000008C
-	ldr r1,=_f_core1Init
-	str r1,[r0,#0x10]
-	ldr r1,=_f_core2Init
-	str r1,[r0,#0x20]
-	ldr r1,=_f_core3Init
-	str r1,[r0,#0x30]
+	// ldr r0,=0x4000008C
+	// ldr r1,=_f_core1Init
+	// str r1,[r0,#0x10]
+	// ldr r1,=_f_core2Init
+	// str r1,[r0,#0x20]
+	// ldr r1,=_f_core3Init
+	// str r1,[r0,#0x30]
 
-	// //Idea for initing cores, move this code after they've been activated. Also test using print console debugging
- //    mov		sp, #0x8000 // Initializing the stack pointer
-	// bl		EnableJTAG 	// Enable JTAG
-	// bl		InitUART 	//This is important to be  able to use UART
+	bl _f_enableCache
 
-	// bl 		InitFrameBuffer //Enable Frame Buffer
-	// bl		init_GPIO	//Enable the GPIO pins
-
-	//Idea for initing cores, move this code after they've been activated. Also test using print console debugging
-    mov		sp, #0x8000 // Initializing the stack pointer
-	bl		EnableJTAG 	// Enable JTAG
-	bl		InitUART 	//This is important to be  able to use UART
-
-	bl 		InitFrameBuffer //Enable Frame Buffer
-	bl		init_GPIO	//Enable the GPIO pins
-		b f_tests3
 	//TestCode
-		// b f_tests3
+		b f_tests3
 		b haltLoop$
 	///Test Code
 
@@ -76,6 +69,7 @@ main:
 ////End of Actual coreLoop
 
 _f_core1Init:
+
 	//Set up core 1
 	bl _f_enableCache
 	// MRC p15,0,r0,c1,c0,0
@@ -146,19 +140,15 @@ haltLoop$:	//Halts the program
 _f_enableCache:
 	push {lr}
 
-    .equ    SCTLR_ENABLE_DATA_CACHE,         0x4
-    .equ    SCTLR_ENABLE_BRANCH_PREDICTION,  0x800
-    .equ    SCTLR_ENABLE_INstrUCTION_CACHE,  0x1000
-
     // Enable L1 Cache -------------------------------------------------------
 
     // R0 = System Control Register
     mrc p15,0,r0,c1,c0,0
 
     // Enable caches and branch prediction
-    orr r0,#SCTLR_ENABLE_BRANCH_PREDICTION
-    orr r0,#SCTLR_ENABLE_DATA_CACHE
-    orr r0,#SCTLR_ENABLE_INstrUCTION_CACHE
+    orr r0,#0x4 //enable data cache
+    orr r0,#0x800 //enable branch prediction
+    orr r0,#0x1000 //enable instruction cache
 
     // System Control Register = R0
     mcr p15,0,r0,c1,c0,0
