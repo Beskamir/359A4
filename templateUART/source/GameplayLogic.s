@@ -91,6 +91,11 @@ f_playingState:
 		//draw HUD
 
 		//player input
+		
+		bl	Read_SNES		//Get input from the player
+		bl	f_playInput		//Handle input
+			
+		
 		//check collisions
 		//update map
 		//update score/coins

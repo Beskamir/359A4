@@ -59,6 +59,39 @@
 	
 	// pop {r4-r10, pc}	//Pop the previous registers from the stack
 
+//Input: Input from the player in r0	
+//Ouput:
+//Effect:
+f_playInput:
+
+	push	{r4-r10, lr}	//Push registers to the stack
+	
+	bl		Read_SNES		//Read input from the player
+	mov		r4, r0			//Store the input in r5
+	
+	//Check if pause menu activated
+	
+	mov		r5, #1			//Move 1 into r5
+	lsl		r5, #3			//Shift to bit 3 (Start)
+	tst		r4, r5			//AND the two registers and set flag accordingly
+	bleq	f_pausemenu		//If Start was pressed, activate the start menu
+	
+	//Check if up was pressed to jump
+	
+	mov		r5, #1			//Move 1 into r5
+	lsl		r5, #4			//Shift to bit 4 (Joy-pad UP)
+	tst		r4, r5			//AND the two registers and set flag accordingly
+	bleq	f_pausemenu		//If Joy-pad UP was pressed, activate the start menu
+	
+	//Check if left or right were pressed to move Mario
+	
+	mov		r5, #1			//Move 1 into r5
+	lsl		r5, #3			//Shift to bit 3 (Start)
+	tst		r4, r5			//AND the two registers and set flag accordingly
+	bleq	f_pausemenu		//If Start was pressed, activate the start menu
+
+	pop		{r4-r10, pc}	//Pop register from the stack and return
+
 //Input: Nothing
 //Return: Nothing
 //Effect: Initialize pins
