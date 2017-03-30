@@ -60,8 +60,8 @@
 	// pop {r4-r10, pc}	//Pop the previous registers from the stack
 
 //Input: Input from the player in r0	
-//Ouput:
-//Effect:
+//Ouput: Null
+//Effect: Handle all input from the player
 f_playInput:
 
 	push	{r4-r10, lr}	//Push registers to the stack
@@ -73,23 +73,36 @@ f_playInput:
 	
 	mov		r5, #1			//Move 1 into r5
 	lsl		r5, #3			//Shift to bit 3 (Start)
-	tst		r4, r5			//AND the two registers and set flag accordingly
-	bleq	f_pausemenu		//If Start was pressed, activate the start menu
+	tst		r4, r5			//AND the two registers and set flags accordingly
+	bne		noPause			//If Start was not pressed, handle the result of the input
+	bl		f_pausemenu		//If Start was pressed, activate the start menu
+	b		end_playInput	//After running the pause menu, don't handle any more input until the next play loop
 	
+	noPause:
 	//Check if up was pressed to jump
 	
 	mov		r5, #1			//Move 1 into r5
 	lsl		r5, #4			//Shift to bit 4 (Joy-pad UP)
-	tst		r4, r5			//AND the two registers and set flag accordingly
-	bleq	f_pausemenu		//If Joy-pad UP was pressed, activate the start menu
+	tst		r4, r5			//AND the two registers and set flags accordingly
+//TODO	bleq	f_jumpHandler	//If Joy-pad UP was pressed, activate the start menu
 	
 	//Check if left or right were pressed to move Mario
 	
+	mov		r6, #0			//r6 will store the move offset
 	mov		r5, #1			//Move 1 into r5
-	lsl		r5, #3			//Shift to bit 3 (Start)
-	tst		r4, r5			//AND the two registers and set flag accordingly
-	bleq	f_pausemenu		//If Start was pressed, activate the start menu
-
+	lsl		r5, #6			//Shift to bit 6 (Joy-pad LEFT)
+	tst		r4, r5			//AND the two registers and set flags accordingly
+	subeq	r6, #1			//If left was pressed, sub 1 from the move offset
+	lsl		r5, #1			//Shift to bit 7 (Joy-pad RIGHT)
+	tst		r4, r5			//AND the two registers and set flags accordingly
+	addeq	r6, #1			//If right was pressed, add 1 to the move offset
+	cmp		r6, #0			//Compare r6 to 0
+	//If r6 =! 0 then we need to move Mario
+	movne	r0, r6			//Move the offset into r0
+//TODO	blne	f_moveHandler	//Move Mario
+	
+	end_playInput:
+	
 	pop		{r4-r10, pc}	//Pop register from the stack and return
 
 //Input: Nothing
