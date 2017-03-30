@@ -1,6 +1,15 @@
 //This file contains all the map related logic
 
 /*
+Input: 
+	r0: address of source map to copy from
+	r1: address of destination map to copy to
+Return: null
+Effect: copies map in r0 to map in r1
+*/
+.globl f_copyMap
+
+/*
 **Function**
 Input: 
 	r0: address of map to draw

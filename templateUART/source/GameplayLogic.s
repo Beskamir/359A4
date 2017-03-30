@@ -50,14 +50,14 @@ f_playingState:
 		// bl f_colourScreen
 		//draw the sprites located on the background map
 		ldr r0, =d_mapBackground
-		ldr r1, =_d_cameraPosition
+		ldr r1, =d_cameraPosition
 		bl f_drawMap
 		//draw the sprites located on the foreground map
 		ldr r0, =d_mapForeground
-		ldr r1, =_d_cameraPosition
+		ldr r1, =d_cameraPosition
 		bl f_drawMap
 
-		ldr r0, =_d_cameraPosition
+		ldr r0, =d_cameraPosition
 		ldr r4, [r0]
 		add r4, #1
 		str r4, [r0]
@@ -103,18 +103,18 @@ _f_newGame:
 	/// Actually now I want to make the clouds move :P
 	ldr r0, =t_mapBackground
 	ldr r1, =d_mapBackground
-	bl _f_copyMap
+	bl f_copyMap
 
 	//copy the foreground map from text to data so it can 
 	// be modified as the game is played
 	ldr r0, =t_mapForeground
 	ldr r1, =d_mapForeground
-	bl _f_copyMap
+	bl f_copyMap
 
 	//reset the camera position to whatever is in the .text copy.
 	ldr r0, =t_cameraPosition
 	ldr r1, [r0]
-	ldr r0, =_d_cameraPosition
+	ldr r0, =d_cameraPosition
 	str r1, [r0]
 
 	//reset the game state to the contents of the one that's in .text
