@@ -26,13 +26,6 @@ _start:
 
 main:
 
-	//Idea for initing cores, move this code after they've been activated. Also test using print console debugging
-    mov		sp, #0x8000 // Initializing the stack pointer
-	bl		EnableJTAG 	// Enable JTAG
-	bl		InitUART 	//This is important to be  able to use UART
-
-	bl 		InitFrameBuffer //Enable Frame Buffer
-	bl		init_GPIO	//Enable the GPIO pins
 
 
 	// b haltLoop$
@@ -48,31 +41,32 @@ main:
 	str r1,[r0,#0x20]
 	ldr r1,=_f_core3Init
 	str r1,[r0,#0x30]
+	
+	//Idea for initing cores, move this code after they've been activated. Also test using print console debugging
+    mov		sp, #0x8000 // Initializing the stack pointer
+	bl		EnableJTAG 	// Enable JTAG
+	bl		InitUART 	//This is important to be  able to use UART
 
-	// bl f_tests1
+	bl 		InitFrameBuffer //Enable Frame Buffer
+	bl		init_GPIO	//Enable the GPIO pins
 
-	// ldr sp,=0xFFFF //Must be unique for CPU0
 
-	bl 	_f_enableCache //should help with performance
+	//TestCode
+		b f_tests3
+		b haltLoop$
+	///Test Code
 
+	//actual code
 	_core0_loop:
-		// bl f_mainMenu
-		bl f_tests3 //third test file
-
 		//core 0 code here
-		///End Test Code
-		// bl MainMenu //branch to main menu
-		// mov r4,r0
-		///Keep looping this until the game ends or user quits
-		// _runningLoop:
-			//code that executes every frame here
-		//cmp r0, #0 //check if quite message from menu
-
-		//some kind of compare to check whether to keep looping.
-		b haltLoop$ //go to halt loop if quit
+		bl f_mainMenu
+		cmp r0, #0
+		beq haltLoop$ 
+			bl f_playingState //third test file
+			b _core0_loop
 
 	b _core0_loop
-///Test Code
+////End of Actual coreLoop
 
 _f_core1Init:
 

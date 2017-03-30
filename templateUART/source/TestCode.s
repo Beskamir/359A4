@@ -54,12 +54,12 @@ f_tests3:
 	// 	mov r3, #0 
 	// 	bl f_drawElement
 
-		ldr r0, =0x0
+		ldr r0, =0xFFF0
 		bl f_colourScreen
 
 		// bl f_mainMenu
 
-		// bl f_playingState
+		bl f_playingState
 
 
 		// bl f_mainMenu
