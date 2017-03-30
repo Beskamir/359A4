@@ -14,6 +14,7 @@ f_pauseMenu:
 	//r7 = SNES joy-pad UP mask
 	//r8 = SNES joy-pad DOWN mask
 	//r9 = SNES Start mask
+	//r10 = Has the Start button been released?
 	
 	push	{r4-r10, lr}			//Push all the general purpose registers along with fp and lr to the stack
 	
@@ -48,8 +49,12 @@ f_pauseMenu:
 		
 		checkStart:
 		tst		r5, r7				//Check if Start was pressed
-		bne		checkUp				//If it wasn't, go to checkUp
-		b		selectionLoopEnd	//Instantly end the loop
+		//If Start wasn't pressed
+		movne	r10, #1				//If it wasn't, indicate Start button was released
+		bne		checkUp				//and then go to checkUp
+		//If Start was pressed
+		teqeq	r10, #0				//Check if r10 is set
+		bne		selectionLoopEnd	//If it is, instantly end the loop
 		
 		checkUp:
 		tst		r5, r7				//Check if joy-pad UP was pressed
