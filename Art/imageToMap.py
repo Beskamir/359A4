@@ -10,156 +10,143 @@ OUTPUTNAMEFILENAME="map.txt" #File output location
 CONVERSIONKEYUSED = """
 /*
 conversion table:
-	#Breaks indicate change from foreground to background or vice versa
-	All:
+	In all maps:	
 	0xFFFFFF >> '0' >> sky/nothing
 
-	0x000032 >> '1' >> s_UpMushroom_0_0
-	0x000064 >> '2' >> s_Bricks_0_0
+	//Prior to activation items are labeled the following so that they stay offscreen
+	0x6496c8 >> '1' >> t_Items_SuperMushroom_0_0
+	0x6496fa >> '2' >> t_Items_UpMushroom_0_0
+	0x64c800 >> '3' >> t_Items_Coin00_0_0
+	0x64c832 >> '4' >> t_Items_Coin01_0_0
+	0x64c864 >> '5' >> t_Items_Coin02_0_0
 
-	0x000096 >> '3' >> s_BushDouble_0_0
-	0x0000c8 >> '4' >> s_BushDouble_1_0
-	0x0000fa >> '5' >> s_BushDouble_2_0
-	0x003200 >> '6' >> s_BushSingle_0_0
-	0x003232 >> '7' >> s_BushSingle_1_0
-	0x003264 >> '8' >> s_BushTriple_0_0
-	0x003296 >> '9' >> s_BushTriple_1_0
-	0x0032c8 >> '10' >> s_BushTriple_2_0
-	0x0032fa >> '11' >> s_BushTriple_3_0
-	0x006400 >> '12' >> s_Castle_0_0
-	0x006432 >> '13' >> s_Castle_0_1
-	0x006464 >> '14' >> s_Castle_0_2
-	0x006496 >> '15' >> s_Castle_0_3
-	0x0064c8 >> '16' >> s_Castle_0_4
-	0x0064fa >> '17' >> s_Castle_1_0
-	0x009600 >> '18' >> s_Castle_1_1
-	0x009632 >> '19' >> s_Castle_1_2
-	0x009664 >> '20' >> s_Castle_1_3
-	0x009696 >> '21' >> s_Castle_1_4
-	0x0096c8 >> '22' >> s_Castle_2_0
-	0x0096fa >> '23' >> s_Castle_2_1
-	0x00c800 >> '24' >> s_Castle_2_2
-	0x00c832 >> '25' >> s_Castle_2_3
-	0x00c864 >> '26' >> s_Castle_2_4
-	0x00c896 >> '27' >> s_Castle_3_0
-	0x00c8c8 >> '28' >> s_Castle_3_1
-	0x00c8fa >> '29' >> s_Castle_3_2
-	0x00fa00 >> '30' >> s_Castle_3_3
-	0x00fa32 >> '31' >> s_Castle_3_4
-	0x00fa64 >> '32' >> s_Castle_4_0
-	0x00fa96 >> '33' >> s_Castle_4_1
-	0x00fac8 >> '34' >> s_Castle_4_2
-	0x00fafa >> '35' >> s_Castle_4_3
-	0x320000 >> '36' >> s_Castle_4_4
-	0x320032 >> '37' >> s_CloudDouble_0_0
-	0x320064 >> '38' >> s_CloudDouble_0_1
-	0x320096 >> '39' >> s_CloudDouble_1_0
-	0x3200c8 >> '40' >> s_CloudDouble_1_1
-	0x3200fa >> '41' >> s_CloudDouble_2_0
-	0x323200 >> '42' >> s_CloudDouble_2_1
-	0x323232 >> '43' >> s_CloudSingle_0_0
-	0x323264 >> '44' >> s_CloudSingle_0_1
-	0x323296 >> '45' >> s_CloudSingle_1_0
-	0x3232c8 >> '46' >> s_CloudSingle_1_1
-	0x3232fa >> '47' >> s_CloudTriple_0_0
-	0x326400 >> '48' >> s_CloudTriple_0_1
-	0x326432 >> '49' >> s_CloudTriple_1_0
-	0x326464 >> '50' >> s_CloudTriple_1_1
-	0x326496 >> '51' >> s_CloudTriple_2_0
-	0x3264c8 >> '52' >> s_CloudTriple_2_1
-	0x3264fa >> '53' >> s_CloudTriple_3_0
-	0x329600 >> '54' >> s_CloudTriple_3_1
+	0x000032 >> '10' >> t_Background_Castle_0_0
+	0x000064 >> '11' >> t_Background_Castle_0_1
+	0x000096 >> '12' >> t_Background_Castle_0_2
+	0x0000c8 >> '13' >> t_Background_Castle_0_3
+	0x0000fa >> '14' >> t_Background_Castle_0_4
+	0x003200 >> '15' >> t_Background_Castle_1_0
+	0x003232 >> '16' >> t_Background_Castle_1_1
+	0x003264 >> '17' >> t_Background_Castle_1_2
+	0x003296 >> '18' >> t_Background_Castle_1_3
+	0x0032c8 >> '19' >> t_Background_Castle_1_4
+	0x0032fa >> '20' >> t_Background_Castle_2_0
+	0x006400 >> '21' >> t_Background_Castle_2_1
+	0x006432 >> '22' >> t_Background_Castle_2_2
+	0x006464 >> '23' >> t_Background_Castle_2_3
+	0x006496 >> '24' >> t_Background_Castle_2_4
+	0x0064c8 >> '25' >> t_Background_Castle_3_0
+	0x0064fa >> '26' >> t_Background_Castle_3_1
+	0x009600 >> '27' >> t_Background_Castle_3_2
+	0x009632 >> '28' >> t_Background_Castle_3_3
+	0x009664 >> '29' >> t_Background_Castle_3_4
+	0x009696 >> '30' >> t_Background_Castle_4_0
+	0x0096c8 >> '31' >> t_Background_Castle_4_1
+	0x0096fa >> '32' >> t_Background_Castle_4_2
+	0x00c800 >> '33' >> t_Background_Castle_4_3
+	0x00c832 >> '34' >> t_Background_Castle_4_4
+	0x00c864 >> '35' >> t_Background_HillSmall_0_0
+	0x00c896 >> '36' >> t_Background_HillSmall_0_1
+	0x00c8c8 >> '37' >> t_Background_HillSmall_1_0
+	0x00c8fa >> '38' >> t_Background_HillSmall_1_1
+	0x00fa00 >> '39' >> t_Background_HillSmall_2_0
+	0x00fa32 >> '40' >> t_Background_HillSmall_2_1
+	0x00fa64 >> '41' >> t_Background_HillLarge_0_0
+	0x00fa96 >> '42' >> t_Background_HillLarge_0_1
+	0x00fac8 >> '43' >> t_Background_HillLarge_0_2
+	0x00fafa >> '44' >> t_Background_HillLarge_1_0
+	0x320000 >> '45' >> t_Background_HillLarge_1_1
+	0x320032 >> '46' >> t_Background_HillLarge_1_2
+	0x320064 >> '47' >> t_Background_HillLarge_2_0
+	0x320096 >> '48' >> t_Background_HillLarge_2_1
+	0x3200c8 >> '49' >> t_Background_HillLarge_2_2
+	0x3200fa >> '50' >> t_Background_HillLarge_3_0
+	0x323200 >> '51' >> t_Background_HillLarge_3_1
+	0x323232 >> '52' >> t_Background_HillLarge_3_2
+	0x323264 >> '53' >> t_Background_HillLarge_4_0
+	0x323296 >> '54' >> t_Background_HillLarge_4_1
+	0x3232c8 >> '55' >> t_Background_HillLarge_4_2
+	0x3232fa >> '56' >> t_Background_Bush1_0_0
+	0x326400 >> '57' >> t_Background_Bush1_1_0
+	0x326432 >> '58' >> t_Background_Bush2_0_0
+	0x326464 >> '59' >> t_Background_Bush2_1_0
+	0x326496 >> '60' >> t_Background_Bush2_2_0
+	0x3264c8 >> '61' >> t_Background_Bush3_0_0
+	0x3264fa >> '62' >> t_Background_Bush3_1_0
+	0x329600 >> '63' >> t_Background_Bush3_2_0
+	0x329632 >> '64' >> t_Background_Bush3_3_0
+	0x329664 >> '65' >> t_Background_Cloud1_0_0
+	0x329696 >> '66' >> t_Background_Cloud1_0_1
+	0x3296c8 >> '67' >> t_Background_Cloud1_1_0
+	0x3296fa >> '68' >> t_Background_Cloud1_1_1
+	0x32c800 >> '69' >> t_Background_Cloud2_0_0
+	0x32c832 >> '70' >> t_Background_Cloud2_0_1
+	0x32c864 >> '71' >> t_Background_Cloud2_1_0
+	0x32c896 >> '72' >> t_Background_Cloud2_1_1
+	0x32c8c8 >> '73' >> t_Background_Cloud2_2_0
+	0x32c8fa >> '74' >> t_Background_Cloud2_2_1
+	0x32fa00 >> '75' >> t_Background_Cloud3_0_0
+	0x32fa32 >> '76' >> t_Background_Cloud3_0_1
+	0x32fa64 >> '77' >> t_Background_Cloud3_1_0
+	0x32fa96 >> '78' >> t_Background_Cloud3_1_1
+	0x32fac8 >> '79' >> t_Background_Cloud3_2_0
+	0x32fafa >> '80' >> t_Background_Cloud3_2_1
+	0x640000 >> '81' >> t_Background_Cloud3_3_0
+	0x640032 >> '82' >> t_Background_Cloud3_3_1
 
-	0x329632 >> '55' >> s_Coin00_0_0
-	0x329664 >> '56' >> s_Coin01_0_0
-	0x329696 >> '57' >> s_Coin02_0_0
-	0x3296c8 >> '58' >> s_DirtGround_0_0
-	0x3296fa >> '59' >> s_EmptyBlock_0_0
+	0x640064 >> '83' >> t_Enemies_Goomba_Both_0_0
+	0x640096 >> '84' >> t_Enemies_Goomba_WalkRight_0_0
+	0x6400c8 >> '85' >> t_Enemies_Goomba_WalkLeft_0_0
+	0x6400fa >> '86' >> t_Enemies_Goomba_Dead_0_0
+	0x643200 >> '87' >> t_Enemies_enemy2_00_0_0
+	0x643232 >> '88' >> t_Enemies_enemy2_01_0_0
+	0x643264 >> '89' >> t_Enemies_enemy2_02_0_0
+	0x643296 >> '90' >> t_Enemies_enemy2_03_0_0
 
-	0x32c800 >> '60' >> s_FlagPoleBeam_0_0
-	0x32c832 >> '61' >> s_FlagPoleFlag_0_0
-	0x32c864 >> '62' >> s_FlagPoleTop_0_0
+	0x6432c8 >> '91' >> t_Foreground_Bricks_Breakable_0_0
+	0x6432fa >> '92' >> t_Foreground_Dirt_Ground_0_0
+	0x646400 >> '93' >> t_Foreground_QuestionBlock00_0_0
+	0x646432 >> '94' >> t_Foreground_QuestionBlock01_0_0
+	0x646464 >> '95' >> t_Foreground_QuestionBlock02_0_0
+	0x646496 >> '96' >> t_Foreground_EmptyBlock_0_0
+	0x6464c8 >> '97' >> t_Foreground_Pipe_0_0
+	0x6464fa >> '98' >> t_Foreground_Pipe_0_1
+	0x649600 >> '99' >> t_Foreground_Pipe_1_0
+	0x649632 >> '100' >> t_Foreground_Pipe_1_1
+	0x649664 >> '101' >> t_Foreground_SolidBlock_0_0
+	0x649696 >> '102' >> t_Foreground_GrassGround_0_0
 
-	0x32c896 >> '63' >> s_Goomba00_0_0
-	0x32c8c8 >> '64' >> s_Goomba01_0_0
-	0x32c8fa >> '65' >> s_Goomba02_0_0
-	0x32fa00 >> '66' >> s_Goomba03_0_0
-	0x32fa32 >> '67' >> s_GrassGround_0_0
-	0x32fa64 >> '68' >> s_GreenKoopaTroopaShell1_0_0
-	0x32fa96 >> '69' >> s_GreenKoopaTroopaShell2_0_0
-	0x32fac8 >> '70' >> s_GreenKoopaTroopa00_0_0
-	0x32fafa >> '71' >> s_GreenKoopaTroopa00_0_1
-	0x640000 >> '72' >> s_GreenKoopaTroopa01_0_0
-	0x640032 >> '73' >> s_GreenKoopaTroopa01_0_1
+	0x6496c8 >> '103' >> t_Items_SuperMushroom_0_0
+	0x6496fa >> '104' >> t_Items_UpMushroom_0_0
+	0x64c800 >> '105' >> t_Items_Coin00_0_0
+	0x64c832 >> '106' >> t_Items_Coin01_0_0
+	0x64c864 >> '107' >> t_Items_Coin02_0_0
 
-	0x640064 >> '74' >> s_HillLarge_0_0
-	0x640096 >> '75' >> s_HillLarge_0_1
-	0x6400c8 >> '76' >> s_HillLarge_0_2
-	0x6400fa >> '77' >> s_HillLarge_1_0
-	0x643200 >> '78' >> s_HillLarge_1_1
-	0x643232 >> '79' >> s_HillLarge_1_2
-	0x643264 >> '80' >> s_HillLarge_2_0
-	0x643296 >> '81' >> s_HillLarge_2_1
-	0x6432c8 >> '82' >> s_HillLarge_2_2
-	0x6432fa >> '83' >> s_HillLarge_3_0
-	0x646400 >> '84' >> s_HillLarge_3_1
-	0x646432 >> '85' >> s_HillLarge_3_2
-	0x646464 >> '86' >> s_HillLarge_4_0
-	0x646496 >> '87' >> s_HillLarge_4_1
-	0x6464c8 >> '88' >> s_HillLarge_4_2
-	0x6464fa >> '89' >> s_HillSmall_0_0
-	0x649600 >> '90' >> s_HillSmall_0_1
-	0x649632 >> '91' >> s_HillSmall_1_0
-	0x649664 >> '92' >> s_HillSmall_1_1
-	0x649696 >> '93' >> s_HillSmall_2_0
-	0x6496c8 >> '94' >> s_HillSmall_2_1
-
-	0x6496fa >> '95' >> s_MarioClimb1_0_0
-	0x64c800 >> '96' >> s_MarioClimb2_0_0
-	0x64c832 >> '97' >> s_MarioDead_0_0
-	0x64c864 >> '98' >> s_MarioJump_0_0
-	0x64c896 >> '99' >> s_MarioSkid_0_0
-	0x64c8c8 >> '100' >> s_MarioWalk1_0_0
-	0x64c8fa >> '101' >> s_MarioWalk2_0_0
-	0x64fa00 >> '102' >> s_MarioWalk3_0_0
-	0x64fa32 >> '103' >> s_Mario_0_0
-	0x64fa64 >> '104' >> s_Pipe_0_0
-	0x64fa96 >> '105' >> s_Pipe_0_1
-	0x64fac8 >> '106' >> s_Pipe_1_0
-	0x64fafa >> '107' >> s_Pipe_1_1
-	0x960000 >> '108' >> s_QuestionBlock00_0_0
-	0x960032 >> '109' >> s_QuestionBlock01_0_0
-	0x960064 >> '110' >> s_QuestionBlock02_0_0
-	0x960096 >> '111' >> s_SolidBlock_0_0
-	0x9600c8 >> '112' >> s_Starman00_0_0
-	0x9600fa >> '113' >> s_Starman01_0_0
-	0x963200 >> '114' >> s_Starman02_0_0
-	0x963232 >> '115' >> s_Starman03_0_0
-	0x963264 >> '116' >> s_SuperMarioClimb1_0_0
-	0x963296 >> '117' >> s_SuperMarioClimb1_0_1
-	0x9632c8 >> '118' >> s_SuperMarioClimb2_0_0
-	0x9632fa >> '119' >> s_SuperMarioClimb2_0_1
-	0x966400 >> '120' >> s_SuperMarioDuck_0_0
-	0x966432 >> '121' >> s_SuperMarioDuck_0_1
-	0x966464 >> '122' >> s_SuperMarioJump_0_0
-	0x966496 >> '123' >> s_SuperMarioJump_0_1
-	0x9664c8 >> '124' >> s_SuperMarioSkid_0_0
-	0x9664fa >> '125' >> s_SuperMarioSkid_0_1
-	0x969600 >> '126' >> s_SuperMarioWalk1_0_0
-	0x969632 >> '127' >> s_SuperMarioWalk1_0_1
-	0x969664 >> '128' >> s_SuperMarioWalk2_0_0
-	0x969696 >> '129' >> s_SuperMarioWalk2_0_1
-	0x9696c8 >> '130' >> s_SuperMarioWalk3_0_0
-	0x9696fa >> '131' >> s_SuperMarioWalk3_0_1
-	0x96c800 >> '132' >> s_SuperMario_0_0
-	0x96c832 >> '133' >> s_SuperMario_0_1
-	0x96c864 >> '134' >> s_SuperMushroom_0_0
+	0x64c896 >> '108' >> t_Player_Mario_0_0
+	0x64c8c8 >> '109' >> t_Player_MarioWalk1_0_0
+	0x64c8fa >> '110' >> t_Player_MarioWalk2_0_0
+	0x64fa00 >> '111' >> t_Player_MarioWalk3_0_0
+	0x64fa32 >> '112' >> t_Player_MarioJump_0_0
+	0x64fa64 >> '113' >> t_Player_MarioSkid_0_0
+	0x64fa96 >> '114' >> t_Player_MarioDead_0_0
+	0x64fac8 >> '115' >> t_Player_SuperMario_0_0
+	0x64fafa >> '116' >> t_Player_SuperMario_0_1
+	0x960000 >> '117' >> t_Player_SuperMarioWalk1_0_0
+	0x960032 >> '118' >> t_Player_SuperMarioWalk1_0_1
+	0x960064 >> '119' >> t_Player_SuperMarioWalk2_0_0
+	0x960096 >> '120' >> t_Player_SuperMarioWalk2_0_1
+	0x9600c8 >> '121' >> t_Player_SuperMarioWalk3_0_0
+	0x9600fa >> '122' >> t_Player_SuperMarioWalk3_0_1
+	0x963200 >> '123' >> t_Player_SuperMarioJump_0_0
+	0x963232 >> '124' >> t_Player_SuperMarioJump_0_1
+	0x963264 >> '125' >> t_Player_SuperMarioSkid_0_0
+	0x963296 >> '126' >> t_Player_SuperMarioSkid_0_1
 
 */
 """
 
 
-ASCIITOCOLOURKEY={'000032':'1','000064':'2','000096':'3','0000c8':'4','0000fa':'5','003200':'6','003232':'7','003264':'8','003296':'9','0032c8':'10','0032fa':'11','006400':'12','006432':'13','006464':'14','006496':'15','0064c8':'16','0064fa':'17','009600':'18','009632':'19','009664':'20','009696':'21','0096c8':'22','0096fa':'23','00c800':'24','00c832':'25','00c864':'26','00c896':'27','00c8c8':'28','00c8fa':'29','00fa00':'30','00fa32':'31','00fa64':'32','00fa96':'33','00fac8':'34','00fafa':'35','320000':'36','320032':'37','320064':'38','320096':'39','3200c8':'40','3200fa':'41','323200':'42','323232':'43','323264':'44','323296':'45','3232c8':'46','3232fa':'47','326400':'48','326432':'49','326464':'50','326496':'51','3264c8':'52','3264fa':'53','329600':'54','329632':'55','329664':'56','329696':'57','3296c8':'58','3296fa':'59','32c800':'60','32c832':'61','32c864':'62','32c896':'63','32c8c8':'64','32c8fa':'65','32fa00':'66','32fa32':'67','32fa64':'68','32fa96':'69','32fac8':'70','32fafa':'71','640000':'72','640032':'73','640064':'74','640096':'75','6400c8':'76','6400fa':'77','643200':'78','643232':'79','643264':'80','643296':'81','6432c8':'82','6432fa':'83','646400':'84','646432':'85','646464':'86','646496':'87','6464c8':'88','6464fa':'89','649600':'90','649632':'91','649664':'92','649696':'93','6496c8':'94','6496fa':'95','64c800':'96','64c832':'97','64c864':'98','64c896':'99','64c8c8':'100','64c8fa':'101','64fa00':'102','64fa32':'103','64fa64':'104','64fa96':'105','64fac8':'106','64fafa':'107','960000':'108','960032':'109','960064':'110','960096':'111','9600c8':'112','9600fa':'113','963200':'114','963232':'115','963264':'116','963296':'117','9632c8':'118','9632fa':'119','966400':'120','966432':'121','966464':'122','966496':'123','9664c8':'124','9664fa':'125','969600':'126','969632':'127','969664':'128','969696':'129','9696c8':'130','9696fa':'131','96c800':'132','96c832':'133','96c864':'134','ffffff':'0'}
+ASCIITOCOLOURKEY={'000032':'0','000064':'1','000096':'2','0000c8':'3','0000fa':'4','003200':'5','003232':'6','003264':'7','003296':'8','0032c8':'9','0032fa':'10','006400':'11','006432':'12','006464':'13','006496':'14','0064c8':'15','0064fa':'16','009600':'17','009632':'18','009664':'19','009696':'20','0096c8':'21','0096fa':'22','00c800':'23','00c832':'24','00c864':'25','00c896':'26','00c8c8':'27','00c8fa':'28','00fa00':'29','00fa32':'30','00fa64':'31','00fa96':'32','00fac8':'33','00fafa':'34','320000':'35','320032':'36','320064':'37','320096':'38','3200c8':'39','3200fa':'40','323200':'41','323232':'42','323264':'43','323296':'44','3232c8':'45','3232fa':'46','326400':'47','326432':'48','326464':'49','326496':'50','3264c8':'51','3264fa':'52','329600':'53','329632':'54','329664':'55','329696':'56','3296c8':'57','3296fa':'58','32c800':'59','32c832':'60','32c864':'61','32c896':'62','32c8c8':'63','32c8fa':'64','32fa00':'65','32fa32':'66','32fa64':'67','32fa96':'68','32fac8':'69','32fafa':'70','640000':'71','640032':'72','640064':'73','640096':'74','6400c8':'75','6400fa':'76','643200':'77','643232':'78','643264':'79','643296':'80','6432c8':'81','6432fa':'82','646400':'83','646432':'84','646464':'85','646496':'86','6464c8':'87','6464fa':'88','649600':'89','649632':'90','649664':'91','649696':'92','6496c8':'93','6496fa':'94','64c800':'95','64c832':'96','64c864':'97','64c896':'98','64c8c8':'99','64c8fa':'100','64fa00':'101','64fa32':'102','64fa64':'103','64fa96':'104','64fac8':'105','64fafa':'106','960000':'107','960032':'108','960064':'109','960096':'110','9600c8':'111','9600fa':'112','963200':'113','963232':'114','963264':'115','963296':'116','ffffff':'0'}
 
 def main():
 	#Outputs to output.txt
@@ -202,7 +189,10 @@ def processImage(imgName,output,section):
 	pixels = img.convert('RGBA').load()
 	imageSize = img.size #Get the width and hight of the image for iterating over
 
-	memLabel="s_"+trimImageName(imgName)+section
+	if section=="_data":
+		memLabel="d_"+trimImageName(imgName)+section
+	else:
+		memLabel="t_"+trimImageName(imgName)+section
 
 
 	writeToFile(output, pixels, memLabel, imageSize)
@@ -231,8 +221,10 @@ def convertToAscii(x, y, pixels):
 	tempHex='{:02x}{:02x}{:02x}'.format(r, g, b)
 	# print(tempHex)
 	# print(ASCIITOCOLOURKEY.keys())
-	return ASCIITOCOLOURKEY[tempHex]
-
+	numericValue=int(ASCIITOCOLOURKEY[tempHex])
+	if (numericValue>=103 and numericValue<=107):
+		numericValue-=102
+	return str(numericValue)
 
 #Trims the filepath to a label friendly string
 def trimImageName(imgName):

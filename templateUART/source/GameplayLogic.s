@@ -308,10 +308,10 @@ f_drawMap:
 	ldr spriteAccess_r, =t_artSpritesAccess
 
 
-	mov mapToDraw_r, r0				 //load the map to use for drawing
+	mov mapToDraw_r, r0	 //load the map to use for drawing
 	ldr r2, [r1] 	 	//get camera position based on input parameter
 
-	//This is currently broken, it'll slowly shift the map left rather than right if
+	//This may be currently broken, it'll slowly shift the map left rather than right if
 	//value initalized to something greater than 0, also this seems to be why
 	//the map will loop around to the end point...
 	add mapToDraw_r, r2 //Shift map to the correct camera position 
@@ -331,14 +331,11 @@ f_drawMap:
 		// _drawMapLoopX:
 
 			ldrb r0, [mapToDraw_r], #1
-			cmp r0, #0
-			beq _skipDrawing //skip drawing process if equal. 0 means theres no image there
+			cmp r0, #10
+			blt _skipDrawing //skip drawing process if equal. 0 means theres no image there
 		
-			sub r0, #1	//sync r0 with the addresses in art
-			//// lsl r0, #12 //(r0-1)>>12=(r0-1)*4096. 4096 is the difference between each label in art
-			// ldr r1, =4104
-			// mul r0, r1
-			//Following faster than using mul
+			sub r0, #10	//sync r0 with the addresses in art
+			//Following faster than using mul but doesn't work properly :(
 			// lsl r0, #10	//r0>>12==r0*(32*32)
 			// add r0, #2  //r0+2
 			// lsl r0, #2  //r0>>2==r0*4
