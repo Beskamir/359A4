@@ -14,7 +14,8 @@
 //Effect: none
 //Usage: ALWAYS call init_GPIO first
 .globl	Read_SNES
-.globl	previousButtons
+.globl	f_playInput
+//.globl	previousButtons
 
     
 .section .text
