@@ -6,17 +6,18 @@
 
 .section	.text
 
-//Input: Number to find modulo of in r0
-//Output: Original number divided by 10 in r0, modulo as a result in r1
+//Input: Value to find mod of in r0, divisor in r1
+//Output: r0 = round(r0 / r1), r1 = r0 % r1
 //Effect: Null
 f_modulo:
 	push	{r4-r7, lr}				//Push the registers onto the stack
 	mov		r4, r0					//Move the number into a safe register
-	mov		r5, #10					//The divisor will be 10
-	mov		r6, #0					//Where the rounded value will be stored
+	mov		r5, r1					//Move the divisor into a safe register
+	//Rounded division value will be in r6
+	//Value to sub by will be in r7
 	
-	sdiv	r6, r4, r5				//Divide value by 10 (answer in r6 will be rounded)
-	mul		r7, r6, r5				//Multiply r6 by 10
+	sdiv	r6, r4, r5				//Divide value by divisor (answer in r6 will be rounded)
+	mul		r7, r6, r5				//Multiply r6 by divisor
 	sub		r1, r4, r7				//Store the different between the original number and the number with the last digit rounded down
 	mov		r0, r6					//Move the result in r0 to be returned
 	
