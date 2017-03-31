@@ -107,17 +107,13 @@ Effect: draws the map
 f_drawMap:
 	push {r4-r10, lr}
 
-	xCounter_r .req r4 //counts which x cell is being accessed
-	yCounter_r .req r5 //counts which y cell is being accessed
-
-	mapToDraw_r .req r6 //address of the map that will be drawn.
-
-	spriteAccess_r .req r7
-
-	// xCameraPosition_r .req r7 //camera position in the world space
+	counterX_r 		.req r4 //counts which x cell is being accessed
+	counterY_r 		.req r5 //counts which y cell is being accessed
+	mapToDraw_r 	.req r6 //address of the map that will be drawn.
+	spriteAccess_r 	.req r7 //address to all the sprites
+	camera_r 		.req r8 //camera position in the world space
 
 
-	temp_r .req r9	//scratch register for temp values
 
 
 
@@ -125,68 +121,59 @@ f_drawMap:
 
 
 	mov mapToDraw_r, r0	 //load the map to use for drawing
-	ldr r2, [r1] 	 	//get camera position based on input parameter
+	ldr camera_r,	[r1] //get camera position based on input parameter
 
-	//This may be currently broken, it'll slowly shift the map left rather than right if
-	//value initalized to something greater than 0, also this seems to be why
-	//the map will loop around to the end point...
-	add mapToDraw_r, r2 //Shift map to the correct camera position 
-
-
-	// mov temp_r, #0
-
-	// .unreq xCameraPosition_r //only need it for the above stuff
-
-	// cellsize_r .req r7	
-	// mov cellsize_r, #32
-
-	mov yCounter_r, #0 	//set y loop counter to 0
+	mov counterY_r, #0 	//set y loop counter to 0
 	
 	// _drawMapLoopY:
 	_drawMapLoop:
 		// _drawMapLoopX:
 
-			ldrb r0, [mapToDraw_r], #1
+			mov r0, counterX_r
+			add r0, camera_r
+			mov r1, counterY_r
+			mov r3, mapToDraw_r
+			bl f_getCellElement
+			//r0 contains the element from map cell
+
 			cmp r0, #10
 			blt _skipDrawing //skip drawing process if equal. 0 means theres no image there
-		
-			sub r0, #10	//sync r0 with the addresses in art
-			//Following faster than using mul but doesn't work properly :(
-			// lsl r0, #10	//r0>>12==r0*(32*32)
-			// add r0, #2  //r0+2
-			// lsl r0, #2  //r0>>2==r0*4
-			ldr r1, =4104
-			mul r0, r1
-			add r0, spriteAccess_r //add the address of s_artSpritesAccess to the "offset" in r0
-			//Now r0 has address of sprite to draw
-			// mul r1, xCounter_r, cellsize_r//compute starting x value for the image
-			mov r1, xCounter_r
-			lsl r1, #5
-			// mul r2, yCounter_r, cellsize_r //compute starting y value for the image
-			mov r2, yCounter_r
-			lsl r2, #5
-			mov r3, #1	//indicate that an image is being drawn
-			bl f_drawElement
+
+				sub r0, #10	//sync r0 with the addresses in art
+				//Following faster than using mul but doesn't work properly :(
+				// lsl r0, #10	//r0>>12==r0*(32*32)
+				// add r0, #2  //r0+2
+				// lsl r0, #2  //r0>>2==r0*4
+				ldr r1, =4104 
+				mul r0, r1 //(cell - 10) * 4104 = spriteOffset
+				add r0, spriteAccess_r //add the address of s_artSpritesAccess to the "offset" in r0
+				//Now r0 has address of sprite to draw
+				// mul r1, counterX_r, cellsize_r//compute starting x value for the image
+				mov r1, counterX_r
+				lsl r1, #5
+				// mul r2, counterY_r, cellsize_r //compute starting y value for the image
+				mov r2, counterY_r
+				lsl r2, #5
+				mov r3, #1	//indicate that an image is being drawn
+				bl f_drawElement
 
 			_skipDrawing:
-			add xCounter_r, #1	//increment x cell count by 1
-			cmp xCounter_r, #32	//x screen size is 32 cells 
+			add counterX_r, #1	//increment x cell count by 1
+			cmp counterX_r, #32	//x screen size is 32 cells 
 			blt _drawMapLoop
 
-		mov xCounter_r, #0 //reset x loop counter to 0
+		mov counterX_r, #0 //reset x loop counter to 0
 
-		add yCounter_r, #1 //increment y cell count by 1
-		add mapToDraw_r, #288 //map is 320 cells wide, so 320-32=288 which is the offset
-		cmp yCounter_r, #24 //y screen size is 24 cells
+		add counterY_r, #1 //increment y cell count by 1
+		// add mapToDraw_r, #288 //map is 320 cells wide, so 320-32=288 which is the offset
+		cmp counterY_r, #24 //y screen size is 24 cells
 		blt _drawMapLoop
 
 	//only need it for the above stuff, so unreq everything that was used in this subroutine
-	.unreq xCounter_r 
-	.unreq yCounter_r 
+	.unreq counterX_r 
+	.unreq counterY_r 
 	.unreq mapToDraw_r
-	// .unreq cellsize_r
 	.unreq spriteAccess_r
-	.unreq temp_r
 
 
 	pop {r4-r10, pc}
@@ -262,6 +249,48 @@ f_animate3SpriteSet:
 	.unreq transition_r
 	.unreq increment_r
 	.unreq spriteValue_r
+
+	pop {r4-r10, pc}
+/*
+Input:
+	r0, element's actual x cell value (map based)
+	r1, element's actual y cell value (map based)
+	r2, mapLayerMemoryAddress (address of the map being used)
+Return:
+	r0, element at the specified (x,y) positions
+Effect:
+	move or animate the element 
+*/
+f_getCellElement:
+	push {r4-r10, lr}
+
+	cellIndexX_r .req r4 //x screen index of AI
+	cellIndexY_r .req r5 //y screen index of AI
+
+	mapAddress_r .req r6 //the address to the map being modified
+
+	mapOffset_r	 .req r7 //the camera offset during this
+
+	//set to input parameters
+	mov cellIndexX_r, r0
+	mov cellIndexY_r, r1
+
+	//get map address
+	mov mapAddress_r, r2
+
+	//compute the correct offset to use on the map.
+	//	(320*y)+x
+	mov mapOffset_r, #320 
+	mul mapOffset_r, cellIndexY_r
+	add mapOffset_r, cellIndexX_r
+
+
+	ldrb r0, [mapAddress_r, mapOffset_r] //get map element at specified index
+
+	.unreq cellIndexX_r
+	.unreq cellIndexY_r
+	.unreq mapAddress_r
+	.unreq mapOffset_r
 
 	pop {r4-r10, pc}
 
