@@ -9,147 +9,169 @@ FOLDERNAME="\\Maps\\Complete\\" #folder containing images
 OUTPUTNAMEFILENAME="map.txt" #File output location
 CONVERSIONKEYUSED = """
 /*
-Notes: Items are in the background map until the player hits the corresponding box.
-	meaning that a coin is on the layer behind the box that will be hit. 
-	If needed the item can be moved to the foreground layer.
+.globl t_mapBackground
+.globl t_mapMiddleground
+.globl t_mapForeground
+.globl d_mapBackground
+.globl d_mapMiddleground
+.globl d_mapForeground
 
-	Otherwise unless labeled "background" everything else is on the foreground
+Notes: 
+	Data ordered in following order and should 
+		be usually stored on the following layers:
+
+	//background: background layer
+	//Enemies: foreground layer
+	//Foreground: foreground layer
+	//Items: middle layer
+	//Mario: foreground layer
 
 conversion table:
 	In all maps:	
-	0xFFFFFF >> '0' >> sky/nothing
+	'0' >> sky/nothing
+	Only displayed to the screen from values 10 to 255 
+		(assuming 245 sprites and bounds are inclusive)
+		meaning that values 0 to 9 are invisible to the player. 
+		Thus feel free to use them as a temp invisible storage system
 
-	//Prior to activation items are labeled the following so that they stay offscreen
-	0x6496c8 >> '1' >> t_Items_SuperMushroom_0_0
-	0x6496fa >> '2' >> t_Items_UpMushroom_0_0
-	0x64c800 >> '3' >> t_Items_Coin00_0_0
-	0x64c832 >> '4' >> t_Items_Coin01_0_0
-	0x64c864 >> '5' >> t_Items_Coin02_0_0
+	//background: background layer
+	'10' >> t_Background_Castle_0_0
+	'11' >> t_Background_Castle_0_1
+	'12' >> t_Background_Castle_0_2
+	'13' >> t_Background_Castle_0_3
+	'14' >> t_Background_Castle_0_4
+	'15' >> t_Background_Castle_1_0
+	'16' >> t_Background_Castle_1_1
+	'17' >> t_Background_Castle_1_2
+	'18' >> t_Background_Castle_1_3
+	'19' >> t_Background_Castle_1_4
+	'20' >> t_Background_Castle_2_0
+	'21' >> t_Background_Castle_2_1
+	'22' >> t_Background_Castle_2_2
+	'23' >> t_Background_Castle_2_3
+	'24' >> t_Background_Castle_2_4
+	'25' >> t_Background_Castle_3_0
+	'26' >> t_Background_Castle_3_1
+	'27' >> t_Background_Castle_3_2
+	'28' >> t_Background_Castle_3_3
+	'29' >> t_Background_Castle_3_4
+	'30' >> t_Background_Castle_4_0
+	'31' >> t_Background_Castle_4_1
+	'32' >> t_Background_Castle_4_2
+	'33' >> t_Background_Castle_4_3
+	'34' >> t_Background_Castle_4_4
+	'35' >> t_Background_HillSmall_0_0
+	'36' >> t_Background_HillSmall_0_1
+	'37' >> t_Background_HillSmall_1_0
+	'38' >> t_Background_HillSmall_1_1
+	'39' >> t_Background_HillSmall_2_0
+	'40' >> t_Background_HillSmall_2_1
+	'41' >> t_Background_HillLarge_0_0
+	'42' >> t_Background_HillLarge_0_1
+	'43' >> t_Background_HillLarge_0_2
+	'44' >> t_Background_HillLarge_1_0
+	'45' >> t_Background_HillLarge_1_1
+	'46' >> t_Background_HillLarge_1_2
+	'47' >> t_Background_HillLarge_2_0
+	'48' >> t_Background_HillLarge_2_1
+	'49' >> t_Background_HillLarge_2_2
+	'50' >> t_Background_HillLarge_3_0
+	'51' >> t_Background_HillLarge_3_1
+	'52' >> t_Background_HillLarge_3_2
+	'53' >> t_Background_HillLarge_4_0
+	'54' >> t_Background_HillLarge_4_1
+	'55' >> t_Background_HillLarge_4_2
+	'56' >> t_Background_Bush1_0_0
+	'57' >> t_Background_Bush1_1_0
+	'58' >> t_Background_Bush2_0_0
+	'59' >> t_Background_Bush2_1_0
+	'60' >> t_Background_Bush2_2_0
+	'61' >> t_Background_Bush3_0_0
+	'62' >> t_Background_Bush3_1_0
+	'63' >> t_Background_Bush3_2_0
+	'64' >> t_Background_Bush3_3_0
+	'65' >> t_Background_Cloud1_0_0
+	'66' >> t_Background_Cloud1_0_1
+	'67' >> t_Background_Cloud1_1_0
+	'68' >> t_Background_Cloud1_1_1
+	'69' >> t_Background_Cloud2_0_0
+	'70' >> t_Background_Cloud2_0_1
+	'71' >> t_Background_Cloud2_1_0
+	'72' >> t_Background_Cloud2_1_1
+	'73' >> t_Background_Cloud2_2_0
+	'74' >> t_Background_Cloud2_2_1
+	'75' >> t_Background_Cloud3_0_0
+	'76' >> t_Background_Cloud3_0_1
+	'77' >> t_Background_Cloud3_1_0
+	'78' >> t_Background_Cloud3_1_1
+	'79' >> t_Background_Cloud3_2_0
+	'80' >> t_Background_Cloud3_2_1
+	'81' >> t_Background_Cloud3_3_0
+	'82' >> t_Background_Cloud3_3_1
 
-	//Still have room for 5 more "easy to implement" offscreen stuff
-	
-	0x000032 >> '10' >> t_Background_Castle_0_0
-	0x000064 >> '11' >> t_Background_Castle_0_1
-	0x000096 >> '12' >> t_Background_Castle_0_2
-	0x0000c8 >> '13' >> t_Background_Castle_0_3
-	0x0000fa >> '14' >> t_Background_Castle_0_4
-	0x003200 >> '15' >> t_Background_Castle_1_0
-	0x003232 >> '16' >> t_Background_Castle_1_1
-	0x003264 >> '17' >> t_Background_Castle_1_2
-	0x003296 >> '18' >> t_Background_Castle_1_3
-	0x0032c8 >> '19' >> t_Background_Castle_1_4
-	0x0032fa >> '20' >> t_Background_Castle_2_0
-	0x006400 >> '21' >> t_Background_Castle_2_1
-	0x006432 >> '22' >> t_Background_Castle_2_2
-	0x006464 >> '23' >> t_Background_Castle_2_3
-	0x006496 >> '24' >> t_Background_Castle_2_4
-	0x0064c8 >> '25' >> t_Background_Castle_3_0
-	0x0064fa >> '26' >> t_Background_Castle_3_1
-	0x009600 >> '27' >> t_Background_Castle_3_2
-	0x009632 >> '28' >> t_Background_Castle_3_3
-	0x009664 >> '29' >> t_Background_Castle_3_4
-	0x009696 >> '30' >> t_Background_Castle_4_0
-	0x0096c8 >> '31' >> t_Background_Castle_4_1
-	0x0096fa >> '32' >> t_Background_Castle_4_2
-	0x00c800 >> '33' >> t_Background_Castle_4_3
-	0x00c832 >> '34' >> t_Background_Castle_4_4
-	0x00c864 >> '35' >> t_Background_HillSmall_0_0
-	0x00c896 >> '36' >> t_Background_HillSmall_0_1
-	0x00c8c8 >> '37' >> t_Background_HillSmall_1_0
-	0x00c8fa >> '38' >> t_Background_HillSmall_1_1
-	0x00fa00 >> '39' >> t_Background_HillSmall_2_0
-	0x00fa32 >> '40' >> t_Background_HillSmall_2_1
-	0x00fa64 >> '41' >> t_Background_HillLarge_0_0
-	0x00fa96 >> '42' >> t_Background_HillLarge_0_1
-	0x00fac8 >> '43' >> t_Background_HillLarge_0_2
-	0x00fafa >> '44' >> t_Background_HillLarge_1_0
-	0x320000 >> '45' >> t_Background_HillLarge_1_1
-	0x320032 >> '46' >> t_Background_HillLarge_1_2
-	0x320064 >> '47' >> t_Background_HillLarge_2_0
-	0x320096 >> '48' >> t_Background_HillLarge_2_1
-	0x3200c8 >> '49' >> t_Background_HillLarge_2_2
-	0x3200fa >> '50' >> t_Background_HillLarge_3_0
-	0x323200 >> '51' >> t_Background_HillLarge_3_1
-	0x323232 >> '52' >> t_Background_HillLarge_3_2
-	0x323264 >> '53' >> t_Background_HillLarge_4_0
-	0x323296 >> '54' >> t_Background_HillLarge_4_1
-	0x3232c8 >> '55' >> t_Background_HillLarge_4_2
-	0x3232fa >> '56' >> t_Background_Bush1_0_0
-	0x326400 >> '57' >> t_Background_Bush1_1_0
-	0x326432 >> '58' >> t_Background_Bush2_0_0
-	0x326464 >> '59' >> t_Background_Bush2_1_0
-	0x326496 >> '60' >> t_Background_Bush2_2_0
-	0x3264c8 >> '61' >> t_Background_Bush3_0_0
-	0x3264fa >> '62' >> t_Background_Bush3_1_0
-	0x329600 >> '63' >> t_Background_Bush3_2_0
-	0x329632 >> '64' >> t_Background_Bush3_3_0
-	0x329664 >> '65' >> t_Background_Cloud1_0_0
-	0x329696 >> '66' >> t_Background_Cloud1_0_1
-	0x3296c8 >> '67' >> t_Background_Cloud1_1_0
-	0x3296fa >> '68' >> t_Background_Cloud1_1_1
-	0x32c800 >> '69' >> t_Background_Cloud2_0_0
-	0x32c832 >> '70' >> t_Background_Cloud2_0_1
-	0x32c864 >> '71' >> t_Background_Cloud2_1_0
-	0x32c896 >> '72' >> t_Background_Cloud2_1_1
-	0x32c8c8 >> '73' >> t_Background_Cloud2_2_0
-	0x32c8fa >> '74' >> t_Background_Cloud2_2_1
-	0x32fa00 >> '75' >> t_Background_Cloud3_0_0
-	0x32fa32 >> '76' >> t_Background_Cloud3_0_1
-	0x32fa64 >> '77' >> t_Background_Cloud3_1_0
-	0x32fa96 >> '78' >> t_Background_Cloud3_1_1
-	0x32fac8 >> '79' >> t_Background_Cloud3_2_0
-	0x32fafa >> '80' >> t_Background_Cloud3_2_1
-	0x640000 >> '81' >> t_Background_Cloud3_3_0
-	0x640032 >> '82' >> t_Background_Cloud3_3_1
+	//Enemies: foreground layer
+	'83' >> t_Enemies_0GoombaBothV1_0_0
+	'84' >> t_Enemies_1GoombarightfootV1_0_0
+	'85' >> t_Enemies_2GoombaleftfootV1_0_0
 
-	0x640064 >> '83' >> t_Enemies_Goomba_Both_0_0
-	0x640096 >> '84' >> t_Enemies_Goomba_WalkRight_0_0
-	0x6400c8 >> '85' >> t_Enemies_Goomba_WalkLeft_0_0
-	0x6400fa >> '86' >> t_Enemies_Goomba_Dead_0_0
-	0x643200 >> '87' >> t_Enemies_enemy2_00_0_0
-	0x643232 >> '88' >> t_Enemies_enemy2_01_0_0
-	0x643264 >> '89' >> t_Enemies_enemy2_02_0_0
-	0x643296 >> '90' >> t_Enemies_enemy2_03_0_0
+	'86' >> t_Enemies_3GoombaBothV2_0_0
+	'87' >> t_Enemies_4GoombarigtfootV2_0_0
+	'88' >> t_Enemies_5GoombaleftfootV2_0_0
 
-	0x6432c8 >> '91' >> t_Foreground_Bricks_Breakable_0_0
-	0x6432fa >> '92' >> t_Foreground_Dirt_Ground_0_0
-	0x646400 >> '93' >> t_Foreground_QuestionBlock00_0_0
-	0x646432 >> '94' >> t_Foreground_QuestionBlock01_0_0
-	0x646464 >> '95' >> t_Foreground_QuestionBlock02_0_0
-	0x646496 >> '96' >> t_Foreground_EmptyBlock_0_0
-	0x6464c8 >> '97' >> t_Foreground_Pipe_0_0
-	0x6464fa >> '98' >> t_Foreground_Pipe_0_1
-	0x649600 >> '99' >> t_Foreground_Pipe_1_0
-	0x649632 >> '100' >> t_Foreground_Pipe_1_1
-	0x649664 >> '101' >> t_Foreground_SolidBlock_0_0
-	0x649696 >> '102' >> t_Foreground_GrassGround_0_0
+	'89' >> t_Enemies_6GoombaDead_0_0
 
-	0x6496c8 >> '103' >> t_Items_SuperMushroom_0_0
-	0x6496fa >> '104' >> t_Items_UpMushroom_0_0
-	0x64c800 >> '105' >> t_Items_Coin00_0_0
-	0x64c832 >> '106' >> t_Items_Coin01_0_0
-	0x64c864 >> '107' >> t_Items_Coin02_0_0
+	'90' >> t_Enemies_0enemy200V1_0_0
+	'91' >> t_Enemies_1enemy201V1_0_0
+	'92' >> t_Enemies_2enemy202V1_0_0
 
-	0x64c896 >> '108' >> t_Player_Mario_0_0
-	0x64c8c8 >> '109' >> t_Player_MarioWalk1_0_0
-	0x64c8fa >> '110' >> t_Player_MarioWalk2_0_0
-	0x64fa00 >> '111' >> t_Player_MarioWalk3_0_0
-	0x64fa32 >> '112' >> t_Player_MarioJump_0_0
-	0x64fa64 >> '113' >> t_Player_MarioSkid_0_0
-	0x64fa96 >> '114' >> t_Player_MarioDead_0_0
-	0x64fac8 >> '115' >> t_Player_SuperMario_0_0
-	0x64fafa >> '116' >> t_Player_SuperMario_0_1
-	0x960000 >> '117' >> t_Player_SuperMarioWalk1_0_0
-	0x960032 >> '118' >> t_Player_SuperMarioWalk1_0_1
-	0x960064 >> '119' >> t_Player_SuperMarioWalk2_0_0
-	0x960096 >> '120' >> t_Player_SuperMarioWalk2_0_1
-	0x9600c8 >> '121' >> t_Player_SuperMarioWalk3_0_0
-	0x9600fa >> '122' >> t_Player_SuperMarioWalk3_0_1
-	0x963200 >> '123' >> t_Player_SuperMarioJump_0_0
-	0x963232 >> '124' >> t_Player_SuperMarioJump_0_1
-	0x963264 >> '125' >> t_Player_SuperMarioSkid_0_0
-	0x963296 >> '126' >> t_Player_SuperMarioSkid_0_1
+	'93' >> t_Enemies_3enemy200V2_0_0
+	'94' >> t_Enemies_4enemy201V2_0_0
+	'95' >> t_Enemies_5enemy202V2_0_0
 
+	'96' >> t_Enemies_6enemy203_0_0
+
+	//Foreground: foreground layer
+	'97' >> t_Foreground_Bricks_Breakable_0_0
+	'98' >> t_Foreground_Dirt_Ground_0_0
+	'99' >> t_Foreground_QuestionBlock00_0_0
+	'100' >> t_Foreground_QuestionBlock01_0_0
+	'101' >> t_Foreground_QuestionBlock02_0_0
+	'102' >> t_Foreground_EmptyBlock_0_0
+	'103' >> t_Foreground_Pipe_0_0
+	'104' >> t_Foreground_Pipe_0_1
+	'105' >> t_Foreground_Pipe_1_0
+	'106' >> t_Foreground_Pipe_1_1
+	'107' >> t_Foreground_SolidBlock_0_0
+	'108' >> t_Foreground_GrassGround_0_0
+
+	//Items: middle layer
+	'109' >> t_Items_SuperMushroom_0_0
+	'110' >> t_Items_UpMushroom_0_0
+	'111' >> t_Items_Coin00_0_0
+	'112' >> t_Items_Coin01_0_0
+	'113' >> t_Items_Coin02_0_0
+
+	//Mario: foreground layer
+	'114' >> t_Player_Mario_0_0
+	'115' >> t_Player_MarioWalk1_0_0
+	'116' >> t_Player_MarioWalk2_0_0
+	'117' >> t_Player_MarioWalk3_0_0
+	'118' >> t_Player_MarioJump_0_0
+	'119' >> t_Player_MarioSkid_0_0
+	'120' >> t_Player_MarioDead_0_0
+
+	'121' >> t_Player_SuperMario_0_0
+	'122' >> t_Player_SuperMario_0_1
+	'123' >> t_Player_SuperMarioWalk1_0_0
+	'124' >> t_Player_SuperMarioWalk1_0_1
+	'125' >> t_Player_SuperMarioWalk2_0_0
+	'126' >> t_Player_SuperMarioWalk2_0_1
+	'127' >> t_Player_SuperMarioWalk3_0_0
+	'128' >> t_Player_SuperMarioWalk3_0_1
+	'129' >> t_Player_SuperMarioJump_0_0
+	'130' >> t_Player_SuperMarioJump_0_1
+	'131' >> t_Player_SuperMarioSkid_0_0
+	'132' >> t_Player_SuperMarioSkid_0_1
 */
 """
 
@@ -162,13 +184,9 @@ def main():
 
 	output.write('''//Contains all the map information in an array of bytes:
 //Foreground is where all the action happens and collisions are calculated
+//Middleground is where all the coins, value packs, etc are. 
+	In theory this could also be where sprites (mario+enemies) go to die.
 //Background is where nobody cares about collisions
-
-
-//NOTE:
-//Currently the flagpole is in the background layer since mario will be overlayed 
-//	on it even though we care about collisions with the flagpole... 
-//	maybe move the flag to the foreground and use that to figure out where the flagpole is? 
 ''')
 
 	output.write(CONVERSIONKEYUSED)
@@ -230,10 +248,10 @@ def convertToAscii(x, y, pixels):
 	# print(tempHex)
 	# print(ASCIITOCOLOURKEY.keys())
 	numericValue=int(ASCIITOCOLOURKEY[tempHex])
-	if (numericValue>=103 and numericValue<=107):
-		# print(tempHex,numericValue)
-		numericValue-=102
-	elif (numericValue>86): #hack for making space
+	# if (numericValue>=103 and numericValue<=107):
+	# 	# print(tempHex,numericValue)
+	# 	numericValue-=102
+	if (numericValue>86): #hack for making space
 		# print(tempHex,numericValue)
 		if (numericValue>89):
 			numericValue+=3
