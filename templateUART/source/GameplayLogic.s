@@ -61,6 +61,10 @@ f_playingState:
 		//draw the sprites located on the background map
 		ldr r0, =d_mapBackground
 		ldr r1, =d_cameraPosition
+		bl f_drawMap		
+		//draw the sprites located on the middle map
+		ldr r0, =d_mapMiddleground
+		ldr r1, =d_cameraPosition
 		bl f_drawMap
 		//draw the sprites located on the foreground map
 		ldr r0, =d_mapForeground

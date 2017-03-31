@@ -1,10 +1,9 @@
 //Contains all the map information in an array of bytes:
 //Foreground is where all the action happens and collisions are calculated
 //Middleground is where all the coins, value packs, etc are. 
-	In theory this could also be where sprites (mario+enemies) go to die.
+//	In theory this could also be where sprites (mario+enemies) go to die.
 //Background is where nobody cares about collisions
 
-/*
 .globl t_mapBackground
 .globl t_mapMiddleground
 .globl t_mapForeground
@@ -12,6 +11,7 @@
 .globl d_mapMiddleground
 .globl d_mapForeground
 
+/*
 Notes: 
 	Data ordered in following order and should 
 		be usually stored on the following layers:
@@ -106,25 +106,35 @@ conversion table:
 	'82' >> t_Background_Cloud3_3_1
 
 	//Enemies: foreground layer
-	'83' >> t_Enemies_0GoombaBothV1_0_0
-	'84' >> t_Enemies_1GoombarightfootV1_0_0
-	'85' >> t_Enemies_2GoombaleftfootV1_0_0
+	//First enemy type
+		//moving right info
+		'83' >> t_Enemies_0GoombaBothV1_0_0
+		'84' >> t_Enemies_1GoombarightfootV1_0_0
+		'85' >> t_Enemies_2GoombaleftfootV1_0_0
+		
+		//moving left info
+		//	(identical to group above in appearance but store directionality info) 
+		'86' >> t_Enemies_3GoombaBothV2_0_0
+		'87' >> t_Enemies_4GoombarigtfootV2_0_0
+		'88' >> t_Enemies_5GoombaleftfootV2_0_0
 
-	'86' >> t_Enemies_3GoombaBothV2_0_0
-	'87' >> t_Enemies_4GoombarigtfootV2_0_0
-	'88' >> t_Enemies_5GoombaleftfootV2_0_0
+		//shared dead sprite
+		'89' >> t_Enemies_6GoombaDead_0_0
 
-	'89' >> t_Enemies_6GoombaDead_0_0
+	//Second enemy type:
+		//moving right info
+		'90' >> t_Enemies_0enemy200V1_0_0
+		'91' >> t_Enemies_1enemy201V1_0_0
+		'92' >> t_Enemies_2enemy202V1_0_0
 
-	'90' >> t_Enemies_0enemy200V1_0_0
-	'91' >> t_Enemies_1enemy201V1_0_0
-	'92' >> t_Enemies_2enemy202V1_0_0
+		//moving left info 
+		//	(identical to group above in appearance but store directionality info) 
+		'93' >> t_Enemies_3enemy200V2_0_0
+		'94' >> t_Enemies_4enemy201V2_0_0
+		'95' >> t_Enemies_5enemy202V2_0_0
 
-	'93' >> t_Enemies_3enemy200V2_0_0
-	'94' >> t_Enemies_4enemy201V2_0_0
-	'95' >> t_Enemies_5enemy202V2_0_0
-
-	'96' >> t_Enemies_6enemy203_0_0
+		//shared dead sprite
+		'96' >> t_Enemies_6enemy203_0_0
 
 	//Foreground: foreground layer
 	'97' >> t_Foreground_Bricks_Breakable_0_0

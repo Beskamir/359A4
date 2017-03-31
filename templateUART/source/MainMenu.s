@@ -130,6 +130,12 @@ _f_drawMenu:
 	ldr r0, =t_mapBackground
 	ldr r1, =t_cameraPosition
 	bl f_drawMap
+
+	//draw the sprites located on the middle map
+	ldr r0, =t_mapMiddleground
+	ldr r1, =t_cameraPosition
+	bl f_drawMap
+
 	//draw the sprites located on the foreground map
 	ldr r0, =t_mapForeground
 	ldr r1, =t_cameraPosition

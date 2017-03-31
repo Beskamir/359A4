@@ -1,6 +1,12 @@
 //This file contains all the map related logic
 
 /*
+**single int**
+contains the position of the left most side of the camera.
+*/
+.globl t_cameraPosition
+
+/*
 Input: 
 	r0: address of source map to copy from
 	r1: address of destination map to copy to
@@ -20,10 +26,24 @@ Effect: draws the map
 .globl f_drawMap
 
 /*
-**single int**
-contains the position of the left most side of the camera.
+Input:
+	r0, memory address of element to be animated.
+		ie: r0 = mapLayer[x][y]
+		Where mapLayer is the entire map in question
+	r1, value in {0,1,2} representing current state of element
+		done by subtracting the lowest possible value of the element's group
+			ie: for coin it'd be 111. So 111-111=0, 112-111=1, 113-111=2
+	r2, length of each state. (probably in milliseconds or seconds)
+Return:
+	null
+Effect:
+	"animate" the element by changing changing it's sprite using the following dfa
+		q0 -(t0)-> q1 -(t1)-> q2 -(t2)-> q1 -(t3)-> q0 (trivially loops)
+		tn is a value from 0 to 4 gotten by from moduloing the system clock
+		qn is the current sprite that's being used.
+		stays on qn if tn is not met
 */
-.globl t_cameraPosition
+.globl f_animate3SpriteSet
 
 /*
 **single int**
@@ -171,7 +191,79 @@ f_drawMap:
 
 	pop {r4-r10, pc}
 
+/*
+Input:
+	r0, memory address of element to be animated.
+		ie: r0 = mapLayer[x][y]
+		Where mapLayer is the entire map in question
+	r1, value in {0,1,2} representing current state of element
+		done by subtracting the lowest possible value of the element's group
+			ie: for coin it'd be 111. So 111-111=0, 112-111=1, 113-111=2
+	r2, length of each state. (probably in milliseconds or seconds)
+Return:
+	null
+Effect:
+	"animate" the element by changing changing it's sprite using the following dfa
+		q0 -(t0)-> q1 -(t1)-> q2 -(t2)-> q1 -(t3)-> q0 (trivially loops)
+		tn is a value from 0 to 4 gotten by from moduloing the system clock
+		qn is the current sprite that's being used.
+		stays on qn if tn is not met
+*/
+f_animate3SpriteSet:
+	push {r4-r10, lr}
 
+	spriteAddress_r .req r4 //address passed in as parameter 
+	state_r			.req r5 //state passed in as parameter
+	transition_r	.req r6 //transition based on duration which is passed in
+	increment_r		.req r7 //-1,0,1 for modifying sprite value
+	spriteValue_r	.req r8 //the sprite value at the sprite address
+
+	mov mapAddress_r, r0
+	mov state_r,	  r1
+	mov transition_r, r2
+
+	//TODO:
+	//	Do fancy modulo stuff with transition and clock here to get value in {0,1,2,3}
+
+	mov increment_r,  #0
+
+	cmp state_r, #0
+	bne _notState0
+		cmp transition_r, #0
+			moveq increment_r, #1
+
+	_notState0:
+	cmp state_r, #1
+	bne _notState1
+		cmp transition_r, #1
+			moveq increment_r, #1
+		cmp transition_r, #3
+			moveq increment_r, #-1
+
+	_notState1:
+	cmp state_r, #2
+	bne _notState2
+		cmp transition_r, #2
+			moveq increment_r, #-1
+			
+	_notState2:
+
+	//1 comparison is less expensive than loading, incrementing, and storing to memory.
+	cmp increment_r, #0
+	beq _skipAnimate
+		//actually update the sprite in the corresponding map
+		ldr spriteValue_r, [spriteAddress_r]
+		add spriteValue_r, increment_r
+		str spriteValue_r, [spriteAddress_r]
+	_skipAnimate:
+
+	.unreq spriteAddress_r
+	.unreq state_r
+	.unreq transition_r
+	.unreq increment_r
+	.unreq spriteValue_r
+
+	pop {r4-r10, pc}
 
 _f_checkColisions:
 	push {r4-r10, fp, lr}
