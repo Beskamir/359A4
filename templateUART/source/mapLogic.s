@@ -46,6 +46,47 @@ Effect:
 .globl f_animate3SpriteSet
 
 /*
+Input:
+	r0, element's actual x cell value (map based)
+	r1, element's actual y cell value (map based)
+	r2, mapLayerMemoryAddress (address of the map being used)
+Return:
+	r0, element at the specified (x,y) positions
+Effect:
+	return cell element
+*/
+.globl f_getCellElement
+
+/*
+Input:
+	r0, element's actual x cell value (map based)
+	r1, element's actual y cell value (map based)
+	r2, mapLayerMemoryAddress (address of the map being used)
+	r3, the element to be stored at the (x,y) position
+Return:
+	null
+Effect:
+	stores element passed in r3 into the correct position in the map
+*/
+.globl f_setCellElement
+
+/*
+Input:
+	r0, element's x cell value (screen space based)
+	r1, element's y cell value (screen space based)
+	r2, x offset in which to move character 
+		-1 = left, 1 = right, 0 = what's the point?
+	r3, mapLayerMemoryAddress (address of the map being used)
+Return:
+	r0, whether the element was able to move to the new cell or not
+		0 = failed to move
+		1 = was able to move
+Effect:
+	move or animate the element 
+*/
+.globl f_moveToCell
+
+/*
 **single int**
 contains the position of the left most side of the camera.
 */
@@ -162,7 +203,6 @@ f_drawMap:
 
 		mov counterX_r, #0 //reset x loop counter to 0
 		add counterY_r, #1 //increment y cell count by 1
-		// add mapToDraw_r, #288 //map is 320 cells wide, so 320-32=288 which is the offset
 		cmp counterY_r, #24 //y screen size is 24 cells
 		blt _drawMapLoop
 
@@ -256,9 +296,49 @@ Input:
 Return:
 	r0, element at the specified (x,y) positions
 Effect:
-	move or animate the element 
+	return cell element
 */
 f_getCellElement:
+	push {lr}
+
+	bl _f_getCellMemAddress
+	ldrb r0, [r0] //load the element from it's "cell" address
+
+	pop {pc}
+/*
+Input:
+	r0, element's actual x cell value (map based)
+	r1, element's actual y cell value (map based)
+	r2, mapLayerMemoryAddress (address of the map being used)
+	r3, the element to be stored at the (x,y) position
+Return:
+	null
+Effect:
+	stores element passed in r3 into the correct position in the map
+*/
+f_setCellElement:
+	push {r4, lr}
+	newElement_r .req r4
+	mov newElement_r, r3
+
+	bl _f_getCellMemAddress
+	strb newElement_r, [r0] //load the element from it's "cell" address
+
+	.unreq newElement_r
+
+	pop {r4, pc}
+
+/*
+Input:
+	r0, element's actual x cell value (map based)
+	r1, element's actual y cell value (map based)
+	r2, mapLayerMemoryAddress (address of the map being used)
+Return:
+	r0, memory address of specified cell
+Effect:
+	get cell memory
+*/
+_f_getCellMemAddress:
 	push {r4-r10, lr}
 
 	cellIndexX_r .req r4 //x screen index of AI
@@ -268,6 +348,7 @@ f_getCellElement:
 
 	mapOffset_r	 .req r7 //the camera offset during this
 
+
 	//set to input parameters
 	mov cellIndexX_r, r0
 	mov cellIndexY_r, r1
@@ -276,19 +357,13 @@ f_getCellElement:
 	mov mapAddress_r, r2
 
 	//compute the correct offset to use on the map.
-	//	(320*y)+x
+	//	((320*y)+x)+mapBaseAddress
 	mov mapOffset_r, #320 
 	mul mapOffset_r, cellIndexY_r
 	add mapOffset_r, cellIndexX_r
+	add mapOffset_r, mapAddress_r //combine mapoffset with mapaddress
 
-
-	ldrb r0, [mapAddress_r, mapOffset_r] //get map element at specified index
-
-	// cmp r0, #0
-	// beq debuggingSkip
-	// 	debuggingBreak:
-	// 	mov r0, r0
-	// debuggingSkip:
+	mov r0, mapOffset_r
 
 	.unreq cellIndexX_r
 	.unreq cellIndexY_r
@@ -296,6 +371,85 @@ f_getCellElement:
 	.unreq mapOffset_r
 
 	pop {r4-r10, pc}
+
+/*
+Input:
+	r0, element's x cell value (screen space based)
+	r1, element's y cell value (screen space based)
+	r2, x offset in which to move character 
+		-1 = left, 1 = right, 0 = what's the point?
+	r3, mapLayerMemoryAddress (address of the map being used)
+Return:
+	r0, whether the element was able to move to the new cell or not
+		0 = failed to move
+		1 = was able to move
+Effect:
+	move or animate the element 
+*/
+f_moveToCellOnlyX:
+	push {r4-r10, lr}
+
+	cellIndexX_r	.req r4 //x screen index of AI
+	cellIndexY_r	.req r5 //y screen index of AI
+
+	mapAddress_r	.req r6 //the address to the map being modified
+	cameraOffset_r	.req r7 //the camera offset during this
+
+	newCellOffset_r .req r8
+
+	hasMoved_r		.req r9
+
+	mov hasMoved_r, #0
+
+	mov cellIndexX_r,	 r0
+	mov cellIndexY_r,	 r1
+	mov newCellOffset_r, r2
+	mov mapAddress_r, 	 r3
+
+	ldr cameraOffset_r, =d_cameraPosition
+	ldr cameraOffset_r, [cameraOffset_r]
+
+	//compute where in the x axis we are in.
+	add cellIndexX_r, cameraOffset_r
+
+	mov r0, cellIndexX_r
+	add r0, newCellOffset_r
+	mov r1, cellIndexY_r
+	mov r2, mapAddress_r
+	bl f_getCellElement
+	cmp r0, #0 //check that cell is empty (collisions!)
+	bne _cellFull
+		mov r0, cellIndexX_r
+		mov r1, cellIndexY_r
+		mov r2, mapAddress_r
+		bl f_getCellElement
+		mov r3, r0 //get sprite that's being moved
+		//store sprite in new cell
+		mov r0, cellIndexX_r
+		add r0, newCellOffset_r
+		mov r1, cellIndexY_r
+		mov r2, mapAddress_r
+		bl f_setCellElement
+
+		//clear sprite from old cell
+		mov r0, cellIndexX_r
+		mov r1, cellIndexY_r
+		mov r2, mapAddress_r
+		mov r3, #0
+		bl f_setCellElement
+		mov hasMoved_r, #1
+
+	_cellFull:
+
+	.unreq cellIndexX_r	
+	.unreq cellIndexY_r	
+	.unreq mapAddress_r	
+	.unreq cameraOffset_r //no longer needed
+	.unreq aiValue_r	
+	.unreq hasMoved_r	
+
+	pop {r4-r10, pc}
+
 
 _f_checkColisions:
 	push {r4-r10, fp, lr}

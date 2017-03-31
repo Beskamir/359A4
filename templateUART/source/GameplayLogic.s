@@ -71,6 +71,8 @@ f_playingState:
 		ldr r1, =d_cameraPosition
 		bl f_drawMap
 
+		bl f_updateAIs
+
 		ldr r0, =d_cameraPosition
 		ldr r4, [r0]
 		add r4, #1

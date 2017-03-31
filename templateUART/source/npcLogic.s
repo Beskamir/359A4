@@ -57,7 +57,7 @@ _f_updateNPCsOnSpecifiedMap:
 
 
 	//keep track of which cells had an AI checked for
-	mov cellCheckedX_r, #0
+	mov cellCheckedX_r, #-1 //init to -1 since first step will increment
 	mov cellCheckedY_r, #0
 
 	mov mapLayerMem_r, r0 //store the passed in map address
@@ -65,7 +65,22 @@ _f_updateNPCsOnSpecifiedMap:
 
 
 	_AIsearchLoop:
-		//restore from memory
+		//increment to the next cell
+		cmp cellCheckedX_r, #32
+		bge _cellOutofRangeX
+			//if less than
+			add cellCheckedX_r, #1
+			b _validCoordinates
+
+		_cellOutofRangeX:
+			cmp cellCheckedY_r, #24
+			bge _NoMoreAIs
+				//if less than
+				mov cellCheckedX_r, #0 //reset
+				add cellCheckedY_r, #1 //next y value
+
+		_validCoordinates:
+		//setup parameters
 		mov r0, cellCheckedX_r
 		mov r1, cellCheckedY_r
 		mov r2, mapLayerMem_r
@@ -87,11 +102,15 @@ _f_updateNPCsOnSpecifiedMap:
 				//is enemy AI
 				cmp isAI_r, #89 //isAI_r > 89: branch _isAdvanceAI
 				bgt _isAdvanceAI
+					sub isAI_r, #83
+					mov r2, isAI_r
 					bl _f_moveBasicAI //branch to basic AI movement
 					b _AIsearchLoop
 					//return to top of loop
 
 				_isAdvanceAI:
+					sub isAI_r, #90
+					mov r2, isAI_r
 					bl _f_moveAdvanceAI //branch to advance AI movement
 					b _AIsearchLoop
 					//return to top of loop
@@ -100,11 +119,15 @@ _f_updateNPCsOnSpecifiedMap:
 				//is item
 				cmp isAI_r, #110 //isAI_r > 110: branch _isStaticItem
 				bgt _isStaticItem
+					sub isAI_r, #109
+					mov r2, isAI_r
 					bl _f_moveItem //branch to item movement (powerup drifting)
 					b _AIsearchLoop
 					//return to top of loop
 
 				_isStaticItem:
+					sub isAI_r, #111
+					mov r2, isAI_r
 					bl _f_moveStaticItem //branch to static movement (animation)
 					b _AIsearchLoop
 					//return to top of loop
@@ -121,7 +144,91 @@ _f_updateNPCsOnSpecifiedMap:
 
 	pop {r4-r10, pc}
 
+/*
+Moves left or right depending on collisions and direction 
+Input:
+	r0, element's x cell value (screen space based)
+	r1, element's y cell value (screen space based)
+	r2, Basic AI map value (83<=basic<=89)
+	r3, mapLayerMemoryAddress (address of the map being used)
+Return:
+	null
+Effect:
+	move or animate the element 
+*/
+_f_moveBasicLeftRight:
+	push {r4-r10, lr}
 
+	cellIndexX_r	.req r4 //x screen index of AI
+	cellIndexY_r	.req r5 //y screen index of AI
+
+	mapAddress_r	.req r6 //the address to the map being modified
+	cameraOffset_r	.req r7 //the camera offset during this
+
+	// //type of AI that's being dealt with
+	aiValue_r		.req r8
+
+	checkCellX_r 	.req r9 //stores x cell to move character too
+
+
+	mov cellIndexX_r, r0
+	mov cellIndexY_r, r1
+	mov aiValue_r,	  r2
+	mov mapAddress_r, r3
+
+	ldr cameraOffset_r, =d_cameraPosition
+	ldr cameraOffset_r, [cameraOffset_r]
+
+	//compute where in the x axis we are in.
+	mov checkCellX_r, cellIndexX_r
+	add checkCellX_r, cameraOffset_r
+
+	//don't move dead enemies. This isn't a zombie game
+	cmp aiValue_r, #6
+	beq _dead
+
+	//Check sprite direction:
+	cmp aiValue_r, #
+	bgt _basicAIMovingRight
+		cmp checkCellX_r, #0	//Check that cell isn't on the left edge of the map
+		beq _cellFull 
+			//r0-r3 should not have been changed yet
+			mov r2, #-1 //only need to change r2, the rest are still good
+			bl f_moveToCell
+			cmp r0, #0
+			beq _cellFull
+			b _animate
+
+
+	_basicAIMovingRight:
+		cmp checkCellX_r, #320 //Check that cell isn't on the right edge of the map
+		beq _cellFull 
+			//r0-r3 should not have been changed yet
+			mov r2, #1 //only need to change r2, the rest are still good
+			bl f_moveToCell
+			cmp r0, #0
+			beq _cellFull
+			b _animate
+			
+	_cellFull:
+		bl _f_changeDirection
+
+	_animate:
+		//animate sprite
+
+
+
+	_dead:
+
+	.unreq cellIndexX_r	
+	.unreq cellIndexY_r	
+	.unreq mapAddress_r	
+	.unreq cameraOffset_r	
+	.unreq aiValue_r		
+	.unreq checkCellX_r 	
+
+
+	pop {r4-r10, pc}
 
 /*
 Input:
@@ -134,49 +241,76 @@ Return:
 Effect:
 	move or animate the element 
 */
-_f_moveBasicAI:
+_f_changeDirection:
 	push {r4-r10, lr}
 
 	cellIndexX_r	.req r4 //x screen index of AI
 	cellIndexY_r	.req r5 //y screen index of AI
 
 	mapAddress_r	.req r6 //the address to the map being modified
-
 	cameraOffset_r	.req r7 //the camera offset during this
 
 	// //type of AI that's being dealt with
 	aiValue_r		.req r8
 
-	//set to input parameters
+	checkCellX_r 	.req r9 //stores x cell to move character too
+
+
 	mov cellIndexX_r, r0
 	mov cellIndexY_r, r1
-
-	mov aiValue_r, 	  r2 
-
-	//get map address
+	mov aiValue_r,	  r2
 	mov mapAddress_r, r3
- 
- 	//load the camera offset
+
 	ldr cameraOffset_r, =d_cameraPosition
-	ldr cameraOffset_r, [cameraOffset_r] 
+	ldr cameraOffset_r, [cameraOffset_r]
 
-	// add mapAddress_r, cameraOffset_r //offset the access to the map to the correct camera spot
-	
-	add cellIndexX_r, cameraOffset_r
-	// mul cellIndexY_r, #320
+	//compute where in the x axis we are in.
+	mov checkCellX_r, cellIndexX_r
+	add checkCellX_r, cameraOffset_r
 
-	//Rename to a more fitting name for following code
-	.unreq cameraOffset_r
-	mapOffset_r	.req r7 //the camera offset during this
+	//don't move dead enemies. This isn't a zombie game
+	cmp aiValue_r, #89
+	beq _dead
 
-	mov mapOffset_r, cellIndexX_r
-	add mapOffset_r, cellIndexY_r
+	//Check sprite direction:
+	cmp aiValue_r, #85
+	bgt _basicAIMovingRight
+		cmp checkCellX_r, #0	//Check that cell isn't on the left edge of the map
+		beq _cellFull 
+			//r0-r3 should not have been changed yet
+			mov r2, #-1 //only need to change r2, the rest are still good
+			bl f_moveToCell
+			cmp r0, #0
+			beq _cellFull
+			b _animate
 
-	add mapAddress_r, mapOffset_r
+
+	_basicAIMovingRight:
+		cmp checkCellX_r, #320 //Check that cell isn't on the right edge of the map
+		beq _cellFull 
+			//r0-r3 should not have been changed yet
+			mov r2, #1 //only need to change r2, the rest are still good
+			bl f_moveToCell
+			cmp r0, #0
+			beq _cellFull
+			b _animate
+			
+	_cellFull:
+		bl _f_changeDirection
+
+	_animate:
+		//animate sprite
 
 
-	///TODO:
-	//Implement the collision checks and stuff
+
+	_dead:
+
+	.unreq cellIndexX_r	
+	.unreq cellIndexY_r	
+	.unreq mapAddress_r	
+	.unreq cameraOffset_r	
+	.unreq aiValue_r		
+	.unreq checkCellX_r 	
 
 
 	pop {r4-r10, pc}
@@ -244,8 +378,8 @@ _f_moveItem:
 /*
 Scans map and finds enemies/items
 Input: 
-	r0, x cell to start search at
-	r1, y cell to start search at
+	r0, x cell to start search at (screen based)
+	r1, y cell to start search at (screen based)
 	r2, which map to scan
 Return:
 	r0, x cell search ended at (cell with AI)
@@ -277,12 +411,15 @@ _f_findItemOrNPC:
 	ldr cameraOffset_r, =d_cameraPosition
 	ldr cameraOffset_r, [cameraOffset_r] 
 
-	add mapAddress_r, cameraOffset_r //offset the access to the map to the correct camera spot
-
-	.unreq cameraOffset_r
-
 	_NPCsearchLoop:
-		ldrb aiType_r, [mapAddress_r], #1
+		//Get cell element at current (x,y)
+		mov r0, cellCheckX_r
+		add r0, cameraOffset_r
+		mov r1, cellCheckY_r
+		mov r2, mapAddress_r
+		bl f_getCellElement
+		mov aiType_r, r0 //store that cell element in aiType_r
+
 		//Chekc if AI is an enemy
 		cmp aiType_r, #83
 		blt _notEnemy 
@@ -299,17 +436,16 @@ _f_findItemOrNPC:
 				b _foundNPC
 
 		_notItem:
-		add cellCheckX_r, #1	//increment x cell count by 1
-		cmp cellCheckX_r, #32
-		beq _NPCsearchLoop
-		mov cellCheckX_r, #0
+			add cellCheckX_r, #1	//increment x cell count by 1
+			cmp cellCheckX_r, #32
+			blt _NPCsearchLoop
+			mov cellCheckX_r, #0
 
-		add cellCheckY_r, #1 //increment y cell count by 1
-		add mapAddress_r, #288 //map is 320 cells wide, so 320-32=288 which is the offset
-		cmp cellCheckY_r, #28
-		beq _NPCsearchLoop
+			add cellCheckY_r, #1 //increment y cell count by 1
+			cmp cellCheckY_r, #24
+			blt _NPCsearchLoop
 
-		mov aiType_r, #0 //if last cell and AI type not valid then set to 0
+			mov aiType_r, #0 //if last cell and AI type not valid then set to 0
 
 	_foundNPC:
 		mov r0, cellCheckX_r
@@ -319,6 +455,7 @@ _f_findItemOrNPC:
 	.unreq cellCheckX_r
 	.unreq cellCheckY_r
 	.unreq mapAddress_r
+	.unreq cameraOffset_r
 	.unreq aiType_r
 
 	pop {r4-r10, pc}
