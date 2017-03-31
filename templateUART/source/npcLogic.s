@@ -163,7 +163,7 @@ _f_moveBasicAI:
 	// add mapAddress_r, cameraOffset_r //offset the access to the map to the correct camera spot
 	
 	add cellIndexX_r, cameraOffset_r
-	mul cellIndexY_r, #320
+	// mul cellIndexY_r, #320
 
 	//Rename to a more fitting name for following code
 	.unreq cameraOffset_r

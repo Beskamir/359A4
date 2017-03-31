@@ -114,17 +114,15 @@ f_drawMap:
 	camera_r 		.req r8 //camera position in the world space
 
 
-
-
-
-	ldr spriteAccess_r, =t_artSpritesAccess
-
-
 	mov mapToDraw_r, r0	 //load the map to use for drawing
 	ldr camera_r,	[r1] //get camera position based on input parameter
 
-	mov counterY_r, #0 	//set y loop counter to 0
+	ldr spriteAccess_r, =t_artSpritesAccess
+
 	
+	mov counterX_r, #0 	//set x loop counter to 0
+	mov counterY_r, #0 	//set y loop counter to 0
+
 	// _drawMapLoopY:
 	_drawMapLoop:
 		// _drawMapLoopX:
@@ -132,7 +130,7 @@ f_drawMap:
 			mov r0, counterX_r
 			add r0, camera_r
 			mov r1, counterY_r
-			mov r3, mapToDraw_r
+			mov r2, mapToDraw_r
 			bl f_getCellElement
 			//r0 contains the element from map cell
 
@@ -163,7 +161,6 @@ f_drawMap:
 			blt _drawMapLoop
 
 		mov counterX_r, #0 //reset x loop counter to 0
-
 		add counterY_r, #1 //increment y cell count by 1
 		// add mapToDraw_r, #288 //map is 320 cells wide, so 320-32=288 which is the offset
 		cmp counterY_r, #24 //y screen size is 24 cells
@@ -199,13 +196,13 @@ Effect:
 f_animate3SpriteSet:
 	push {r4-r10, lr}
 
-	spriteAddress_r .req r4 //address passed in as parameter 
+	elementMem_r 	.req r4 //address passed in as parameter 
 	state_r			.req r5 //state passed in as parameter
 	transition_r	.req r6 //transition based on duration which is passed in
 	increment_r		.req r7 //-1,0,1 for modifying sprite value
 	spriteValue_r	.req r8 //the sprite value at the sprite address
 
-	mov mapAddress_r, r0
+	mov elementMem_r, r0
 	mov state_r,	  r1
 	mov transition_r, r2
 
@@ -239,12 +236,12 @@ f_animate3SpriteSet:
 	cmp increment_r, #0
 	beq _skipAnimate
 		//actually update the sprite in the corresponding map
-		ldr spriteValue_r, [spriteAddress_r]
+		ldr spriteValue_r, [elementMem_r]
 		add spriteValue_r, increment_r
-		str spriteValue_r, [spriteAddress_r]
+		str spriteValue_r, [elementMem_r]
 	_skipAnimate:
 
-	.unreq spriteAddress_r
+	.unreq elementMem_r
 	.unreq state_r
 	.unreq transition_r
 	.unreq increment_r
@@ -286,6 +283,12 @@ f_getCellElement:
 
 
 	ldrb r0, [mapAddress_r, mapOffset_r] //get map element at specified index
+
+	// cmp r0, #0
+	// beq debuggingSkip
+	// 	debuggingBreak:
+	// 	mov r0, r0
+	// debuggingSkip:
 
 	.unreq cellIndexX_r
 	.unreq cellIndexY_r

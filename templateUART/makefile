@@ -51,11 +51,8 @@ $(BUILD)output.elf : $(OBJECTS) $(LINKER)
 	$(ARMGNU)-ld --no-undefined $(OBJECTS) uart.o gpio.o -L. -Map $(MAP) -o $(BUILD)output.elf -T $(LINKER)
 
 # Rule to make the object files.
-#Added mtune (hopefully this optimizes it)
-#Based on: https://gcc.gnu.org/onlinedocs/gcc/ARM-Options.html
-#	possibly try "-mslow-flash-data" but this seems to be for ARMv7-m we have ARMv7-a
 $(BUILD)%.o: $(SOURCE)%.s
-	$(ARMGNU)-as -g -mtune=cortex-a7 -mcpu=cortex-a7 -I $(SOURCE) $< -o $@
+	$(ARMGNU)-as -g -mcpu=cortex-a7 -I $(SOURCE) $< -o $@
 
 $(BUILD)%.o: $(SOURCE)%.c
 	$(ARMGNU)-gcc -c -O4 -mcpu=cortex-a7 -I $(SOURCE) $< -o $@

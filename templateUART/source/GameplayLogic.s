@@ -76,7 +76,7 @@ f_playingState:
 		add r4, #1
 		str r4, [r0]
 
-		cmp r4, #320
+		cmp r4, #288
 		blt _playingLoop
 
 		//draw HUD
