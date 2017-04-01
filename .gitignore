@@ -1,2 +1,5 @@
 #Ignore compiled files
 templateUART/build/*
+templateUART/kernel.list
+templateUART/kernel.map
+templateUART/kernel7.img
