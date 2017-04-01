@@ -48,7 +48,7 @@ effect: main loop function in gameplay logic.
 f_playingState:
 	push {r4-r10, lr}
 
-	// mov r4, #0
+	mov r4, #0
 
 	bl _f_newGame //reset all the stored data to the initial states
 
@@ -73,10 +73,10 @@ f_playingState:
 
 		bl f_updateAIs
 
-		ldr r0, =d_cameraPosition
-		ldr r4, [r0]
+		// ldr r0, =d_cameraPosition
+		// ldr r4, [r0]
 		add r4, #1
-		str r4, [r0]
+		// str r4, [r0]
 
 		cmp r4, #288
 		blt _playingLoop
@@ -155,7 +155,7 @@ _f_newGame:
 	// str r7, [r0, #3]
 	
 	//Reset Mario's position
-	bl	f_resetMarioAnimation
+	// bl	f_resetMarioAnimation
 
 	pop {r4-r7, pc}
 

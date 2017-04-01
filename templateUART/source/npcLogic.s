@@ -63,13 +63,18 @@ _f_updateNPCsOnSpecifiedMap:
 	mov mapLayerMem_r, r0 //store the passed in map address
 	mov isTopLayer, r1 //"boolean" for checking which layer it is. 0=middleMap, 1=firstMap
 
+	ldr r0, =_d_cellCheckOffset
+	mov r1, #0
+	str r1, [r0]
 
 	_AIsearchLoop:
 		//increment to the next cell
 		cmp cellCheckedX_r, #32
 		bge _cellOutofRangeX
+			ldr r0, =_d_cellCheckOffset
+			ldr r0, [r0]
 			//if less than
-			add cellCheckedX_r, #1
+			add cellCheckedX_r, r0
 			b _validCoordinates
 
 		_cellOutofRangeX:
@@ -103,7 +108,15 @@ _f_updateNPCsOnSpecifiedMap:
 				cmp isAI_r, #89 //isAI_r > 89: branch _isAdvanceAI
 				bgt _isAdvanceAI
 					sub isAI_r, #83
+					mov r0, cellCheckedX_r
+					mov r1, cellCheckedY_r
 					mov r2, isAI_r
+					mov r3, mapLayerMem_r
+					bl _f_aiGravity
+					mov r0, cellCheckedX_r
+					mov r1, cellCheckedY_r
+					mov r2, isAI_r
+					mov r3, mapLayerMem_r
 					cmp r2, #6 //only move living enemies
 					blne _f_moveBasicLeftRight //branch to basic AI movement
 					b _AIsearchLoop
@@ -145,13 +158,32 @@ _f_updateNPCsOnSpecifiedMap:
 
 
 	pop {r4-r10, pc}
+/*
+Moves left or right depending on collisions and direction 
+Input:
+	r0, element's x cell value (screen space based)
+	r1, element's y cell value (screen space based)
+	r2, AI map value used for determining direction 
+		(0<=left<=2), (3<=right<=5)
+	r3, mapLayerMemoryAddress (address of the map being used)
+Return:
+	null
+Effect:
+	move or animate the element 
+*/
+_f_aiGravity:
+	push {r4-r10, lr}
+
+
+	pop {r4-r10, pc}
 
 /*
 Moves left or right depending on collisions and direction 
 Input:
 	r0, element's x cell value (screen space based)
 	r1, element's y cell value (screen space based)
-	r2, Basic AI map value (83<=basic<=89)
+	r2, AI map value used for determining direction 
+		(0<=left<=2), (3<=right<=5)
 	r3, mapLayerMemoryAddress (address of the map being used)
 Return:
 	null
@@ -203,7 +235,9 @@ _f_moveBasicLeftRight:
 			blt _cellFull
 				cmp r0, #108
 				bgt _cellFull
-
+					ldr r0, =_d_cellCheckOffset
+					mov r1, #1
+					str r1, [r0]		
 					//Safe to move there's no gap
 					//combine x and y
 					mov r0, cellIndexX_r
@@ -215,7 +249,7 @@ _f_moveBasicLeftRight:
 					mov r3, mapAddress_r
 					bl f_moveElement
 					cmp r0, #2
-					bne _cellFull
+					bne _cellFullLeft
 					b _animate
 
 
@@ -234,7 +268,9 @@ _f_moveBasicLeftRight:
 			blt _cellFull
 				cmp r0, #108
 				bgt _cellFull
-
+					ldr r0, =_d_cellCheckOffset
+					mov r1, #2
+					str r1, [r0]	
 					//Safe to move there's no gap
 					//combine x and y
 					mov r0, cellIndexX_r
@@ -246,15 +282,31 @@ _f_moveBasicLeftRight:
 					mov r3, mapAddress_r
 					bl f_moveElement
 					cmp r0, #2
-					bne _cellFull
+					bne _cellFullRight
 					b _animate
-			
+
+	_cellFullRight:
+		ldr r0, =_d_cellCheckOffset
+		mov r1, #1
+		str r1, [r0]
+		b _cellFull
+
+	_cellFullLeft:
+		ldr r0, =_d_cellCheckOffset
+		mov r1, #0
+		str r1, [r0]
+
 	_cellFull:
+		// ldr r0, =_d_cellCheckOffset
+		// mov r1, #0
+		// str r1, [r0]
+
 		mov r0, checkCellX_r
 		mov r1, cellIndexY_r
 		mov r2, aiValue_r
 		mov r3, mapAddress_r
 		bl _f_changeDirection
+
 
 	_animate:
 		//animate sprite
@@ -305,10 +357,12 @@ _f_changeDirection:
 	cmp aiSpriteType_r, #2
 	bgt _switchToLeftVersion
 		add aiValue_r, #3
+		b _switchFinished
 
 	_switchToLeftVersion:
 		sub aiValue_r, #3
 
+	_switchFinished:
 	mov r0, cellIndexX_r
 	mov r1, cellIndexY_r
 	mov r2, mapAddress_r
@@ -470,3 +524,5 @@ _f_findItemOrNPC:
 
 .section .data
 
+_d_cellCheckOffset:
+	.int 0

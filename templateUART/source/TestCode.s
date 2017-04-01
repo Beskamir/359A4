@@ -22,17 +22,17 @@ f_tests3:
 
 		To be tested.
 	*/
-	ldr r0, =0x1
-	ldr r1, [r0]	
+	// ldr r0, =0x1
+	// ldr r1, [r0]	
 
-	ldr r0, =0x00030001
-	ldr r1, [r0]
+	// ldr r0, =0x00030001
+	// ldr r1, [r0]
 
-	ldr r0, =0x00030004
-	ldr r1, [r0]
+	// ldr r0, =0x00030004
+	// ldr r1, [r0]
 
-	ldr r0, =0x00038002
-	str r1, [r0]
+	// ldr r0, =0x00038002
+	// str r1, [r0]
 
 
 	ldr r0, =0x0

@@ -52,7 +52,7 @@ main:
 	bl _f_enableCache
 
 	//TestCode
-		// bl f_tests3
+		bl f_tests3
 		b haltLoop$
 	///Test Code
 

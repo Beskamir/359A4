@@ -460,12 +460,13 @@ f_moveElement:
 			mov hasMoved_r, #1 //cell contains an enemy
 			b _cellFull
 	
-	_cellEmpty:		
+	_cellEmpty:	
+		//get sprite that will be moved
 		mov r0, cellIndexX_r
 		mov r1, cellIndexY_r
 		mov r2, mapAddress_r
 		bl f_getCellElement
-		mov r3, r0 //get sprite that's being moved
+		mov r3, r0 // set r3 parameter to the sprite that'll be moved
 		//store sprite in new cell
 		mov r0, cellIndexX_r
 		add r0, newCellXOffset_r
