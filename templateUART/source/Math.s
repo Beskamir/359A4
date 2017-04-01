@@ -3,6 +3,7 @@
 
 .globl	f_modulo
 .globl	f_digToASCII
+.globl	f_getClock
 .globl	d_clock
 
 /*Input: 
@@ -64,7 +65,7 @@ Effect:
 	Null
 */
 f_combineRegisters:
-	push {lr}	//Push the registers onto the stack
+	push {lr}			//Push the registers onto the stack
 	
 	lsl r0, #16
 	orr	r0, r1
@@ -75,7 +76,7 @@ f_combineRegisters:
 //Output: Null
 //Effect: Update the value of the mod clock
 f_updateClock:
-	push	{r4-r6, lr}
+	push	{r4-r6, lr}				//Push the registers onto the stack
 	
 	ldr		r4, =0x20003004			//Load address of CLO
 	ldr		r5, [r4]				//Load CLO
@@ -83,8 +84,22 @@ f_updateClock:
 	ldr		r6, =d_clock			//Load our clock address
 	str		r5, [r6]				//Store the new value of the mod clock
 	
-	pop		{r4-r6, pc}
+	pop		{r4-r6, pc}				//Pop the old registers and return
 
+//Input: r0 - the modulo value
+//Output: r0 - How many half-seconds have passed, modulo the input
+//Effect: Null
+f_getClock:
+	push	{r4-r5, lr}				//Push the registers onto the stack
+	
+	mov		r4, r0					//Move the mod value to a safe register
+	ldr		r5, =d_clock			//Load the clock address
+	ldr		r0, [r5]				//Load the clock value into r0
+	mov		r1, r4					//Move the mod value in r1
+	bl		f_modulo				//Call modulo
+	mov		r0, r1					//Return the modulo value
+	
+	pop		{r4-r5, pc}				//Pop the old registers and return
 	
 .section		.data
 
