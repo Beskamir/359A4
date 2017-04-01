@@ -41,8 +41,6 @@ f_moveMario:
 	mov		r5, r1							//Save the Y instruction in a safe register
 	
 	
-	bl		f_getClock
-	
 	//r6 = X position
 	//r7 = Y position
 	ldr		r8, =_d_marioPositionX			//Store the address of Mario's X position
@@ -60,13 +58,22 @@ f_moveMario:
 	beq		doneYMovement					//If Mario he is then we're done with vertical movement
 	
 	//Falling
+	sub		r9, #1							//Increase Mario's fall speed by 1
+	strb	r9, [r8]						//Store Mario's new fall speed
 	//Move Mario in map
+	FallMarioTop:							//Top of the loop, r9 is the loop counter as it is Mario's fall speed
 	lsl		r0, r6, #16						//Move X position to top half of r0
 	orr		r0, r7							//Add Y position to bottom half of r0
 	mov		r1, #0							//Don't move Mario horizontally
 	mov		r2, #-1							//Move Mario 1 space down
 	ldr		r3, =d_mapForeground			//Mario is in the foreground
 	bl		f_moveElement					//Move Mario
+	sub		r9, #1							//Subtract 1 from r9
+	//Loop test
+	cmp		r9, #0							//Compare the loop counter to 0
+	bgt		FallMarioTop					//If r9 is still greater than 0, we need to move Mario down again
+	
+	cmp		
 	//Move Mario in data register
 	sub		r7, #1							//Subtract 1 from Mario's Y position
 	ldr		r8, =_d_marioPositionY			//Load the address of Mario's Y position
@@ -85,6 +92,11 @@ f_moveMario:
 	//X movement
 	cmp		r4, #0							//Compare X offset to 0
 	beq		noXMovement						//If they're equal, branch to skip the X movement
+	bl		_f_shouldMarioMoveX				//Should Mario be moved right now?
+	cmp		r0, #1							//Is the answer yes?
+	bne		noXMovement						//If not, branch to skip the X movement
+	
+
 	//Move Mario in map
 	//Move Mario in data register
 	add		r6, r4							//Add the offset to Mario's current X position
@@ -116,6 +128,30 @@ _f_isMarioOnGround:
 	tst		r0, #0							//Is there empty space beneath Mario?
 	moveq	r0, #1							//If yes, move a 1 into r0
 	movne	r0, #0							//If not, move a 0 into r0
+	
+	pop		{r4-r10, pc}					//Return all the previous registers and return
+	
+
+//Input: Null	
+//Output: r0 - 1 for yes, 0 for no
+//Effect: Null
+_f_shouldMarioMoveX:
+	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
+
+	ldr		r4, =_d_lastMoveTick			//Load the address of Mario's X last move time
+	ldr		r5, [r4]						//Load Mario last move time
+
+	ldr		r6, =_t_marioXMoveTiming		//Load the address for the delay for Mario's movement
+	ldr		r7, [r6]						//Load the delay
+	add		r5, r7							//Add the delay to the last movement time (for comparison purposes)
+	
+	bl		getClock						//Get the current move time
+	mov		r8, r0							//Save it in a safe register
+	
+	cmp		r8, r5							//Compare the two times
+	movge	r0, #1							//If enough time has passed, return 1
+	strge	r8, [r6]						//If enough time has passed to move Mario, set this as the last move time
+	movelt	r0, #0							//If enough time hasn't passed, return 0
 	
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
