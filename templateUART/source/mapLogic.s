@@ -72,19 +72,26 @@ Effect:
 
 /*
 Input:
-	r0, element's x cell value (screen space based)
-	r1, element's y cell value (screen space based)
-	r2, x offset in which to move character 
-		-1 = left, 1 = right, 0 = what's the point?
+	r0, element's x and y cell value (screen space based)
+		x in first half of register
+			ie: 0xffff0000 (f's indicate values where x data is stored)
+		y in second half of register
+			ie: ox0000ffff (f's indicate values where y data is stored)
+		x offset in which to move character 
+	r1, x offsets which will be used to move character
+		// -1 = move left, 0 = stay put, 1 = move right
+	r2, y offsets which will be used to move character
+		// -1 = move down, 0 = stay put, 1 = move up 
 	r3, mapLayerMemoryAddress (address of the map being used)
 Return:
 	r0, whether the element was able to move to the new cell or not
 		0 = failed to move
-		1 = was able to move
+		1 = wasn't able to move, element there was enemy
+		2 = was able to move
 Effect:
 	move or animate the element 
 */
-.globl f_moveToCell
+.globl f_moveElement
 
 /*
 **single int**
@@ -387,9 +394,9 @@ Input:
 	r3, mapLayerMemoryAddress (address of the map being used)
 Return:
 	r0, whether the element was able to move to the new cell or not
-		0 = failed to move
-		1 = wasn't able to move, element there was enemy
-		2 = was able to move
+		0 = something prevented from moving (cell had something in it)
+		1 = wasn't able to move, element there was enemy. **useful for Mario**
+		2 = was able to move without issues (cell was empty)
 Effect:
 	move or animate the element 
 */
@@ -436,8 +443,24 @@ f_moveElement:
 	sub r1, newCellYOffset_r
 	mov r2, mapAddress_r
 	bl f_getCellElement
-	cmp r0, #0 //check that cell is empty (collisions!)
-	bne _cellFull
+
+	//collision checks:
+	cmp r0, #0 //check that cell is empty and skip enemy check if so
+	beq _cellEmpty
+	
+	//set flage somewhere the mario died
+	cmp r0, #114
+	bge _cellFull
+
+	//check that cell contains an enemy
+	cmp r0, #83 
+	blt _cellFull
+		cmp r0, #96
+		bgt _cellFull
+			mov hasMoved_r, #1 //cell contains an enemy
+
+	
+	_cellEmpty:		
 		mov r0, cellIndexX_r
 		mov r1, cellIndexY_r
 		mov r2, mapAddress_r
@@ -457,9 +480,10 @@ f_moveElement:
 		mov r2, mapAddress_r
 		mov r3, #0
 		bl f_setCellElement
-		mov hasMoved_r, #1
+		mov hasMoved_r, #2
 
 	_cellFull:
+	mov r0, hasMoved_r
 
 	.unreq cellIndexX_r	
 	.unreq cellIndexY_r	

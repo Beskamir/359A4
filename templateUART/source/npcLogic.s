@@ -104,14 +104,16 @@ _f_updateNPCsOnSpecifiedMap:
 				bgt _isAdvanceAI
 					sub isAI_r, #83
 					mov r2, isAI_r
-					bl _f_moveBasicAI //branch to basic AI movement
+					cmp r2, #6 //only move living enemies
+					blne _f_moveBasicLeftRight //branch to basic AI movement
 					b _AIsearchLoop
 					//return to top of loop
 
 				_isAdvanceAI:
 					sub isAI_r, #90
 					mov r2, isAI_r
-					bl _f_moveAdvanceAI //branch to advance AI movement
+					cmp r2, #6 //only move living enemies
+					blne _f_moveAdvanceAI //branch to advance AI movement
 					b _AIsearchLoop
 					//return to top of loop
 
@@ -183,43 +185,75 @@ _f_moveBasicLeftRight:
 	mov checkCellX_r, cellIndexX_r
 	add checkCellX_r, cameraOffset_r
 
-	//don't move dead enemies. This isn't a zombie game
-	cmp aiValue_r, #6
-	beq _dead
 
-		mov r2, #0 //vertical delta set to 0 since this is just left/right movement
+	//Check sprite direction:
+	cmp aiValue_r, #2
+	bgt _basicAIMovingRight
+		cmp checkCellX_r, #0 //Check that cell isn't on the left edge of the map
+		beq _cellFull 
+			//check that there will be something below the enemy
+			mov r0, cellIndexX_r
+			add r0, #-1
+			mov r1, cellIndexY_r
+			add r1, #1
+			mov r2, mapAddress_r
+			bl f_getCellElement
+			//97 to 108 represent the solid foreground elements that don't move
+			cmp r0, #97 
+			blt _cellFull
+				cmp r0, #108
+				bgt _cellFull
 
-		//Check sprite direction:
-		cmp aiValue_r, #
-		bgt _basicAIMovingRight
-			cmp checkCellX_r, #0 //Check that cell isn't on the left edge of the map
-			beq _cellFull 
-
-				mov r1, #-1 //moving left so set this to -1
-				bl f_moveElement
-				cmp r0, #0
-				beq _cellFull
-				b _animate
-
-
-		_basicAIMovingRight:
-			cmp checkCellX_r, #320 //Check that cell isn't on the right edge of the map
-			beq _cellFull 
-				mov r1, #1 //moving right so set this to -1
-				bl f_moveElement
-				cmp r0, #0
-				beq _cellFull
-				b _animate
-				
-		_cellFull:
-			bl _f_changeDirection
-
-		_animate:
-			//animate sprite
-
+					//Safe to move there's no gap
+					//combine x and y
+					mov r0, cellIndexX_r
+					mov r1, cellIndexY_r
+					bl f_combineRegisters
+					//r0 contians merged x and y
+					mov r1, #-1 //moving left so set this to -1
+					mov r2, #0 //vertical delta set to 0 since this is just left/right movement
+					mov r3, mapAddress_r
+					bl f_moveElement
+					cmp r0, #2
+					bne _cellFull
+					b _animate
 
 
-	_dead:
+	_basicAIMovingRight:
+		cmp checkCellX_r, #320 //Check that cell isn't on the right edge of the map			
+			//check that there will be something below the enemy
+			mov r0, cellIndexX_r
+			add r0, #1
+			mov r1, cellIndexY_r
+			add r1, #1
+			mov r2, mapAddress_r
+			bl f_getCellElement
+			//97 to 108 represent the solid foreground elements that don't move
+			cmp r0, #97 
+			blt _cellFull
+				cmp r0, #108
+				bgt _cellFull
+
+					//Safe to move there's no gap
+					//combine x and y
+					mov r0, cellIndexX_r
+					mov r1, cellIndexY_r
+					bl f_combineRegisters
+					//r0 contians merged x and y
+					mov r1, #1 //moving right so set this to 1
+					mov r2, #0 //vertical delta set to 0 since this is just left/right movement
+					mov r3, mapAddress_r
+					bl f_moveElement
+					cmp r0, #2
+					bne _cellFull
+					b _animate
+			
+	_cellFull:
+		
+		bl _f_changeDirection
+
+	_animate:
+		//animate sprite
 
 	.unreq cellIndexX_r	
 	.unreq cellIndexY_r	
@@ -268,43 +302,6 @@ _f_changeDirection:
 	//compute where in the x axis we are in.
 	mov checkCellX_r, cellIndexX_r
 	add checkCellX_r, cameraOffset_r
-
-	//don't move dead enemies. This isn't a zombie game
-	cmp aiValue_r, #89
-	beq _dead
-
-	//Check sprite direction:
-	cmp aiValue_r, #85
-	bgt _basicAIMovingRight
-		cmp checkCellX_r, #0	//Check that cell isn't on the left edge of the map
-		beq _cellFull 
-			//r0-r3 should not have been changed yet
-			mov r2, #-1 //only need to change r2, the rest are still good
-			bl f_moveToCell
-			cmp r0, #0
-			beq _cellFull
-			b _animate
-
-
-	_basicAIMovingRight:
-		cmp checkCellX_r, #320 //Check that cell isn't on the right edge of the map
-		beq _cellFull 
-			//r0-r3 should not have been changed yet
-			mov r2, #1 //only need to change r2, the rest are still good
-			bl f_moveToCell
-			cmp r0, #0
-			beq _cellFull
-			b _animate
-			
-	_cellFull:
-		bl _f_changeDirection
-
-	_animate:
-		//animate sprite
-
-
-
-	_dead:
 
 	.unreq cellIndexX_r	
 	.unreq cellIndexY_r	
