@@ -249,7 +249,10 @@ _f_moveBasicLeftRight:
 					b _animate
 			
 	_cellFull:
-		
+		mov r0, checkCellX_r
+		mov r1, cellIndexY_r
+		mov r2, aiValue_r
+		mov r3, mapAddress_r
 		bl _f_changeDirection
 
 	_animate:
@@ -267,10 +270,9 @@ _f_moveBasicLeftRight:
 
 /*
 Input:
-	r0, element's x cell value (screen space based)
-	r1, element's y cell value (screen space based)
-	r2, Basic AI map value (83<=basic<=89)
-	r3, mapLayerMemoryAddress (address of the map being used)
+	r0, element's x cell value (map based)
+	r1, element's y cell value (map based)
+	r2, mapLayerMemoryAddress (address of the map being used)
 Return:
 	null
 Effect:
@@ -281,35 +283,42 @@ _f_changeDirection:
 
 	cellIndexX_r	.req r4 //x screen index of AI
 	cellIndexY_r	.req r5 //y screen index of AI
+	
+	aiSpriteType_r	.req r6 //type of sprite that's being dealt with
+	mapAddress_r	.req r7 //the address to the map being modified
 
-	mapAddress_r	.req r6 //the address to the map being modified
-	cameraOffset_r	.req r7 //the camera offset during this
-
-	// //type of AI that's being dealt with
-	aiValue_r		.req r8
-
-	checkCellX_r 	.req r9 //stores x cell to move character too
+	aiValue_r 		.req r8 //ai value
 
 
-	mov cellIndexX_r, r0
-	mov cellIndexY_r, r1
-	mov aiValue_r,	  r2
-	mov mapAddress_r, r3
+	mov cellIndexX_r, 	r0
+	mov cellIndexY_r, 	r1
+	mov aiSpriteType_r, r2
+	mov mapAddress_r, 	r3
 
-	ldr cameraOffset_r, =d_cameraPosition
-	ldr cameraOffset_r, [cameraOffset_r]
+	mov r0, cellIndexX_r
+	mov r1, cellIndexY_r
+	mov r2, mapAddress_r
+	bl f_getCellElement
+	mov aiValue_r, r0
 
-	//compute where in the x axis we are in.
-	mov checkCellX_r, cellIndexX_r
-	add checkCellX_r, cameraOffset_r
+	cmp aiSpriteType_r, #2
+	bgt _switchToLeftVersion
+		add aiValue_r, #3
+
+	_switchToLeftVersion:
+		sub aiValue_r, #3
+
+	mov r0, cellIndexX_r
+	mov r1, cellIndexY_r
+	mov r2, mapAddress_r
+	mov r3, aiValue_r
+	bl f_setCellElement
 
 	.unreq cellIndexX_r	
 	.unreq cellIndexY_r	
+	.unreq aiSpriteType_r		
 	.unreq mapAddress_r	
-	.unreq cameraOffset_r	
-	.unreq aiValue_r		
-	.unreq checkCellX_r 	
-
+	.unreq aiValue_r	
 
 	pop {r4-r10, pc}
 

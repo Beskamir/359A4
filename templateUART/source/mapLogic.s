@@ -458,7 +458,7 @@ f_moveElement:
 		cmp r0, #96
 		bgt _cellFull
 			mov hasMoved_r, #1 //cell contains an enemy
-
+			b _cellFull
 	
 	_cellEmpty:		
 		mov r0, cellIndexX_r
