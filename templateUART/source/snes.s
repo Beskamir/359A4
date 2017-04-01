@@ -85,7 +85,7 @@ f_playInput:
 	mov		r5, #1			//Move 1 into r5
 	lsl		r5, #4			//Shift to bit 4 (Joy-pad UP)
 	tst		r4, r5			//AND the two registers and set flags accordingly
-//TODO	bleq	f_jumpHandler	//If Joy-pad UP was pressed, activate the start menu
+//TODO	bleq	f_moveMarioY	//If Joy-pad UP was pressed, jump!
 	
 	//Check if left or right were pressed to move Mario
 	
@@ -100,7 +100,7 @@ f_playInput:
 	cmp		r6, #0			//Compare r6 to 0
 	//If r6 =! 0 then we need to move Mario
 	movne	r0, r6			//Move the offset into r0
-//TODO	blne	f_moveHandler	//Move Mario
+//TODO	blne	f_moveMarioX	//Move Mario horizontally
 	
 	end_playInput:
 	
