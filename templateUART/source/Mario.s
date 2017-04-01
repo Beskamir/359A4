@@ -27,11 +27,56 @@ f_resetMarioPosition:
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
 	
-//Input: -1 to move Mario to the left, 1 to move Mario to the right
-	
-	
-f_moveMarioX:
+//Input:
+	//r0: -1 to move Mario to the left, 0 to stay, 1 to move Mario to the right
+	//r1: 0 for no jump, 1 for jump
+//Output: Null
+//Effect: Moves Mario in the specified direction	
+f_moveMario:
+	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
 
+	mov		r4, r0							//Save the X offset in a safe register
+	mov		r5, r1							//Save the Y instruction in a safe register
+	
+	//Y movement
+	ldr		r6, =verticalState				//Load the address of the vertical state in r6
+	ldrb	r7, [r6]						//Load the value of the vertical state
+	cmp		r7, #0							//Compare the vertical state to 0
+	bgt		jumping							//If the value is positive, Mario is jumping, so no need to worry about falling
+	bl		isMarioFalling					//Check if Mario should be falling
+	mov		r0, r8
+	cmp		r8, #1							//Is Mario falling?
+	bne		doneYMovement					//If Mario is not falling (or jumping) then we're done with Y movement
+	//Code for falling here
+	
+	doneYMovement:
+	
+	//X movement
+	cmp		r4, #0							//Compare X offset to 0
+	beq		noXMovement						//If they're equal, branch to skip the X movement
+	ldr		r6, =_d_marioPositionX			//Load the address of Mario's X position
+	ldrh	r7, [r6]						//Load Mario's current X position
+	add		r7, r4							//Add the offset to Mario's current X position
+	strh	r7, [r6]						//Store Mario's new X position
+	
+	noXMovement:
+	
+	
+	
+	
+
+	pop		{r4-r10, pc}					//Return all the previous registers and return
+	
+//Input: Null
+//Output: r0 - 0 for no, 1 for yes
+//Effect: Null
+_f_isMarioFalling:
+	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
+
+	//Code required
+	
+	pop		{r4-r10, pc}					//Return all the previous registers and return
+	
 	
 _t_marioDefaultPosition:
 _t_marioDefaultPositionX:	.hword 2
