@@ -3,6 +3,7 @@
 
 .globl	f_modulo
 .globl	f_digToASCII
+.globl	d_clock
 
 /*Input: 
 	r0, first register to combine
@@ -69,3 +70,22 @@ f_combineRegisters:
 	orr	r0, r1
 	
 	pop	{pc}			//Pop the old registers and return
+	
+//Input: Null
+//Output: Null
+//Effect: Update the value of the mod clock
+f_updateClock:
+	push	{r4-r6, lr}
+	
+	ldr		r4, =0x20003004			//Load address of CLO
+	ldr		r5, [r4]				//Load CLO
+	lsr		r5, #6					//Shift right by 6 to get half-second intervals
+	ldr		r6, =d_clock			//Load our clock address
+	str		r5, [r6]				//Store the new value of the mod clock
+	
+	pop		{r4-r6, pc}
+
+	
+.section		.data
+
+d_clock:	.word
