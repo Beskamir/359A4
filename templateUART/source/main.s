@@ -39,12 +39,8 @@ main:
 	bl		init_GPIO	//Enable the GPIO pins
 
 
-	// b haltLoop$
-	// bl f_tests2	//second test file
-
-
-	/// In theory this will stop the cpu's from fighting over resources
-	//and make things faster
+	/// In theory this will stop the cpu's from 
+	//	fighting over resources and make things faster
 	ldr r0,=0x4000008C
 	ldr r1,=_f_core1Init
 	str r1,[r0,#0x10]
@@ -56,7 +52,7 @@ main:
 	bl _f_enableCache
 
 	//TestCode
-		bl f_tests3
+		// bl f_tests3
 		b haltLoop$
 	///Test Code
 
@@ -77,17 +73,6 @@ _f_core1Init:
 
 	//Set up core 1
 	bl _f_enableCache
-	// MRC p15,0,r0,c1,c0,0
-	// ORR r0,#0x0004
-	// ORR r0,#0x0800
-	// ORR r0,#0x1000
-	// MCR p15,0,r0,c1,c0,0
-	mrc p15,0,r0,c1,c0,2
-	orr r0,#0x300000
-	orr r0,#0xC00000
-	mrc p15,0,r0,c1,c0,2
-	mov r0,#0x40000000
-	// vmsr fpexc,r0
 	_core1_Loop:
 			//core 1 code here
 		b _core1_Loop
@@ -97,17 +82,6 @@ _f_core2Init:
 
 	//Set up core 2
 	bl _f_enableCache
-	// MRC p15,0,r0,c1,c0,0
-	// ORR r0,#0x0004
-	// ORR r0,#0x0800
-	// ORR r0,#0x1000
-	// MCR p15,0,r0,c1,c0,0
-	mrc p15,0,r0,c1,c0,2
-	orr r0,#0x300000
-	orr r0,#0xC00000
-	mrc p15,0,r0,c1,c0,2
-	mov r0,#0x40000000
-	// vmsr fpexc,r0
 	_core2_Loop:
 			//core 2 code here
 		b _core2_Loop
@@ -117,17 +91,6 @@ _f_core3Init:
 
 	//Set up core 3
 	bl _f_enableCache
-	// MRC p15,0,r0,c1,c0,0
-	// ORR r0,#0x0004
-	// ORR r0,#0x0800
-	// ORR r0,#0x1000
-	// MCR p15,0,r0,c1,c0,0
-	mrc p15,0,r0,c1,c0,2
-	orr r0,#0x300000
-	orr r0,#0xC00000
-	mrc p15,0,r0,c1,c0,2
-	mov r0,#0x40000000
-	// vmsr fpexc,r0
 	_core3_Loop:
 			//core 3 code here
 		b _core3_Loop
@@ -136,9 +99,7 @@ _f_core3Init:
 haltLoop$:	//Halts the program
 	b	haltLoop$	//infinite loop
 
-
-
-
+///Should enable cache and make things faster
 _f_enableCache:
 	push {lr}
 
@@ -159,8 +120,3 @@ _f_enableCache:
 
 .globl d_coreState
 .section .data  
-// d_coreState:
-// 	.int 0
-
-// .align 4
-// font: .incbin "font.bin"

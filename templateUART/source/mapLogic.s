@@ -448,7 +448,7 @@ f_moveElement:
 	cmp r0, #0 //check that cell is empty and skip enemy check if so
 	beq _cellEmpty
 	
-	//set flage somewhere the mario died
+	//set flage somewhere that mario died
 	cmp r0, #114
 	bge _cellFull
 

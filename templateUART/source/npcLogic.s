@@ -193,9 +193,9 @@ _f_moveBasicLeftRight:
 		beq _cellFull 
 			//check that there will be something below the enemy
 			mov r0, cellIndexX_r
-			add r0, #-1
+			add r0, #-1 //sub 1 from the x position
 			mov r1, cellIndexY_r
-			add r1, #1
+			add r1, #1 //go down a row
 			mov r2, mapAddress_r
 			bl f_getCellElement
 			//97 to 108 represent the solid foreground elements that don't move
@@ -220,12 +220,13 @@ _f_moveBasicLeftRight:
 
 
 	_basicAIMovingRight:
-		cmp checkCellX_r, #320 //Check that cell isn't on the right edge of the map			
+		cmp checkCellX_r, #320 //Check that cell isn't on the right edge of the map		
+		beq _cellFull 
 			//check that there will be something below the enemy
 			mov r0, cellIndexX_r
-			add r0, #1
+			add r0, #1 //add 1 to the x position
 			mov r1, cellIndexY_r
-			add r1, #1
+			add r1, #1 //go down a row
 			mov r2, mapAddress_r
 			bl f_getCellElement
 			//97 to 108 represent the solid foreground elements that don't move

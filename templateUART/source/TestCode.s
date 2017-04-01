@@ -16,6 +16,25 @@ effect: place for test code
 f_tests3:
 	push {r4-r10, lr}
 
+
+	/*
+		testing to figure out how to access clock rate
+
+		To be tested.
+	*/
+	ldr r0, =0x1
+	ldr r1, [r0]	
+
+	ldr r0, =0x00030001
+	ldr r1, [r0]
+
+	ldr r0, =0x00030004
+	ldr r1, [r0]
+
+	ldr r0, =0x00038002
+	str r1, [r0]
+
+
 	ldr r0, =0x0
 	bl f_colourScreen
 
