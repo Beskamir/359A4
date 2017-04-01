@@ -307,8 +307,8 @@ f_getCellElement:
 	pop {pc}
 /*
 Input:
-	r0, element's actual x cell value (map based)
-	r1, element's actual y cell value (map based)
+	r0, element's new x cell value (map based)
+	r1, element's new y cell value (map based)
 	r2, mapLayerMemoryAddress (address of the map being used)
 	r3, the element to be stored at the (x,y) position
 Return:
@@ -374,19 +374,26 @@ _f_getCellMemAddress:
 
 /*
 Input:
-	r0, element's x cell value (screen space based)
-	r1, element's y cell value (screen space based)
-	r2, x offset in which to move character 
-		-1 = left, 1 = right, 0 = what's the point?
+	r0, element's x and y cell value (screen space based)
+		x in first half of register
+			ie: 0xffff0000 (f's indicate values where x data is stored)
+		y in second half of register
+			ie: ox0000ffff (f's indicate values where y data is stored)
+		x offset in which to move character 
+	r1, x offsets which will be used to move character
+		// -1 = move left, 0 = stay put, 1 = move right
+	r2, y offsets which will be used to move character
+		// -1 = move down, 0 = stay put, 1 = move up 
 	r3, mapLayerMemoryAddress (address of the map being used)
 Return:
 	r0, whether the element was able to move to the new cell or not
 		0 = failed to move
-		1 = was able to move
+		1 = wasn't able to move, element there was enemy
+		2 = was able to move
 Effect:
 	move or animate the element 
 */
-f_moveToCellOnlyX:
+f_moveElement:
 	push {r4-r10, lr}
 
 	cellIndexX_r	.req r4 //x screen index of AI
@@ -395,16 +402,26 @@ f_moveToCellOnlyX:
 	mapAddress_r	.req r6 //the address to the map being modified
 	cameraOffset_r	.req r7 //the camera offset during this
 
-	newCellOffset_r .req r8
+	newCellXOffset_r .req r8
+	newCellYOffset_r .req r9
 
-	hasMoved_r		.req r9
+	hasMoved_r		.req r10
 
 	mov hasMoved_r, #0
 
-	mov cellIndexX_r,	 r0
-	mov cellIndexY_r,	 r1
-	mov newCellOffset_r, r2
-	mov mapAddress_r, 	 r3
+	//get the x value from r0
+	mov cellIndexX_r, r0
+	lsr cellIndexX_r, #16
+
+	//get the y value from r1
+	mov cellIndexY_r, r0
+	// equivalent to bic cellIndexY_r, #0xFFFF0000 but requires fewer registers 
+	lsl cellIndexY_r, #16
+	lsr cellIndexY_r, #16
+
+	mov newCellXOffset_r, r1
+	mov newCellYOffset_r, r2
+	mov mapAddress_r, 	  r3
 
 	ldr cameraOffset_r, =d_cameraPosition
 	ldr cameraOffset_r, [cameraOffset_r]
@@ -412,9 +429,11 @@ f_moveToCellOnlyX:
 	//compute where in the x axis we are in.
 	add cellIndexX_r, cameraOffset_r
 
+	//checks whether cell is safe to move into
 	mov r0, cellIndexX_r
-	add r0, newCellOffset_r
+	add r0, newCellXOffset_r
 	mov r1, cellIndexY_r
+	sub r1, newCellYOffset_r
 	mov r2, mapAddress_r
 	bl f_getCellElement
 	cmp r0, #0 //check that cell is empty (collisions!)
@@ -426,8 +445,9 @@ f_moveToCellOnlyX:
 		mov r3, r0 //get sprite that's being moved
 		//store sprite in new cell
 		mov r0, cellIndexX_r
-		add r0, newCellOffset_r
+		add r0, newCellXOffset_r
 		mov r1, cellIndexY_r
+		sub r1, newCellYOffset_r
 		mov r2, mapAddress_r
 		bl f_setCellElement
 
@@ -444,8 +464,9 @@ f_moveToCellOnlyX:
 	.unreq cellIndexX_r	
 	.unreq cellIndexY_r	
 	.unreq mapAddress_r	
-	.unreq cameraOffset_r //no longer needed
-	.unreq aiValue_r	
+	.unreq cameraOffset_r 
+	.unreq newCellXOffset_r 
+	.unreq newCellYOffset_r 
 	.unreq hasMoved_r	
 
 	pop {r4-r10, pc}

@@ -4,6 +4,19 @@
 .globl	f_modulo
 .globl	f_digToASCII
 
+/*Input: 
+	r0, first register to combine
+	r1, second register to combine
+Output: 
+	r0, combined registers 
+		form 0xFFFFFFFF where 
+		first 4 bits are first register 
+		last 4 bits are second register
+Effect: 
+	Null
+*/
+.globl f_combineRegisters
+
 .section	.text
 
 //Input: Value to find mod of in r0, divisor in r1
@@ -35,3 +48,24 @@ f_digToASCII:
 	add		r0, r4, r5			//Add the ascii number offset to the number entered
 	
 	pop		{r4-r5, pc}			//Pop the old registers and return
+
+
+/*
+Input: 
+	r0, first register to combine
+	r1, second register to combine
+Output: 
+	r0, combined registers 
+		form 0xFFFFFFFF where 
+		first 4 bits are first register 
+		last 4 bits are second register
+Effect: 
+	Null
+*/
+f_combineRegisters:
+	push {lr}	//Push the registers onto the stack
+	
+	lsl r0, #16
+	orr	r0, r1
+	
+	pop	{pc}			//Pop the old registers and return

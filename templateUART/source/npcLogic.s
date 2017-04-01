@@ -187,34 +187,35 @@ _f_moveBasicLeftRight:
 	cmp aiValue_r, #6
 	beq _dead
 
-	//Check sprite direction:
-	cmp aiValue_r, #
-	bgt _basicAIMovingRight
-		cmp checkCellX_r, #0	//Check that cell isn't on the left edge of the map
-		beq _cellFull 
-			//r0-r3 should not have been changed yet
-			mov r2, #-1 //only need to change r2, the rest are still good
-			bl f_moveToCell
-			cmp r0, #0
-			beq _cellFull
-			b _animate
+		mov r2, #0 //vertical delta set to 0 since this is just left/right movement
+
+		//Check sprite direction:
+		cmp aiValue_r, #
+		bgt _basicAIMovingRight
+			cmp checkCellX_r, #0 //Check that cell isn't on the left edge of the map
+			beq _cellFull 
+
+				mov r1, #-1 //moving left so set this to -1
+				bl f_moveElement
+				cmp r0, #0
+				beq _cellFull
+				b _animate
 
 
-	_basicAIMovingRight:
-		cmp checkCellX_r, #320 //Check that cell isn't on the right edge of the map
-		beq _cellFull 
-			//r0-r3 should not have been changed yet
-			mov r2, #1 //only need to change r2, the rest are still good
-			bl f_moveToCell
-			cmp r0, #0
-			beq _cellFull
-			b _animate
-			
-	_cellFull:
-		bl _f_changeDirection
+		_basicAIMovingRight:
+			cmp checkCellX_r, #320 //Check that cell isn't on the right edge of the map
+			beq _cellFull 
+				mov r1, #1 //moving right so set this to -1
+				bl f_moveElement
+				cmp r0, #0
+				beq _cellFull
+				b _animate
+				
+		_cellFull:
+			bl _f_changeDirection
 
-	_animate:
-		//animate sprite
+		_animate:
+			//animate sprite
 
 
 
