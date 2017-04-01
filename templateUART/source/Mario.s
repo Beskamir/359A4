@@ -35,19 +35,45 @@ f_resetMarioPosition:
 f_moveMario:
 	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
 
+	//r4 = X offset
+	//r5 = Y instruction
 	mov		r4, r0							//Save the X offset in a safe register
 	mov		r5, r1							//Save the Y instruction in a safe register
 	
+	
+	bl		f_getClock
+	
+	//r6 = X position
+	//r7 = Y position
+	ldr		r8, =_d_marioPositionX			//Store the address of Mario's X position
+	ldrh	r6, [r8]						//Load Mario's X address
+	ldr		r8, =_d_marioPositionY			//Store the address of Mario's Y position
+	ldrh	r7, [r8]						//Load Mario's Y address
+	
 	//Y movement
-	ldr		r6, =verticalState				//Load the address of the vertical state in r6
-	ldrb	r7, [r6]						//Load the value of the vertical state
-	cmp		r7, #0							//Compare the vertical state to 0
+	ldr		r8, =verticalState				//Load the address of the vertical state
+	ldrb	r9, [r8]						//Load the value of the vertical state
+	cmp		r9, #0							//Compare the vertical state to 0
 	bgt		jumping							//If the value is positive, Mario is jumping, so no need to worry about falling
 	bl		_f_isMarioOnGround				//Check whether Mario is on the ground or if he should be falling
 	cmp		r0, #1							//Is Mario on the ground?
 	beq		doneYMovement					//If Mario he is then we're done with vertical movement
-	//Falling code
+	
+	//Falling
+	//Move Mario in map
+	lsl		r0, r6, #16						//Move X position to top half of r0
+	orr		r0, r7							//Add Y position to bottom half of r0
+	mov		r1, #0							//Don't move Mario horizontally
+	mov		r2, #-1							//Move Mario 1 space down
+	ldr		r3, =d_mapForeground			//Mario is in the foreground
+	bl		f_moveElement					//Move Mario
+	//Move Mario in data register
+	sub		r7, #1							//Subtract 1 from Mario's Y position
+	ldr		r8, =_d_marioPositionY			//Load the address of Mario's Y position
+	strh	r7, [r8]						//Store Mario's new Y position
 	b		doneYMovement					//We're done moving Mario vertically
+	
+	//Jumping
 	jumping:
 	//jumping code here
 		//special case: breaking a block
@@ -59,11 +85,12 @@ f_moveMario:
 	//X movement
 	cmp		r4, #0							//Compare X offset to 0
 	beq		noXMovement						//If they're equal, branch to skip the X movement
-	ldr		r6, =_d_marioPositionX			//Load the address of Mario's X position
-	ldrh	r7, [r6]						//Load Mario's current X position
-	add		r7, r4							//Add the offset to Mario's current X position
-	strh	r7, [r6]						//Store Mario's new X position
-	//Move Mario on map
+	//Move Mario in map
+	//Move Mario in data register
+	add		r6, r4							//Add the offset to Mario's current X position
+	ldr		r8, =_d_marioPositionX			//Load the address of Mario's X position
+	strh	r6, [r8]						//Store Mario's new X position
+	
 	
 	noXMovement:
 	
@@ -93,16 +120,21 @@ _f_isMarioOnGround:
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
 	
+//Mario's default map coordinates, used to place him at the start of the game
 _t_marioDefaultPosition:
 _t_marioDefaultPositionX:	.hword 2
 _t_marioDefaultPositionY:	.hword 21
-	
-	
+
+//How many ticks of the clock before Mario moves once horizontally
+_t_marioXMoveTiming:		.byte 1
 	
 .section		.data
 
 //Jump/Fall state register, stores whether Mario
-_verticalState:		.byte 0
+_d_verticalState:		.byte 0
+
+//Last tick in which Mario moved
+_d_lastMoveTick:		.word 0
 
 //Mario's coordinates in the map
 _d_marioPosition:

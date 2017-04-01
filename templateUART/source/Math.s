@@ -86,7 +86,7 @@ f_updateClock:
 	
 	pop		{r4-r6, pc}				//Pop the old registers and return
 
-//Input: r0 - the modulo value
+//Input: r0 - the modulo value, entering 0 returns without applying any modulo
 //Output: r0 - How many half-seconds have passed, modulo the input
 //Effect: Null
 f_getClock:
@@ -94,11 +94,14 @@ f_getClock:
 	
 	mov		r4, r0					//Move the mod value to a safe register
 	ldr		r5, =d_clock			//Load the clock address
+	cmp		r4, #0					//Did the user enter 0?
 	ldr		r0, [r5]				//Load the clock value into r0
+	beq		getClockEnd				//If the user entered 0, return
 	mov		r1, r4					//Move the mod value in r1
 	bl		f_modulo				//Call modulo
 	mov		r0, r1					//Return the modulo value
 	
+	getClockEnd:
 	pop		{r4-r5, pc}				//Pop the old registers and return
 	
 .section		.data
