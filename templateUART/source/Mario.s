@@ -43,11 +43,16 @@ f_moveMario:
 	ldrb	r7, [r6]						//Load the value of the vertical state
 	cmp		r7, #0							//Compare the vertical state to 0
 	bgt		jumping							//If the value is positive, Mario is jumping, so no need to worry about falling
-	bl		isMarioFalling					//Check if Mario should be falling
-	mov		r0, r8
-	cmp		r8, #1							//Is Mario falling?
-	bne		doneYMovement					//If Mario is not falling (or jumping) then we're done with Y movement
-	//Code for falling here
+	bl		_f_isMarioOnGround				//Check whether Mario is on the ground or if he should be falling
+	cmp		r0, #1							//Is Mario on the ground?
+	beq		doneYMovement					//If Mario he is then we're done with vertical movement
+	//Falling code
+	b		doneYMovement					//We're done moving Mario vertically
+	jumping:
+	//jumping code here
+		//special case: breaking a block
+	
+	
 	
 	doneYMovement:
 	
@@ -58,6 +63,7 @@ f_moveMario:
 	ldrh	r7, [r6]						//Load Mario's current X position
 	add		r7, r4							//Add the offset to Mario's current X position
 	strh	r7, [r6]						//Store Mario's new X position
+	//Move Mario on map
 	
 	noXMovement:
 	
@@ -70,10 +76,19 @@ f_moveMario:
 //Input: Null
 //Output: r0 - 0 for no, 1 for yes
 //Effect: Null
-_f_isMarioFalling:
+_f_isMarioOnGround:
 	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
 
-	//Code required
+	ldr		r4, =_d_marioPositionX			//Load the address of Mario's X position
+	ldrh	r0, [r4]						//Load Mario's X position
+	ldr		r5, =_d_marioPositionY			//Load the address of Mario's Y position
+	ldrh	r1, [r5]						//Load Mario's Y position
+	sub		r1, #1							//Subtract 1 from Mario's Y position to check the cell below him
+	ldr		r6, =d_mapForeground			//Load the address of the foreground map
+	bl		f_getCellElement				//Find out which cell is below Mario
+	tst		r0, #0							//Is there empty space beneath Mario?
+	moveq	r0, #1							//If yes, move a 1 into r0
+	movne	r0, #0							//If not, move a 0 into r0
 	
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
