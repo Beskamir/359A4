@@ -153,6 +153,9 @@ _f_newGame:
 	str r4, [r0]
 
 	// str r7, [r0, #3]
+	
+	//Reset Mario's position
+	bl	f_resetMarioAnimation
 
 	pop {r4-r7, pc}
 
