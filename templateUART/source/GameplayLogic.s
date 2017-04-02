@@ -209,12 +209,14 @@ _f_newGame:
 	ldrb r4, [r0], #1
 	ldrb r5, [r0], #1
 	ldrb r6, [r0], #1
+	ldrb r7, [r0], #1
 
 	ldr r0, =_d_gameState
 	// stmia r0, {r4-r6} 
 	strb r4, [r0], #1
 	strb r5, [r0], #1
 	strb r6, [r0], #1
+	strb r7, [r0], #1
 
 	ldr r0, =_t_gameScore
 	ldr r4, [r0]
@@ -222,9 +224,8 @@ _f_newGame:
 	ldr r0, =_d_gameScore
 	str r4, [r0]
 
-	// str r7, [r0, #3]
 	
-	//Reset Mario's position
+	bl	f_resetMarioPosition	//Reset Mario's position
 
 	pop {r4-r7, pc}
 
