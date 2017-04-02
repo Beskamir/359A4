@@ -27,11 +27,18 @@ effect: main loop function in gameplay logic.
 //Stores the game variables
 //First byte is number of coins
 //Second byte is number of lives
-//Third byte stores the win and lose flags
-	//Bit 0 is the lose flag, Bit 1 is the win flag
+//Third byte stores the lose flag
+//Fourth byte stores the win flag
 .align 4
 _t_gameState:	
-	.byte 0, 3, 0
+_t_coins:
+	.byte 0
+_t_lives:
+	.byte 3
+_t_lose:
+	.byte 0
+_t_win:
+	.byte 0
 
 .align 4
 //Word stores the score
@@ -260,7 +267,7 @@ f_addScore:
 	
 	mov	r4, r0				//Store the score to be added in a safe register
 	
-	ldr r5, =_d_gameState		//Load the address of the number of coins
+	ldr r5, =_d_gameState	//Load the address of the number of coins
 	add	r5, #3				//Load the address of the score
 	ldr	r6, [r5]			//Load the score
 	
@@ -274,11 +281,18 @@ f_addScore:
 //Stores the game variables
 //First byte is number of coins
 //Second byte is number of lives
-//Third byte stores the win and lose flags
-	//Bit 0 is the lose flag, Bit 1 is the win flag
+//Third byte stores the lose flag
+//Fourth byte stores the win flag
 .align 4
 _d_gameState:	
-	.byte 0, 3, 0
+_d_coins:
+	.byte 0
+_d_lives:
+	.byte 3
+d_lose:
+	.byte 0
+d_win:
+	.byte 0
 
 .align 4
 //Word stores the score

@@ -65,20 +65,28 @@ f_moveMario:
 	
 	//r6 = X position
 	//r7 = Y position
-	ldr		r8, =_d_marioPositionX			//Store the address of Mario's X position
-	ldrh	r6, [r8]						//Load Mario's X address
-	ldr		r8, =_d_marioPositionY			//Store the address of Mario's Y position
-	ldrh	r7, [r8]						//Load Mario's Y address
+	ldr		r10, =_d_marioPositionX			//Store the address of Mario's X position
+	ldrh	r6, [r10]						//Load Mario's X address
+	ldr		r10, =_d_marioPositionY			//Store the address of Mario's Y position
+	ldrh	r7, [r10]						//Load Mario's Y address
+	
+
 	
 	//Y movement
+	//r8 = verticalState address
+	//r9 = vertical state
 	ldr		r8, =verticalState				//Load the address of the vertical state
 	ldrb	r9, [r8]						//Load the value of the vertical state
 	cmp		r9, #0							//Compare the vertical state to 0
 	bgt		jumping							//If the value is positive, Mario is jumping, so no need to worry about falling
 	bl		_f_isMarioOnGround				//Check whether Mario is on the ground or if he should be falling
 	cmp		r0, #1							//Is Mario on the ground?
-	beq		doneYMovement					//If Mario he is then we're done with vertical movement
+	bne		falling							//If Mario is not jumping and not on the ground then he is falling
+	cmp		r5, #1							//Does Mario want to start a jump?
+	beq		startJump						//If so go, start the jump (then jump)
+	b		doneYMovement					//If Mario is not falling, jumping or starting a jump and he's on the ground, don't do any Y movement
 	
+	falling:
 	//Falling
 	sub		r9, #1							//Increase Mario's fall speed by 1
 	strb	r9, [r8]						//Store Mario's new fall speed
@@ -103,21 +111,60 @@ f_moveMario:
 		b		doneYMap					//We're done Y movement
 	FallMarioTest:							//Loop test
 		sub		r9, #1						//Subtract 1 from the loop counter
-		sub		r7, #1						//Subtract 1 from Mario's Y position
+		add		r7, #1						//Subtract 1 from Mario's Y position (by adding because opposite)
 		cmp		r9, #0						//Compare the loop counter to 0
 		bgt		FallMarioTop				//If r9 is still greater than 0, we need to move Mario down again
 	//Move Mario in data register
 	doneYMap:
-	ldr		r8, =_d_marioPositionY			//Load the address of Mario's Y position
-	strh	r7, [r8]						//Store Mario's new Y position
+	ldr		r10, =_d_marioPositionY			//Load the address of Mario's Y position
+	strh	r7, [r10]						//Store Mario's new Y position
 	b		doneYMovement					//We're done moving Mario vertically
 	
 	//Jumping
+	startJump:
+	//Does Mario have the jump boost powerup?
+	ldr		r10, =jumpBoost					//Load the address of jumpBoost
+	ldrb	r0, [r10]						//Load the value of jumpBoost
+	tst		r0, #1							//Is jumpBoost activated?
+	moveq	r9, #4							//If so, load the boosted jump value as the current jump speed
+	movne	r9, #3							//Otherwise, load the normal jump value as the current jump speed
+	strb	r9, [r8]						//Store the current jump speed as the new vertical state
 	jumping:
+	//Move Mario in map
+	//r9 = Mario's jump speed = loop counter = Number of times Mario is moved up until he hits terrain
+	JumpMarioTop:							//Top of the loop, r9 is the loop counter as it is Mario's jump speed
+		lsl		r0, r6, #16					//Move X position to top half of r0
+		orr		r0, r7						//Add Y position to bottom half of r0
+		mov		r1, #0						//Don't move Mario horizontally
+		mov		r2, #1						//Move Mario 1 space up
+		ldr		r3, =d_mapForeground		//Mario is in the foreground
+		bl		f_moveElement				//Move Mario
+		mov		r10, r0						//Store result in a safe register
+		cmp		r10, #2						//Did the move succeed?
+		beq		FallMarioTest				//If so, go to the test
+		cmp		r10, #1						//Did we fail to move due to an enemy?
+		bleq	_f_killMario				//If so, kill Mario!
+		beq		FallMarioTest				//Then go to the loop test
+		//If neither, then we've hit a block!
+		mov		r9, #0						//Set Mario's vertical speed to 0
+		strb	r9, [r8]					//Store Mario's vertical speed
+		bl		_f_hitBlock					//Handle hitting a block
+		b		doneYMap					//We're done Y movement
+	JumpMarioTest:							//Loop test
+		sub		r9, #1						//Subtract 1 from the loop counter
+		sub		r7, #1						//Add 1 to Mario's Y position (by subtracting because opposite)
+		cmp		r9, #0						//Compare the loop counter to 0
+		bgt		JumpMarioTop				//If r9 is still greater than 0, we need to move Mario down again
+	//Lower Mario's jump speed
+	sub		r9, #1							//Decrease Mario's jump speed by 1
+	strb	r9, [r8]						//Store Mario's new jump speed
+	//Move Mario in data register
+	doneYMap:
+	ldr		r10, =_d_marioPositionY			//Load the address of Mario's Y position
+	strh	r7, [r10]						//Store Mario's new Y position
+	b		doneYMovement					//We're done moving Mario vertically
 	
-		//Special case: breaking a block
-			//Special special case: hitting a value block
-		//Special case: hitting an enemy
+
 	
 	
 	doneYMovement:
@@ -125,17 +172,9 @@ f_moveMario:
 	//Check if Mario should be moved horizontally
 	cmp		r4, #0							//Compare X offset to 0
 	beq		doneMovingMario					//If they're equal, branch to skip the X movement
-	bl		_f_shouldMarioMoveX				//Should Mario be moved right now?
-	cmp		r0, #1							//Is the answer yes?
 	
-
-	//Move Mario in map
-	//Move Mario in data register
-	add		r6, r4							//Add the offset to Mario's current X position
-	ldr		r8, =_d_marioPositionX			//Load the address of Mario's X position
-	strh	r6, [r8]						//Store Mario's new X position
+	//X movement here
 	
-		
 	doneMovingMario:
 	
 	pop		{r4-r10, pc}					//Return all the previous registers and return
@@ -215,7 +254,27 @@ _f_killEnemy:
 	
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
+
+//Input: Null
+//Output: Null
+//Effect: Handle Mario hitting dying (from hitting an enemy)
+_f_killMario:
+	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
 	
+	
+	
+	pop		{r4-r10, pc}					//Return all the previous registers and return
+
+	
+	
+//Input: Null
+//Output: Null
+//Effect: Handle Mario hitting a block above his head by jumping
+_f_hitBlock:
+	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
+		//Special case: breaking a block
+		//Special case: hitting a value block
+	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
 	
 //Mario's default map coordinates, used to place him at the start of the game
@@ -238,3 +297,6 @@ _d_lastMoveTick:			.word 0
 _d_marioPosition:
 _d_marioPositionX:			.hword 2
 _d_marioPositionY:			.hword 21
+
+//Does Mario have a jump boost powerup?
+_d_jumpBoost:				.byte 0
