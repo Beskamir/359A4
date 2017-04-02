@@ -1,6 +1,7 @@
 #include <stdio.h>
+// #include <string.h>
 // #include <drawPixel.h>
-#define screenArraySize = 786431
+#define screenArraySize 786431
 
 extern unsigned short * FrameBufferPointer;
 
@@ -9,14 +10,17 @@ int screenCurrent[ screenArraySize ];
 int screenOld[ screenArraySize ];
 
 void c_f_refreshScreen(){
+	int screenCurrent[ screenArraySize ];
+	int screenOld[ screenArraySize ];
+
 	for (int i = 0; i < screenArraySize; ++i)
 	{
 		screenCurrent[i] = 0;
 		screenOld[i] = 0;
 	}
 }
-
-
+// 
+// 
 void c_f_storePixel(int x_int, int y_int, int colour_int){
 	//calculate the offset at which to write to the frame buffer
 	/*
