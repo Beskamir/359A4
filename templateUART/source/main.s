@@ -14,6 +14,7 @@ Optimization:
 // .include "snes"
 .extern c_init_frameBuffer
 .extern c_f_clockBoost
+.extern c_f_clockLower
 
 .section    .init
 // .include "Graphics.s"
@@ -47,8 +48,8 @@ main:
 	*/
 	// Return CPU ID (0..3) Of The CPU Executed On
 	mrc p15,0,r0,c0,c0,5 // R0 = Multiprocessor Affinity Register (MPIDR)
-	ands r0,3 // R0 = CPU ID (Bits 0..1)
-	bne _haltLoop$ // IF (CPU ID != 0) Branch To Infinite Loop (Core ID 1..3)
+	ands r0, #3 // R0 = CPU ID (Bits 0..1)
+	bne haltLoop$ // IF (CPU ID != 0) Branch To Infinite Loop (Core ID 1..3)
 	/// In theory this will stop the cpu's from 
 	//	fighting over resources and make things faster
 	// ldr r0,=0x4000008C
@@ -79,7 +80,7 @@ main:
 ////End of Actual coreLoop
 //call this when program ends
 _endProgram:
-	c_f_clockLower
+	bl c_f_clockLower
 	b haltLoop$
 
 haltLoop$:	//Halts the program

@@ -1,12 +1,10 @@
 /*
     Modifying tutorial code from github to redo the framebuffer and hopefully increasing the fps...
-    Since I have no idea how to compile with header files I'm dumping stuff into a single file.
 
-    Full copywrite notice from previous file:
+    Full copywrite notice from original file:
 */
 
 /*
-
     Part of the Raspberry-Pi Bare Metal Tutorials
     Copyright (c) 2015, Brian Sidebotham
     All rights reserved.
@@ -34,24 +32,27 @@
     POSSIBILITY OF SUCH DAMAGE.
 
 */
-
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "rpi-mailbox-interface.h"
+#include "mailboxInterface.h"
 
 #define SCREEN_WIDTH    1024
 #define SCREEN_HEIGHT   768
 #define SCREEN_DEPTH    16      /* 16 or 32-bit */
 
+
 // volatile unsigned char* frameBuffer = NULL;
-unsigned short * frameBuffer = NULL;
+unsigned short* frameBuffer = NULL;
+
+rpi_mailbox_property_t* memoryPointer;
+
 /** Main function - we'll never return from here */
 void c_init_frameBuffer(){
-    int width = SCREEN_WIDTH; 
-    int height = SCREEN_HEIGHT;
-    int bytesPerPixel = SCREEN_DEPTH;
+    // int width = SCREEN_WIDTH; 
+    // int height = SCREEN_HEIGHT;
+    // int bytesPerPixel = SCREEN_DEPTH;
     // volatile unsigned char* frameBuffer = NULL;
 
     // /* Initialise the UART */
@@ -72,22 +73,22 @@ void c_init_frameBuffer(){
     RPI_PropertyAddTag( TAG_GET_DEPTH );
     RPI_PropertyProcess();
 
-    if( ( memoryPointer = RPI_PropertyGet( TAG_GET_PHYSICAL_SIZE ) ) )
-    {
-        width = memoryPointer->data.buffer_32[0];
-        height = memoryPointer->data.buffer_32[1];
-    }
+    // if( ( memoryPointer = RPI_PropertyGet( TAG_GET_PHYSICAL_SIZE ) ) )
+    // {
+    //     width = memoryPointer->data.buffer_32[0];
+    //     height = memoryPointer->data.buffer_32[1];
+    // }
 
-    if( ( memoryPointer = RPI_PropertyGet( TAG_GET_DEPTH ) ) )
-    {
-        bytesPerPixel = memoryPointer->data.buffer_32[0];
-    }
+    // if( ( memoryPointer = RPI_PropertyGet( TAG_GET_DEPTH ) ) )
+    // {
+    //     bytesPerPixel = memoryPointer->data.buffer_32[0];
+    // }
 
     if( ( memoryPointer = RPI_PropertyGet( TAG_ALLOCATE_BUFFER ) ) )
     {
-        frameBuffer = (unsigned char*)memoryPointer->data.buffer_32[0];
+        frameBuffer = (unsigned short*)memoryPointer->data.buffer_32[0];
     }
-    c_f_clockBoost();
+    // c_f_clockBoost();
 }
 /*
  In theory this should increase the clock speed

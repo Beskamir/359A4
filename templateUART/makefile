@@ -31,6 +31,7 @@ LINKER = kernel.ld
 # assembly code files in source.
 OBJECTS := $(patsubst $(SOURCE)%.s,$(BUILD)%.o,$(wildcard $(SOURCE)*.s)) $(patsubst $(SOURCE)%.c,$(BUILD)%.o,$(wildcard $(SOURCE)*.c))
 
+includes = $(wildcard $(SOURCE)*.h)
 
 # Rule to make everything.
 all: $(TARGET) $(LIST)
@@ -54,8 +55,8 @@ $(BUILD)output.elf : $(OBJECTS) $(LINKER)
 $(BUILD)%.o: $(SOURCE)%.s
 	$(ARMGNU)-as -g -mcpu=cortex-a7 -I $(SOURCE) $< -o $@
 
-$(BUILD)%.o: $(SOURCE)%.c
-	$(ARMGNU)-gcc -c -O4 -mcpu=cortex-a7 -I $(SOURCE) $< -o $@
+$(BUILD)%.o: $(SOURCE)%.c ${includes}
+	$(ARMGNU)-gcc -c -O4 -Wall -mcpu=cortex-a7 -I $(SOURCE) $< -o $@
 
 # Rule to clean files.
 clean : 

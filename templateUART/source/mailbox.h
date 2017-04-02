@@ -32,50 +32,48 @@
     POSSIBILITY OF SUCH DAMAGE.
 
 */
+#ifndef RPI_MAILBOX_H
+#define RPI_MAILBOX_H
 
-#include <stdint.h>
+#define RPI_MAILBOX0_BASE    ( 0x3F000000UL + 0xB880 )
 
-#include "mailbox.h"
+/* The available mailbox channels in the BCM2835 Mailbox interface.
+   See https://github.com/raspberrypi/firmware/wiki/Mailboxes for
+   information */
+typedef enum {
+    MB0_POWER_MANAGEMENT = 0,
+    MB0_FRAMEBUFFER,
+    MB0_VIRTUAL_UART,
+    MB0_VCHIQ,
+    MB0_LEDS,
+    MB0_BUTTONS,
+    MB0_TOUCHSCREEN,
+    MB0_UNUSED,
+    MB0_TAGS_ARM_TO_VC,
+    MB0_TAGS_VC_TO_ARM,
+} mailbox0_channel_t;
 
-/* Mailbox 0 mapped to it's base address */
-static mailbox_t* rpiMailbox0 = (mailbox_t*)RPI_MAILBOX0_BASE;
+/* These defines come from the Broadcom Videocode driver source code, see:
+   brcm_usrlib/dag/vmcsx/vcinclude/bcm2708_chip/arm_control.h */
+enum mailbox_status_reg_bits {
+    ARM_MS_FULL  = 0x80000000,
+    ARM_MS_EMPTY = 0x40000000,
+    ARM_MS_LEVEL = 0x400000FF,
+};
 
-void RPI_Mailbox0Write( mailbox0_channel_t channel, int value )
-{
-    /* For information about accessing mailboxes, see:
-       https://github.com/raspberrypi/firmware/wiki/Accessing-mailboxes */
+/* Define a structure which defines the register access to a mailbox.
+   Not all mailboxes support the full register set! */
+typedef struct {
+    volatile unsigned int Read;
+    volatile unsigned int reserved1[((0x90 - 0x80) / 4) - 1];
+    volatile unsigned int Poll;
+    volatile unsigned int Sender;
+    volatile unsigned int Status;
+    volatile unsigned int Configuration;
+    volatile unsigned int Write;
+    } mailbox_t;
 
-    /* Add the channel number into the lower 4 bits */
-    value &= ~(0xF);
-    value |= channel;
+extern void RPI_Mailbox0Write( mailbox0_channel_t channel, int value );
+extern int RPI_Mailbox0Read( mailbox0_channel_t channel );
 
-    /* Wait until the mailbox becomes available and then write to the mailbox
-       channel */
-    while( ( rpiMailbox0->Status & ARM_MS_FULL ) != 0 ) { }
-
-    /* Write the modified value + channel number into the write register */
-    rpiMailbox0->Write = value;
-}
-
-
-int RPI_Mailbox0Read( mailbox0_channel_t channel )
-{
-    /* For information about accessing mailboxes, see:
-       https://github.com/raspberrypi/firmware/wiki/Accessing-mailboxes */
-    int value = -1;
-
-    /* Keep reading the register until the desired channel gives us a value */
-    while( ( value & 0xF ) != channel )
-    {
-        /* Wait while the mailbox is empty because otherwise there's no value
-           to read! */
-        while( rpiMailbox0->Status & ARM_MS_EMPTY ) { }
-
-        /* Extract the value from the Read register of the mailbox. The value
-           is actually in the upper 28 bits */
-        value = rpiMailbox0->Read;
-    }
-
-    /* Return just the value (the upper 28-bits) */
-    return value >> 4;
-}
+#endif
