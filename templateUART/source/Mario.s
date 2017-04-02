@@ -14,15 +14,34 @@
 f_resetMarioPosition:
 	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
 	
-	ldr		r4, =_t_marioDefaultPositionX	//Store the address of Mario's default X position
-	ldr		r5, =_t_marioDefaultPositionY	//Store the address of Mario's default Y posiion
-	ldrh	r6, [r4]						//Load Mario's default x position
-	ldrh	r7, [r5]						//Load Mario's default y position
-	
+	//Clear Mario from the map
 	ldr		r4, =_d_marioPositionX			//Store the address of Mario's current X position
 	ldr		r5, =_d_marioPositionY			//Store the address of Mario's current Y posiion
-	strh	r6, [r4]						//Set Mario's X position to the default
-	strh	r7, [r5]						//Set Mario's Y position to the default
+	ldr		r6, =d_mapForeground			//Load the address of the foreground
+	ldrh	r0, [r4]						//Load Mario's current X position
+	ldrh	r1, [r5]						//Load Mario's current Y position
+	mov		r2, r6				 			//Move in the address of the foreground
+	mov		r3, #0							//Load the code for an empty cell
+	bl		f_setCellElement				//Replace Mario with an empty cell
+	
+	//Load Mario's default position values
+	ldr		r4, =_t_marioDefaultPositionX	//Store the address of Mario's default X position
+	ldr		r5, =_t_marioDefaultPositionY	//Store the address of Mario's default Y posiion
+	ldrh	r7, [r4]						//Load Mario's default x position
+	ldrh	r8, [r5]						//Load Mario's default y position
+	
+	//Store Mario's default position values
+	ldr		r4, =_d_marioPositionX			//Store the address of Mario's current X position
+	ldr		r5, =_d_marioPositionY			//Store the address of Mario's current Y posiion
+	strh	r7, [r4]						//Set Mario's X position to the default
+	strh	r8, [r5]						//Set Mario's Y position to the default
+	
+	//Add Mario to his default location on the map
+	mov		r0, r7							//Move in Mario's default X position
+	mov		r1, r8							//Move in Mario's default Y position
+	mov		r2, r6							//Move in the address of the foreground
+	mov		r3, #0							//Load the code for an empty cell
+	bl		f_setCellElement				//Replace Mario with an empty cell
 	
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	

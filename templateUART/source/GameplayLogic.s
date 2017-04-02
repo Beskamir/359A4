@@ -155,17 +155,8 @@ _f_newGame:
 	// str r7, [r0, #3]
 	
 	//Reset Mario's position
-	// bl	f_resetMarioAnimation
 
 	pop {r4-r7, pc}
-
-_f_moveMario:
-	push {r4-r10, fp, lr}
-	
-	//
-
-	pop {r4-r10, fp, lr}
-	bx	lr
 
 _f_updateNPCs:
 	push {r4-r10, fp, lr}
