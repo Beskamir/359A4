@@ -8,7 +8,7 @@ from PIL import ImageColor
 import os
 import random
 
-FOLDERNAME="\\Sprites\\Ordered\\" #folder containing images
+FOLDERNAME="\\PauseMenu\\Complete\\" #folder containing images
 OUTPUTNAMEFILENAME="imageOutputsTitle.txt" #creates an assembly file with all the image data
 KEYOUTPUTFILENAME="keyOutputsTitle.txt" #stores the dictionary for generating the map tiles
 SPLIT=False #Change this to either generate several 32*32 images or 1 unspecified image size. 
@@ -32,9 +32,9 @@ def getAllImages():
 
 	#Keep looping for all files in the folder Images
 	for fileName in os.listdir(os.getcwd()+FOLDERNAME):
-		print(fileName,FOLDERNAME,imageOutputs)
+		# print(fileName,FOLDERNAME,imageOutputs)
 		# imageList+=openImage(os.getcwd()+FOLDERNAME+fileName,imageOutputs)
-		# processImage(os.getcwd()+FOLDERNAME+fileName,imageOutputs,keyOutput)
+		processImage(os.getcwd()+FOLDERNAME+fileName,imageOutputs,keyOutput)
 
 	keyOutput.write("}")
 	keyOutput.close()

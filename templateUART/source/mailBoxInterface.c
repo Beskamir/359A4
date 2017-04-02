@@ -243,7 +243,7 @@ rpi_mailbox_property_t* RPI_PropertyGet( rpi_mailbox_tag_t tag )
     property.byte_length = tag_buffer[T_ORESPONSE] & 0xFFFF;
 
     //Following code doesn't work :(
-    memcpy( property.data.buffer_8, &tag_buffer[T_OVALUE], property.byte_length );
+    // memcpy( property.data.buffer_8, &tag_buffer[T_OVALUE], property.byte_length );
 
     return &property;
 }
