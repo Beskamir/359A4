@@ -12,11 +12,14 @@ int screenOld[ screenArraySize ];
 void c_f_refreshScreen(){
 	int screenCurrent[ screenArraySize ];
 	int screenOld[ screenArraySize ];
+	int i = 0;
 
-	for (int i = 0; i < screenArraySize; ++i)
+	// for (int i = 0; i < screenArraySize; ++i)
+	while (i<screenArraySize)
 	{
 		screenCurrent[i] = 0;
 		screenOld[i] = 0;
+		i++;
 	}
 }
 // 
@@ -50,7 +53,9 @@ void c_f_storePixel(int x_int, int y_int, int colour_int){
 void c_f_displaceFrame(){
 	int colourNew;
 	int colourOld;
-	for (int i = 0; i < screenArraySize; ++i)
+	int i = 0;
+	// for (int i = 0; i < screenArraySize; ++i)
+	while (i<screenArraySize)
 	{
 		colourNew = screenCurrent[i];
 		colourOld = screenOld[i];
@@ -59,5 +64,6 @@ void c_f_displaceFrame(){
     		FrameBufferPointer[i] = colourNew;
     		screenOld[i] = colourNew;
 		}
+		i++;
 	}
 }

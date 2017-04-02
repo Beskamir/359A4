@@ -75,12 +75,12 @@ f_playingState:
 
 		bl f_updateAIs
 
-		// ldr r0, =d_cameraPosition
-		// ldr r4, [r0]
+		ldr r0, =d_cameraPosition
+		ldr r4, [r0]
 		add r4, #1
-		// str r4, [r0]
+		str r4, [r0]
 
-		cmp r4, #288
+		cmp r4, #50
 		blt _playingLoop
 
 		//draw HUD
