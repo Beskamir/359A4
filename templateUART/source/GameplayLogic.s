@@ -71,6 +71,8 @@ f_playingState:
 		ldr r1, =d_cameraPosition
 		bl f_drawMap
 
+		bl f_refreshScreen	//refresh the screen
+
 		bl f_updateAIs
 
 		// ldr r0, =d_cameraPosition

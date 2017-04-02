@@ -38,6 +38,8 @@ main:
 	bl 		InitFrameBuffer //Enable Frame Buffer
 	bl		init_GPIO	//Enable the GPIO pins
 
+	bl 		initGraphics //initialize needed arrays
+
 
 	/// In theory this will stop the cpu's from 
 	//	fighting over resources and make things faster

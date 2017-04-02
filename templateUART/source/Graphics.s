@@ -41,26 +41,51 @@ use: changes colour of text to be displayed.
 .globl d_textColour
 
 /*
-**Function**
-input: 
-	int x value, 
-	int y value, 
-	hex pixel colour
-	buffer offset may not end up using this
-return: null
-effect: draw an individual pixel
+input: null
+output: null
+effect: Init previous and current screen arrays to be all 0 
 */
-// .globl f_drawPixel
-.extern f_drawPixel
+.globl initGraphics 
 
-// .section .init
-// .include "map.s"
-// .include "art.s" Not needed, everything's global
-// .globl 		UpdateScreen	//makes update screen visible to all
-    
+/*
+input: null
+output: null
+effect: writes changes to framebuffer
+*/
+.globl f_refreshScreen 
+
+
+.extern c_f_storePixel
+.extern c_f_refreshScreen
+.extern c_f_displaceFrame
+
+
 .section .text
 
 
+/*
+input: null
+output: null
+effect: Init previous and current screen arrays in graphics display to be all 0s
+*/
+initGraphics:
+	push {lr}
+
+	bl c_f_refreshScreen
+
+	pop {pc}
+
+/*
+input: null
+output: null
+effect: writes changes to framebuffer
+*/
+f_refreshScreen:
+	push {lr}
+
+	bl c_f_displaceFrame
+
+	pop {pc}
 /*
 input: 
 	image address. (if drawing rectangle store x, y,colour  in "rectangle: .int 0 0 0")
@@ -117,7 +142,7 @@ _f_drawArt:
 			mov	r0,	xValue_r			//Setting x 
 			mov	r1,	yValue_r			//Setting y
 			// push {lr}
-			bl	f_drawPixel
+			bl	c_f_storePixel
 			// pop {lr}
 
 		_skipDraw:
@@ -189,7 +214,7 @@ _f_drawChar:
 				mov		r0,		px_r
 				mov		r1,		py_r
 				mov		r2,		colour_r	//character colour
-				bl		f_drawPixel			// draw red pixel at (px, py)
+				bl		c_f_storePixel		// draw red pixel at (px, py)
 
 			_noPixel:
 				add		px_r,	#1			// increment x coordinate by 1
@@ -321,7 +346,7 @@ f_colourScreen:
 // return: null
 // effect: draw an individual pixel
 // */
-// f_drawPixel:
+// c_f_storePixel:
 // 	push	{r4}
 // 	mov 	r3, #0 	////Init to 0 for now, not yet using it
 

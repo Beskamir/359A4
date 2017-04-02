@@ -1,7 +1,23 @@
 #include <stdio.h>
 // #include <drawPixel.h>
+#define screenArraySize = 786431
+
 extern unsigned short * FrameBufferPointer;
-void f_drawPixel(int x_int, int y_int, int colour_int){
+
+
+int screenCurrent[ screenArraySize ];
+int screenOld[ screenArraySize ];
+
+void c_f_refreshScreen(){
+	for (int i = 0; i < screenArraySize; ++i)
+	{
+		screenCurrent[i] = 0;
+		screenOld[i] = 0;
+	}
+}
+
+
+void c_f_storePixel(int x_int, int y_int, int colour_int){
 	//calculate the offset at which to write to the frame buffer
 	/*
 	// offset = (y * 1024) + x = x + (y << 10)
@@ -23,5 +39,21 @@ void f_drawPixel(int x_int, int y_int, int colour_int){
 	ldr		temp_r, [temp_r]
 	strh	colour_r, [temp_r, offset_r]
     */
-    FrameBufferPointer[offest_int] = colour_int;
+    screenCurrent[offest_int] = colour_int;
 };
+
+
+void c_f_displaceFrame(){
+	int colourNew;
+	int colourOld;
+	for (int i = 0; i < screenArraySize; ++i)
+	{
+		colourNew = screenCurrent[i];
+		colourOld = screenOld[i];
+		if (colourNew!=colourOld)
+		{
+    		FrameBufferPointer[i] = colourNew;
+    		screenOld[i] = colourNew;
+		}
+	}
+}

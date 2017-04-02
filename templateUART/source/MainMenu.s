@@ -59,6 +59,7 @@ f_mainMenu:
 		bl		_f_drawSelection	//Call drawSelection
 		
 		selectionLoopTest:
+		bl	 	f_refreshScreen		//refresh the screen
 		tst		r5, r6				//AND the input with r5 
 		bne		SLtop				//If A hasn't been pressed, move back into the loop
 	
