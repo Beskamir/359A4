@@ -40,6 +40,22 @@ use: changes colour of text to be displayed.
 */
 .globl d_textColour
 
+
+.extern c_f_storePixel
+/*
+input: null
+output: null
+effect: Init previous and current screen arrays to be all 0 
+*/
+.globl initGraphics 
+
+/*
+input: null
+output: null
+effect: writes changes to framebuffer
+*/
+.globl f_refreshScreen 
+
 /*
 **Function**
 input: 
@@ -50,8 +66,10 @@ input:
 return: null
 effect: draw an individual pixel
 */
-// .globl f_drawPixel
-.extern f_drawPixel
+// .globl c_f_storePixel
+.extern c_f_storePixel
+.extern c_f_refreshScreen
+.extern c_f_displaceFrame
 
 // .section .init
 // .include "map.s"
@@ -59,7 +77,29 @@ effect: draw an individual pixel
 // .globl 		UpdateScreen	//makes update screen visible to all
     
 .section .text
+/*
+input: null
+output: null
+effect: Init previous and current screen arrays in graphics display to be all 0s
+*/
+initGraphics:
+	push {lr}
 
+	bl c_f_refreshScreen
+
+	pop {pc}
+
+/*
+input: null
+output: null
+effect: writes changes to framebuffer
+*/
+f_refreshScreen:
+	push {lr}
+
+	bl c_f_displaceFrame
+
+	pop {pc}
 
 /*
 input: 
@@ -117,7 +157,7 @@ _f_drawArt:
 			mov	r0,	xValue_r			//Setting x 
 			mov	r1,	yValue_r			//Setting y
 			// push {lr}
-			bl	f_drawPixel
+			bl	c_f_storePixel
 			// pop {lr}
 
 		_skipDraw:
@@ -189,7 +229,7 @@ _f_drawChar:
 				mov		r0,		px_r
 				mov		r1,		py_r
 				mov		r2,		colour_r	//character colour
-				bl		f_drawPixel			// draw red pixel at (px, py)
+				bl		c_f_storePixel			// draw red pixel at (px, py)
 
 			_noPixel:
 				add		px_r,	#1			// increment x coordinate by 1
@@ -261,7 +301,7 @@ f_drawElement:
 
 		ldr r0, =d_textColour
 		ldr r3, [r0]
-		add r5, #20
+		add r5, #10
 
 		ldrb r0, [r4], #1
 
@@ -310,6 +350,7 @@ intToScreen:
 	numDigits_r		.req	r7	//number of digits to display to the screen (fill with 0's if "empty")
 	number_r		.req	r8 	//the number being accessed
 	loopCounter_r	.req 	r9	//count number of loops
+	displayDigit_r 	.req 	r10 //display
 
 	mov numAddress_r, r0 		//image, rectangle, or text address.
 	mov pixelX_r, r1 			//x coordinate
@@ -332,21 +373,22 @@ intToScreen:
 		mov r0, number_r
 		mov r1, #10
 		bl f_modulo
-		mov number_r, r1
+		mov number_r, r0
+		mov displayDigit_r, r1
 
-		add number_r, #48 //increase digit by 48 to be displayed to screen
-		mov r0, number_r
+		add displayDigit_r, #48 //increase digit by 48 to be displayed to screen
+		mov r0, displayDigit_r
 		mov r1, pixelX_r
 		mov r2, pixelY_r
 		ldr r3, =d_textColour
 		ldr r3, [r3]
 		bl _f_drawChar
 
-		sub pixelX_r, #20
+		sub pixelX_r, #10
 
 		add loopCounter_r, #1
 		cmp loopCounter_r, numDigits_r
-		bne _numberLoop
+		blt _numberLoop
 
 	.unreq numAddress_r	
 	.unreq pixelX_r		

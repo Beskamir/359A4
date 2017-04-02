@@ -70,11 +70,11 @@ f_playingState:
 		ldr r0, =d_mapForeground
 		ldr r1, =d_cameraPosition
 		bl f_drawMap
+		
+		bl _f_updateHUD // draw HUD
+		bl f_refreshScreen	//refresh the screen
 
 		bl f_updateAIs
-
-		// draw HUD
-		bl _f_updateHUD
 
 		//player input
 		
@@ -92,10 +92,10 @@ f_playingState:
 		//check end state
 		//loop or break
 
-		// ldr r0, =d_cameraPosition
-		// ldr r4, [r0]
+		ldr r0, =d_cameraPosition
+		ldr r4, [r0]
 		add r4, #1
-		// str r4, [r0]
+		str r4, [r0]
 
 		cmp r4, #288
 		blt _playingLoop
@@ -118,7 +118,7 @@ _f_updateHUD:
 	bl f_drawElement
 	
 	//display score below it
-	ldr r0, =_d_gameScore
+/*	ldr r0, =_d_gameScore
 	ldr r1, [r0]
 	ldr r0, =d_numToPrint
 	str r1, [r0]
@@ -126,7 +126,7 @@ _f_updateHUD:
 	mov r1, #170
 	mov r2, #75
 	mov r3, #3
-	bl f_drawElement
+	bl f_drawElement*/
 
 	//display correct HUD labels
 	ldr r0, =t_coinsLable
@@ -141,7 +141,7 @@ _f_updateHUD:
 	ldr r0, =d_numToPrint
 	str r1, [r0]
 	ldr r0, =d_numToPrint
-	mov r1, #355
+	ldr r1, =400
 	mov r2, #75
 	mov r3, #3
 	bl f_drawElement
@@ -159,7 +159,7 @@ _f_updateHUD:
 	ldr r0, =d_numToPrint
 	str r1, [r0]
 	ldr r0, =d_numToPrint
-	mov r1, #1000
+	ldr r1, =960
 	mov r2, #50
 	mov r3, #3
 	bl f_drawElement
