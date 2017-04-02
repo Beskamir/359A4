@@ -94,7 +94,7 @@ f_getClock:
 	
 	mov		r4, r0					//Move the mod value to a safe register
 	ldr		r5, =d_clock			//Load the clock address
-	cmp		r4, #0					//Did the user enter 0?
+	tst		r4, #0					//Did the user enter 0?
 	ldr		r0, [r5]				//Load the clock value into r0
 	beq		getClockEnd				//If the user entered 0, return
 	mov		r1, r4					//Move the mod value in r1

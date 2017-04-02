@@ -59,6 +59,9 @@ f_moveMario:
 	mov		r4, r0							//Save the X offset in a safe register
 	mov		r5, r1							//Save the Y instruction in a safe register
 	
+	bl		shouldMarioMove					//Should we be moving Mario right now?
+	tst		r0, #1							//Is the answer yes?
+	bne		doneMovingMario					//If not, don't move Mario, just skip to the end
 	
 	//r6 = X position
 	//r7 = Y position
@@ -121,7 +124,7 @@ f_moveMario:
 	//X movement
 	//Check if Mario should be moved horizontally
 	cmp		r4, #0							//Compare X offset to 0
-	beq		noXMovement						//If they're equal, branch to skip the X movement
+	beq		doneMovingMario					//If they're equal, branch to skip the X movement
 	bl		_f_shouldMarioMoveX				//Should Mario be moved right now?
 	cmp		r0, #1							//Is the answer yes?
 	
@@ -132,13 +135,9 @@ f_moveMario:
 	ldr		r8, =_d_marioPositionX			//Load the address of Mario's X position
 	strh	r6, [r8]						//Store Mario's new X position
 	
+		
+	doneMovingMario:
 	
-	noXMovement:
-	
-	
-	
-	
-
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
 //Input: Null
@@ -170,7 +169,7 @@ _f_shouldMarioMove:
 	ldr		r4, =_d_lastMoveTick			//Load the address of Mario's X last move time
 	ldr		r5, [r4]						//Load Mario last move time
 
-	ldr		r6, =_t_marioMoveTiming			//Load the address for the delay for Mario's movement
+	ldr		r6, =_t_marioMoveDelay			//Load the address for the delay for Mario's movement
 	ldr		r7, [r6]						//Load the delay
 	add		r5, r7							//Add the delay to the last movement time (for comparison purposes)
 	
@@ -204,7 +203,6 @@ _f_killEnemy:
 	ldr		r3, #0							//Set an empty cell
 	bl		d_setCellElement				//Set the cell under Mario (the enemy) to a blank
 	
-	
 	//Move Mario
 	ldr		r0, [r4]						//Load Mario's X position
 	lsl		r0, #16							//Move Mario's x position to the top half of the register
@@ -226,7 +224,7 @@ _t_marioDefaultPositionX:	.hword 2
 _t_marioDefaultPositionY:	.hword 21
 
 //Minimum number of clock ticks between movements
-_t_marioMoveTiming:			.byte 1
+_t_marioMoveDelay:			.byte 1			//Change this to change how often Mario moves
 	
 .section					.data
 
