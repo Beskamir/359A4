@@ -106,14 +106,14 @@ _f_drawSelection:
 		//draw selected restart option
 		ldr r0, =t_PauseRestartSelected
 		mov r1, #440
-		mov r2, #350
+		ldr r2, =350
 		mov r3, #1
 		bl f_drawElement
 
 		//draw regular quit option
 		ldr r0, =t_PauseQuitNormal
 		mov r1, #440
-		ldr r2, #400
+		mov r2, #400
 		mov r3, #1
 		bl f_drawElement
 
@@ -125,14 +125,14 @@ _f_drawSelection:
 		//draw regular restart option
 		ldr r0, =t_PauseRestartNormal
 		mov r1, #440
-		mov r2, #350
+		ldr r2, =350
 		mov r3, #1
 		bl f_drawElement
 
 		//draw selected quit option
 		ldr r0, =t_PauseQuitSelected
 		mov r1, #440
-		ldr r2, #400
+		mov r2, #400
 		mov r3, #1
 		bl f_drawElement
 

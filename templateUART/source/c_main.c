@@ -50,19 +50,6 @@ rpi_mailbox_property_t* memoryPointer;
 
 /** Main function - we'll never return from here */
 void c_init_frameBuffer(){
-    // int width = SCREEN_WIDTH; 
-    // int height = SCREEN_HEIGHT;
-    // int bytesPerPixel = SCREEN_DEPTH;
-    // volatile unsigned char* frameBuffer = NULL;
-
-    // /* Initialise the UART */
-    // RPI_AuxMiniUartInit( 115200, 8 );
-
-    // /* Print to the UART using the standard libc functions */
-    // printf( "Valvers.com ARM Bare Metal Tutorials\r\n" );
-    // printf( "Initialise UART console with standard libc\r\n\n" );
-
-
     /* Initialise a framebuffer... */
     RPI_PropertyInit();
     RPI_PropertyAddTag( TAG_ALLOCATE_BUFFER );
@@ -73,29 +60,27 @@ void c_init_frameBuffer(){
     RPI_PropertyAddTag( TAG_GET_DEPTH );
     RPI_PropertyProcess();
 
-    // if( ( memoryPointer = RPI_PropertyGet( TAG_GET_PHYSICAL_SIZE ) ) )
-    // {
-    //     width = memoryPointer->data.buffer_32[0];
-    //     height = memoryPointer->data.buffer_32[1];
-    // }
-
-    // if( ( memoryPointer = RPI_PropertyGet( TAG_GET_DEPTH ) ) )
-    // {
-    //     bytesPerPixel = memoryPointer->data.buffer_32[0];
-    // }
-
     if( ( memoryPointer = RPI_PropertyGet( TAG_ALLOCATE_BUFFER ) ) )
     {
         frameBuffer = (unsigned short*)memoryPointer->data.buffer_32[0];
     }
-    // c_f_clockBoost();
 }
+
 /*
  In theory this should increase the clock speed
 */
 void c_f_clockBoost(){
+    RPI_PropertyInit();
+    RPI_PropertyAddTag( TAG_GET_BOARD_MODEL );
+    RPI_PropertyAddTag( TAG_GET_BOARD_REVISION );
+    RPI_PropertyAddTag( TAG_GET_FIRMWARE_VERSION );
+    RPI_PropertyAddTag( TAG_GET_BOARD_MAC_ADDRESS );
+    RPI_PropertyAddTag( TAG_GET_BOARD_SERIAL );
+    RPI_PropertyAddTag( TAG_GET_MAX_CLOCK_RATE, TAG_CLOCK_ARM );
+    RPI_PropertyProcess();
     /* Ensure the ARM is running at it's maximum rate */
-    memoryPointer = RPI_PropertyGet( TAG_GET_MAX_CLOCK_RATE );    
+    memoryPointer = RPI_PropertyGet( TAG_GET_MAX_CLOCK_RATE );   
+
     RPI_PropertyInit();
     RPI_PropertyAddTag( TAG_SET_CLOCK_RATE, TAG_CLOCK_ARM, memoryPointer->data.buffer_32[1] );
     RPI_PropertyProcess();
@@ -105,6 +90,15 @@ void c_f_clockBoost(){
  In theory this should decrease the clock speed
 */
 void c_f_clockLower(){
+    RPI_PropertyInit();
+    RPI_PropertyAddTag( TAG_GET_BOARD_MODEL );
+    RPI_PropertyAddTag( TAG_GET_BOARD_REVISION );
+    RPI_PropertyAddTag( TAG_GET_FIRMWARE_VERSION );
+    RPI_PropertyAddTag( TAG_GET_BOARD_MAC_ADDRESS );
+    RPI_PropertyAddTag( TAG_GET_BOARD_SERIAL );
+    RPI_PropertyAddTag( TAG_GET_MIN_CLOCK_RATE, TAG_CLOCK_ARM );
+    RPI_PropertyProcess();
+
     /* Ensure the ARM is running at it's maximum rate */
     memoryPointer = RPI_PropertyGet( TAG_GET_MIN_CLOCK_RATE );    
     RPI_PropertyInit();

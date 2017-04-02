@@ -243,7 +243,25 @@ rpi_mailbox_property_t* RPI_PropertyGet( rpi_mailbox_tag_t tag )
     property.byte_length = tag_buffer[T_ORESPONSE] & 0xFFFF;
 
     //Following code doesn't work :(
-    // memcpy( property.data.buffer_8, &tag_buffer[T_OVALUE], property.byte_length );
+    customMemCpy( property.data.buffer_8, &tag_buffer[T_OVALUE], property.byte_length );
 
     return &property;
+}
+
+/*
+Using a custom memcpy since memcpy doesn't work for some odd reason
+*/
+void customMemCpy(void *dest, void *src, size_t n)
+{
+    // Typecast src and dest addresses to (char *)
+    char *csrc = (char *)src;
+    char *cdest = (char *)dest;
+ 
+    // Copy contents of src[] to dest[]
+    // for (int i=0; i<n; i++)
+    int i=0;
+    while (i<n) {
+       cdest[i] = csrc[i];
+       i++;
+    }
 }

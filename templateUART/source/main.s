@@ -36,29 +36,20 @@ main:
 	bl		InitUART 	//This is important to be  able to use UART
 
 	// bl 		InitFrameBuffer //Enable Frame Buffer
-	bl 		c_init_frameBuffer	//inits frame buffer 
 	bl		init_GPIO	//Enable the GPIO pins
-
+	
+	bl 		c_init_frameBuffer	//inits frame buffer 
 	bl 		c_f_clockBoost //boost the core speed
 
 	/*
 		Following bit of code from:
 		https://github.com/PeterLemon/RaspberryPi/blob/master/NEON/Fractal/Julia/kernel7.asm
-		In theory should move the other 3 cores to do nothing
+		In theory should move the other 3 cores to do nothing and maybe speed up performance
 	*/
 	// Return CPU ID (0..3) Of The CPU Executed On
 	mrc p15,0,r0,c0,c0,5 // R0 = Multiprocessor Affinity Register (MPIDR)
 	ands r0, #3 // R0 = CPU ID (Bits 0..1)
 	bne haltLoop$ // IF (CPU ID != 0) Branch To Infinite Loop (Core ID 1..3)
-	/// In theory this will stop the cpu's from 
-	//	fighting over resources and make things faster
-	// ldr r0,=0x4000008C
-	// ldr r1,=_f_core1Init
-	// str r1,[r0,#0x10]
-	// ldr r1,=_f_core2Init
-	// str r1,[r0,#0x20]
-	// ldr r1,=_f_core3Init
-	// str r1,[r0,#0x30]
 
 	bl _f_enableCache
 
