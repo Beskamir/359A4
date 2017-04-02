@@ -73,22 +73,14 @@ f_playingState:
 
 		bl f_updateAIs
 
-		// ldr r0, =d_cameraPosition
-		// ldr r4, [r0]
-		add r4, #1
-		// str r4, [r0]
-
-		cmp r4, #288
-		blt _playingLoop
-
-		//draw HUD
+		// draw HUD
+		bl _f_updateHUD
 
 		//player input
 		
 		bl	Read_SNES		//Get input from the player
 		bl	f_playInput		//Handle input
 			
-		
 		//check collisions
 		//update map
 		//update score/coins
@@ -100,9 +92,80 @@ f_playingState:
 		//check end state
 		//loop or break
 
+		// ldr r0, =d_cameraPosition
+		// ldr r4, [r0]
+		add r4, #1
+		// str r4, [r0]
+
+		cmp r4, #288
+		blt _playingLoop
+
 	// b PlayingLoop
 
 	pop {r4-r10, pc}
+
+//Input: null
+//Output: null
+//Effect: displays HUD elements
+_f_updateHUD:
+	push {r4-r10, lr}
+	
+	//display correct HUD labels
+	ldr r0, =t_scoreLabel
+	mov r1, #50
+	mov r2, #50
+	mov r3, #2
+	bl f_drawElement
+	
+	//display score below it
+	ldr r0, =_d_gameScore
+	ldr r1, [r0]
+	ldr r0, d_numToPrint
+	str r1, [r0]
+	ldr r0, =d_numToPrint
+	mov r1, #170
+	mov r2, #75
+	mov r3, #3
+	bl f_drawElement
+
+	//display correct HUD labels
+	ldr r0, =t_coinsLable
+	mov r1, #250
+	mov r2, #75
+	mov r3, #2
+	bl f_drawElement
+
+	//display coins beside it
+	ldr r0, =_d_gameState
+	ldrb r1, [r0]
+	ldr r0, d_numToPrint
+	str r1, [r0]
+	ldr r0, =d_numToPrint
+	mov r1, #355
+	mov r2, #75
+	mov r3, #3
+	bl f_drawElement
+	
+	//display correct HUD labels
+	ldr r0, =t_livesLabel
+	mov r1, #860
+	mov r2, #50
+	mov r3, #2
+	bl f_drawElement
+
+	//display lives beside it
+	ldr r0, =_d_gameState
+	ldrb r1, [r0, #1]
+	ldr r0, d_numToPrint
+	str r1, [r0]
+	ldr r0, =d_numToPrint
+	mov r1, #1000
+	mov r2, #50
+	mov r3, #3
+	bl f_drawElement
+	
+	pop {r4-r10, pc}
+
 
 /*
 Input: null
@@ -158,19 +221,11 @@ _f_newGame:
 
 	pop {r4-r7, pc}
 
-_f_updateNPCs:
-	push {r4-r10, fp, lr}
-	
-	//read from the map and check collisions
-
-	pop {r4-r10, fp, lr}
-	bx	lr
-	
 //Input: null
 //Output: null
 //Effect: Add a coin to coin count, increment score, check if extra life earned
 f_addCoin:
-	push {r4-r10, fp, lr}
+	push {r4-r10, lr}
 	
 	//Load addresses
 	ldr 	r4, =_d_gameState	//Load the address of the number of coins
@@ -195,14 +250,13 @@ f_addCoin:
 	mov		r0, #200		//Add 200 points
 	bl		f_addScore		//Call addScore
 	
-	pop {r4-r10, fp, lr}
-	mov	pc, lr
+	pop {r4-r10, pc}
 
 //Input: Amount to increase score by in r0
 //Output: null
 //Effect: Increase score by amount in r0
 f_addScore:
-	push {r4-r10, fp, lr}
+	push {r4-r10, lr}
 	
 	mov	r4, r0				//Store the score to be added in a safe register
 	
@@ -213,12 +267,9 @@ f_addScore:
 	add	r6, r4				//Increase the score
 	str	r6, [r5]			//Store the score
 	
-	pop {r4-r10, fp, lr}
-	mov	pc, lr
-
+	pop {r4-r10, pc}
 
 .section .data
-
 
 //Stores the game variables
 //First byte is number of coins

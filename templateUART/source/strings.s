@@ -16,7 +16,7 @@ t_livesLabel:
 
 .align 4
 t_coinsLable:
-	.ascii "x /"
+	.ascii "COINS x /"
 
 
 .section .data

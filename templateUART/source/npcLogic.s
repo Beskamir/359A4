@@ -8,13 +8,14 @@ Effect: updates the AIs (enemies and items count as AIs)
 */
 .globl f_updateAIs
 
-
-
-
 .section    .init
     
 .section .text
 
+_t_delayBasic:
+	.int 20
+_t_delayAdvance:
+	.int 10
 
 /*
 Input: null
@@ -53,10 +54,9 @@ _f_updateNPCsOnSpecifiedMap:
 	isAI_r			.req r6
 
 	mapLayerMem_r	.req r7
+	isTopLayer_r	.req r8
 
-	isYCellValid_r 	.req r8
-
-	isTopLayer_r	.req r9
+	hasMoved_r		.req r9
 
 
 	//keep track of which cells had an AI checked for
@@ -66,14 +66,11 @@ _f_updateNPCsOnSpecifiedMap:
 	mov mapLayerMem_r, r0 //store the passed in map address
 	mov isTopLayer_r, r1
 
+	mov hasMoved_r, #0
+
 	//how much to offset the x value by
 	ldr r0, =_d_cellXCheckOffset
 	mov r1, #1
-	str r1, [r0]
-
-	//whether an enemy hadn't moved down
-	ldr r0, =_d_cellYCheckOffset
-	mov r1, #0
 	str r1, [r0]
 
 	_AIsearchLoop:
@@ -84,10 +81,10 @@ _f_updateNPCsOnSpecifiedMap:
 			ldr r0, [r0]
 			//if less than
 			add cellCheckedX_r, r0
-			b _validateCoordinates
+			b _validCoordinates
 
 		_cellOutofRangeX:
-			cmp cellCheckedY_r, #23
+			cmp cellCheckedY_r, #24
 			bge _NoMoreAIs
 				ldr r0, =_d_cellYCheckOffset
 				ldr isYCellValid_r, [r0]
@@ -97,15 +94,8 @@ _f_updateNPCsOnSpecifiedMap:
 				mov cellCheckedX_r, #0 //reset
 				add cellCheckedY_r, #1 //next y value
 
-		_validateCoordinates:
-			mov r0, #31
-			sub r0, cellCheckedX_r
-			lsl isYCellValid_r, r0
-			lsr isYCellValid_r, #31
-			cmp isYCellValid_r, #1
-			beq _AIsearchLoop
+		_validCoordinates:
 
-		_valid:
 		//setup parameters
 		mov r0, cellCheckedX_r
 		mov r1, cellCheckedY_r
@@ -132,24 +122,21 @@ _f_updateNPCsOnSpecifiedMap:
 					mov r1, cellCheckedY_r
 					mov r2, isAI_r
 					mov r3, mapLayerMem_r
-					bl _f_aiGravity
-					cmp r0, #0 //check if enemy is on ground.
-					break03:
-					beq _AIsearchLoop
-						mov r0, cellCheckedX_r
-						mov r1, cellCheckedY_r
-						mov r2, isAI_r
-						mov r3, mapLayerMem_r
-						cmp r2, #6 //only move living enemies
-						blne _f_moveBasicLeftRight //branch to basic AI movement
-						b _AIsearchLoop
-						//return to top of loop
+					cmp r2, #6 //only move living enemies
+					blne _f_moveBasicLeftRight //branch to basic AI movement
+					movne hasMoved_r, #1
+					b _AIsearchLoop
+					//return to top of loop
 
 				_isAdvanceAI:
 					sub isAI_r, #90
+					mov r0, cellCheckedX_r
+					mov r1, cellCheckedY_r
 					mov r2, isAI_r
+					mov r3, mapLayerMem_r
 					cmp r2, #6 //only move living enemies
 					blne _f_moveAdvanceAI //branch to advance AI movement
+					movne hasMoved_r, #1
 					b _AIsearchLoop
 					//return to top of loop
 
@@ -172,98 +159,19 @@ _f_updateNPCsOnSpecifiedMap:
 
 	_NoMoreAIs:
 
+
+
 	//Unreq everything that was used in this subroutine
 	.unreq cellCheckedX_r 
 	.unreq cellCheckedY_r 
 	.unreq isAI_r 
 	.unreq mapLayerMem_r 
-	.unreq isYCellValid_r 
 	.unreq isTopLayer_r
+	.unreq hasMoved_r
 
 
 	pop {r4-r10, pc}
-/*
-Moves left or right depending on collisions and direction 
-Input:
-	r0, element's x cell value (screen space based)
-	r1, element's y cell value (screen space based)
-	r2, AI map value used for determining direction 
-		(0<=left<=2), (3<=right<=5)
-	r3, mapLayerMemoryAddress (address of the map being used)
-Return:
-	null
-Effect:
-	move or animate the element 
-*/
-_f_aiGravity:
-	push {r4-r10, lr}
 
-	cellIndexX_r	.req r4 //x screen index of AI
-	cellIndexY_r	.req r5 //y screen index of AI
-
-	mapAddress_r	.req r6 //the address to the map being modified
-	cameraOffset_r	.req r7 //the camera offset during this
-
-	// //type of AI that's being dealt with
-	aiValue_r		.req r8
-
-	checkCellX_r 	.req r9 //stores x cell to move character too
-
-	hasFallen_r		.req r10
-
-	mov hasFallen_r, #0
-
-	mov cellIndexX_r, r0
-	mov cellIndexY_r, r1
-	mov aiValue_r,	  r2
-	mov mapAddress_r, r3
-
-	ldr cameraOffset_r, =d_cameraPosition
-	ldr cameraOffset_r, [cameraOffset_r]
-
-	//compute where in the x axis we are in.
-	mov checkCellX_r, cellIndexX_r
-	add checkCellX_r, cameraOffset_r
-
-	//combine x and y
-	mov r0, cellIndexX_r
-	mov r1, cellIndexY_r
-	bl f_combineRegisters
-	//r0 contians merged x and y
-	mov r1, #0 //moving left so set this to -1
-	mov r2, #-1 //vertical delta set to 0 since this is just left/right movement
-	mov r3, mapAddress_r
-	bl f_moveElement
-	cmp r0, #2
-	bne _fallFailed
-
-		ldr r0, =_d_cellYCheckOffset
-		ldr r1, [r0]
-		mov r2, #1
-		lsl r2, cellIndexX_r
-		orr r1, r2
-		str r1, [r0]
-
-		b _animateFall
-
-	_fallFailed:
-		mov hasFallen_r, #1
-
-	_animateFall:
-
-	mov r0, hasFallen_r
-		//animate sprite
-
-	.unreq cellIndexX_r	
-	.unreq cellIndexY_r	
-	.unreq mapAddress_r	
-	.unreq cameraOffset_r	
-	.unreq aiValue_r		
-	.unreq checkCellX_r 	
-
-
-
-	pop {r4-r10, pc}
 
 /*
 Moves left or right depending on collisions and direction 
@@ -331,7 +239,7 @@ _f_moveBasicLeftRight:
 					mov r0, cellIndexX_r
 					mov r1, cellIndexY_r
 					bl f_combineRegisters
-					//r0 contians merged x and y
+					//r0 contains merged x and y
 					mov r1, #-1 //moving left so set this to -1
 					mov r2, #0 //vertical delta set to 0 since this is just left/right movement
 					mov r3, mapAddress_r
@@ -377,13 +285,6 @@ _f_moveBasicLeftRight:
 		ldr r0, =_d_cellXCheckOffset
 		mov r1, #1
 		str r1, [r0]
-
-		mov r0, checkCellX_r
-		mov r1, cellIndexY_r
-		mov r2, aiValue_r
-		mov r3, mapAddress_r
-		bl _f_changeDirection
-
 
 	_animate:
 		//animate sprite
@@ -458,7 +359,7 @@ _f_changeDirection:
 Input:
 	r0, element's x cell value (screen space based)
 	r1, element's y cell value (screen space based)
-	r2, Advance AI map value 90<=advance<=96, 109<=powerup<=110, 111<=coin<=113) 
+	r2, Advance AI map value 0 to 5
 	r3, mapLayerMemoryAddress (address of the map being used)
 Return:
 	null
@@ -468,11 +369,104 @@ Effect:
 _f_moveAdvanceAI:
 	push {r4-r10, lr}
 
+	cellIndexX_r	.req r4 //x screen index of AI
+	cellIndexY_r	.req r5 //y screen index of AI
+	aiValue_r		.req r8 //the simplified (0 to 5) value of the AI being moved 
+	mapAddress_r	.req r6 //the address to the map being modified
 
+	mov cellIndexX_r, r0
+	mov cellIndexY_r, r1
+	mov aiValue_r,	  r2
+	mov mapAddress_r, r3
 
+	mov r0, #0
+	bl f_getClock
+	ldr r1, =_d_nextClockValueAdvance
+	ldr r1, [r1]
+	cmp r0, r1
+	blt _skipMoveAdvance
+		mov r0, cellIndexX_r
+		mov r1, cellIndexY_r
+		mov r2, aiValue_r
+		mov r3, mapAddress_r
+		bl _f_moveBasicLeftRight
 
+	_skipMoveAdvanceAI:
 
 	pop {r4-r10, pc}
+
+/*
+Input:
+	r0, element's x cell value (screen space based)
+	r1, element's y cell value (screen space based)
+	r2, Advance AI map value 0 to 5
+	r3, mapLayerMemoryAddress (address of the map being used)
+Return:
+	null
+Effect:
+	move or animate the element 
+*/
+_f_moveBasicAI:
+	push {r4-r10, lr}
+
+	cellIndexX_r	.req r4 //x screen index of AI
+	cellIndexY_r	.req r5 //y screen index of AI
+	aiValue_r		.req r8 //the simplified (0 to 5) value of the AI being moved 
+	mapAddress_r	.req r6 //the address to the map being modified
+
+	mov cellIndexX_r, r0
+	mov cellIndexY_r, r1
+	mov aiValue_r,	  r2
+	mov mapAddress_r, r3
+
+	mov r0, #0
+	bl f_getClock
+	ldr r1, =_d_nextClockValueBasic
+	ldr r1, [r1]
+	cmp r0, r1
+	blt _skipMoveAdvance
+		mov r0, cellIndexX_r
+		mov r1, cellIndexY_r
+		mov r2, aiValue_r
+		mov r3, mapAddress_r
+		bl _f_moveBasicLeftRight
+
+	_skipMoveAdvanceAI:
+
+	pop {r4-r10, pc}
+
+/*
+Input:
+	r0, whether an AI had moved this loop
+Return:
+	null
+Effect:
+	move or animate the element 
+*/
+_f_computeDelay:
+	push {r4-r10, lr}
+
+	cmp r0, #0
+	beq _skipDelayUpdate
+
+		ldr r2, =_t_delayBasic
+		ldr r2, [r2]
+		add r2, r0
+		ldr r1, =_d_nextClockValueBasic
+		str r2, [r1]
+
+		mov r0, #0
+		bl f_getClock
+		ldr r2, =_t_delayAdvance
+		ldr r2, [r2]
+		add r2, r0
+		ldr r1, =_d_nextClockValueAdvance
+		str r2, [r1]
+
+	_skipDelayUpdate:
+
+	pop {r4-r10, pc}
+
 
 /*
 Input:
@@ -489,7 +483,7 @@ _f_moveStaticItem:
 	push {r4-r10, lr}
 
 
-
+	//animate coin
 
 
 	pop {r4-r10, pc}
@@ -509,7 +503,7 @@ _f_moveItem:
 	push {r4-r10, lr}
 
 
-
+	//move powerup around the place
 
 
 	pop {r4-r10, pc}
@@ -562,10 +556,8 @@ _f_findItemOrNPC:
 		//Chekc if AI is an enemy
 		cmp aiType_r, #83
 		blt _notEnemy 
-			break01:
 			cmp aiType_r, #96
 			bgt _notEnemy 
-				break02:
 				b _foundNPC //found an enemy AI and returned it
 
 		//check if "AI" is an item
@@ -605,6 +597,7 @@ _f_findItemOrNPC:
 
 _d_cellXCheckOffset:
 	.int 0
-
-_d_cellYCheckOffset:
+_d_nextClockValueAdvance:
+	.int 0
+_d_nextClockValueBasic:
 	.int 0

@@ -218,7 +218,10 @@ input:
 	image address. (if drawing rectangle store x end, y end, colour in "rectangle: .int 0 0 0")
 	top leftmost x coordinate indicating beginning of image
 	top leftmost y coordinate indicating beginning of image
-	whether the colour is uniform. 0 if uniform colour, 1 if image(sprite), 2 if ascii text, 3 if int to text.
+	whether the colour is uniform. 
+	0 if uniform colour, 1 if image(sprite), 
+	2 if ascii text, 3 if int to text and number will have 6 digits,
+	4 if int to text and number will have 2 digits, 5 if int to text and number will have 1 digit
 return: null
 effect: display an image at specified coordinates on the screen
 */
@@ -228,7 +231,7 @@ f_drawElement:
 	mov r4, r0 		//image, rectangle, or text address.
 	mov r5, r1 		//x coordinate
 	mov r6, r2      //y coordinate
-	// mov r7, r3		//info for what to draw
+	mov r7, r3		//info for what to draw
 
 	// //r3 contains info for what is being drawn. Image vs rectangle
 	// ldr r10, =_d_type
@@ -239,17 +242,14 @@ f_drawElement:
 
 	//preferably only above comparison would be needed. 
 	//AKA lets figure out a way to pass in ints as strings rather than as ints.
-	cmp r3, #3
-	beq _intDrawTest
-
+	cmp r3, #1
+	ble _imageToDraw
 		//restore all even though most should still be unchanged
-		// mov r0, r4 		//image address
-		// mov r1, r5 		//x coordinate
-		// mov r2, r6      //y coordinate
-		// mov r3, r7		//info for what to draw
-
-		bl _f_drawArt
-
+		mov r0, r4 		//image address
+		mov r1, r5 		//x coordinate
+		mov r2, r6      //y coordinate
+		mov r3, r7		//info for what to draw
+		bl intToScreen
 		b _doneDraw
 
 	_isText:
@@ -275,13 +275,88 @@ f_drawElement:
 
 		b _doneDraw
 
-	_intDrawTest:
+	_imageToDraw:
+		//restore all even though most should still be unchanged
+		mov r0, r4 		//image address
+		mov r1, r5 		//x coordinate
+		mov r2, r6      //y coordinate
+		mov r3, r7		//info for what to draw
+		bl _f_drawArt
 
-	//TODO somewhere here add int to string functionality... can be hacky as long as it works
+
 
 	_doneDraw:
 
 	pop {r4-r10, pc}
+
+/*
+input: 
+	address to int that will be displayed
+	top leftmost x coordinate indicating beginning of image
+	top leftmost y coordinate indicating beginning of image
+	how many digits to draw
+		3 if int to text and number will have 1 digit,
+		4 if int to text and number will have 2 digits, 
+		5 if int to text and number will have 6 digits
+return: null
+effect: display an image at specified coordinates on the screen
+*/
+intToScreen:
+	push {r4-r10, lr}
+
+	numAddress_r	.req	r4  //character to be displayed
+	pixelX_r		.req	r5	//x position at which character should be displayed
+	pixelY_r		.req	r6  //y position at which character should be displayed
+	numDigits_r		.req	r7	//number of digits to display to the screen (fill with 0's if "empty")
+	number_r		.req	r8 	//the number being accessed
+	loopCounter_r	.req 	r9	//count number of loops
+
+	mov numAddress_r, r0 		//image, rectangle, or text address.
+	mov pixelX_r, r1 			//x coordinate
+	mov pixelY_r, r2    		//y coordinate
+	mov numDigits_r, r3			//info for what to draw
+
+	mov loopCounter_r, #0
+
+	sub numDigits_r, #2 //subtract 2 so that 3 becomes 1 and 4 becomes 2 thus mapping onto the number of digits being shown
+
+	//then set 3 to 6 thus making it so that numDigits represents the number of digits that string will contain
+	cmp numDigits_r, #3 
+	moveq numDigits_r, #6
+
+
+	ldr number_r, [numbAddress_r]
+
+	_numberLoop:
+		//mod the number
+		mov r0, number_r
+		mov r1, #10
+		bl f_modulo
+		mov number_r, r1
+
+		add number_r, #48 //increase digit by 48 to be displayed to screen
+		mov r0, number_r
+		mov r1, pixelX_r
+		mov r2, pixelY_r
+		mov r3, =d_textColour
+		ldr r3, [r3]
+		bl _f_drawChar
+
+		sub pixelX_r, #20
+
+		add loopCounter_r, #1
+		cmp loopCounter_r, numDigits_r
+		bne _numberLoop
+
+	.unreq numAddress_r	
+	.unreq pixelX_r		
+	.unreq pixelY_r		
+	.unreq numDigits_r		
+	.unreq number_r		
+	.unreq loopCounter_r	
+
+	pop {r4-r10, pc}
+
 
 /*
 input: 
@@ -312,49 +387,7 @@ f_colourScreen:
 
 	pop {r4-r9, pc}
 
-// /*
-// input: 
-// 	int x value, 
-// 	int y value, 
-// 	hex pixel colour
-// 	//buffer offset may not end up using this
-// return: null
-// effect: draw an individual pixel
-// */
-// f_drawPixel:
-// 	push	{r4}
-// 	mov 	r3, #0 	////Init to 0 for now, not yet using it
-
-// 	// offset	.req	r4
-// 	xValue_r	.req	r0
-// 	yValue_r	.req	r1
-// 	colour_r	.req	r2
-// 	offset_r	.req	r3
-// 	temp_r 		.req	r4
-
-// 	// offset = (y * 1024) + x = x + (y << 10)
-// 	// add		offset,	r0, r1, lsl #10
-// 	add		offset_r,	xValue_r, yValue_r, lsl #10
-// 	// offset *= 2 (for 16 bits per pixel = 2 bytes per pixel)
-// 	lsl		offset_r, #1
-
-// 	// store the colour (half word) at framebuffer pointer + offset
-
-// 	ldr		temp_r, =FrameBufferPointer
-// 	ldr		temp_r, [temp_r]
-// 	strh	colour_r, [temp_r, offset_r]
-
-// 	//unreq everything
-// 	.unreq xValue_r
-// 	.unreq yValue_r	
-// 	.unreq colour_r	
-// 	.unreq offset_r	
-// 	.unreq temp_r 		
-
-// 	pop		{r4}
-// 	bx		lr
-
-// .section .data  
+.section .data  
 
 //The type of element that will be drawn.
 // 0 = rectangle with a single static colour
