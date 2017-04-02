@@ -282,6 +282,12 @@ _f_moveBasicLeftRight:
 		mov r1, #1
 		str r1, [r0]
 
+		mov r0, checkCellX_r
+		mov r1, cellIndexY_r
+		mov r2, aiValue_r
+		mov r3, mapAddress_r
+		bl _f_changeDirection
+
 	_animate:
 		//animate sprite
 

@@ -85,7 +85,11 @@ effect: Init previous and current screen arrays in graphics display to be all 0s
 initGraphics:
 	push {lr}
 
-	bl c_f_refreshScreen
+	// bl c_f_refreshScreen
+	ldr r0, =0x0		//black inital screen
+	bl f_colourScreen	//drawing over the entire screen is sort of inefficent
+	bl f_refreshScreen	//refresh the screen
+
 
 	pop {pc}
 
@@ -193,7 +197,7 @@ return: null
 effect: display a character at specified coordinates on the screen
 */
 _f_drawChar:
-	push	{r4-r8, lr}
+	push	{r4-r10, lr}
 
 
 	chAdr_r	.req	r4  //character to be displayed
@@ -249,7 +253,7 @@ _f_drawChar:
 	.unreq	row_r
 	.unreq	mask_r
 
-	pop		{r4-r8, pc}
+	pop		{r4-r10, pc}
 
 
 
@@ -396,6 +400,7 @@ intToScreen:
 	.unreq numDigits_r		
 	.unreq number_r		
 	.unreq loopCounter_r	
+	.unreq displayDigit_r
 
 	pop {r4-r10, pc}
 
