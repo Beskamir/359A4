@@ -43,6 +43,17 @@ f_resetMarioPosition:
 	mov		r3, #0							//Load the code for an empty cell
 	bl		f_setCellElement				//Replace Mario with an empty cell
 	
+	//Reset Mario's vertical state
+	ldr		r4, =_d_verticalState			//Load the address of the vertical state
+	mov		r5, #0							//Store a 0
+	strb	r5, [r4]						//Store that 0 as the vertical state
+
+	//Reset Mario's jump boost
+	ldr		r4, =_d_jumpBoost				//Load the address of the vertical state
+	mov		r5, #0							//Store a 0
+	strb	r5, [r4]						//Store that 0 as the vertical state
+
+	
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
 	
@@ -144,7 +155,7 @@ f_moveMario:
 		beq		FallMarioTest				//If so, go to the test
 		cmp		r10, #1						//Did we fail to move due to an enemy?
 		bleq	_f_killMario				//If so, kill Mario!
-		beq		FallMarioTest				//Then go to the loop test
+		beq		doneMovingMario				//Then stop moving
 		//If neither, then we've hit a block!
 		mov		r9, #0						//Set Mario's vertical speed to 0
 		strb	r9, [r8]					//Store Mario's vertical speed
@@ -256,11 +267,37 @@ _f_killEnemy:
 	
 
 //Input: Null
-//Output: Null
-//Effect: Handle Mario hitting dying (from hitting an enemy)
+//Output: 0 if Mario has more lives
+//Effect: Handle Mario hitting dying (from hitting an enemy), sets lose flag if no more lives
 _f_killMario:
 	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
 	
+	//r4 = life address
+	//r5 = number of lives
+	ldr		r4, =d_lives					//Load the address of Mario's lives
+	ldrb	r5, [r4]						//Load Mario's lives
+	cmp		r5, #0							//Compare Mario's lives to 0
+	ble		gameOver						//If Mario didn't have any extra lives, RIP
+	sub		r5, #1							//Subtract a life
+	strb	r5, [r4]						//Store the amount of lives remaining in r4
+
+	bl		f_resetMarioPosition			//Reset Mario's position
+	
+	//Reset the camera position to whatever is in the .text copy
+	ldr		r0, =t_cameraPosition
+	ldr		r1, [r0]
+	ldr		r0, =d_cameraPosition
+	str		r1, [r0]
+	
+	b		endKillMario
+	
+	gameOver:
+	ldr		r4, =d_lose						//Load the address of the lose flag
+	mov		r5, #1							//Store a 1
+	strb	r5, [r4]						//Set the lose flag
+	
+	
+	endKillMario:
 	
 	
 	pop		{r4-r10, pc}					//Return all the previous registers and return
