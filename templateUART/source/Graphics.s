@@ -325,7 +325,7 @@ intToScreen:
 	moveq numDigits_r, #6
 
 
-	ldr number_r, [numbAddress_r]
+	ldr number_r, [numAddress_r]
 
 	_numberLoop:
 		//mod the number
@@ -338,7 +338,7 @@ intToScreen:
 		mov r0, number_r
 		mov r1, pixelX_r
 		mov r2, pixelY_r
-		mov r3, =d_textColour
+		ldr r3, =d_textColour
 		ldr r3, [r3]
 		bl _f_drawChar
 

@@ -93,7 +93,7 @@ f_moveMario:
 		bl		f_moveElement				//Move Mario
 		mov		r10, r0						//Store result in a safe register
 		cmp		r10, #2						//Did the move succeed?
-		moveq	FallMarioTest				//If so, go to the test
+		beq		FallMarioTest				//If so, go to the test
 		cmp		r10, #1						//Did we fail to move due to an enemy?
 		bleq	_f_killEnemy				//If so, kill the enemy!
 		beq		FallMarioTest				//Then go to the loop test
@@ -179,7 +179,7 @@ _f_shouldMarioMove:
 	cmp		r8, r5							//Compare the two times
 	movgt	r0, #1							//If enough time has passed, return 1
 	strgt	r8, [r6]						//If enough time has passed to move Mario, set this as the last move time
-	movele	r0, #0							//If enough time hasn't passed, return 0
+	movle	r0, #0							//If enough time hasn't passed, return 0
 	
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
@@ -200,7 +200,7 @@ _f_killEnemy:
 	ldrh	r1, [r5]						//Load Mario's Y position
 	add		r1, #1							//Add 1 to get the enemy's Y position below Mario
 	ldr		r2, =d_mapForeground			//Load the foreground's address
-	ldr		r3, #0							//Set an empty cell
+	mov		r3, #0							//Set an empty cell
 	bl		d_setCellElement				//Set the cell under Mario (the enemy) to a blank
 	
 	//Move Mario

@@ -86,10 +86,6 @@ _f_updateNPCsOnSpecifiedMap:
 		_cellOutofRangeX:
 			cmp cellCheckedY_r, #24
 			bge _NoMoreAIs
-				ldr r0, =_d_cellYCheckOffset
-				ldr isYCellValid_r, [r0]
-				mov r1, #0
-				str r1, [r0]
 				//if less than
 				mov cellCheckedX_r, #0 //reset
 				add cellCheckedY_r, #1 //next y value
@@ -384,14 +380,14 @@ _f_moveAdvanceAI:
 	ldr r1, =_d_nextClockValueAdvance
 	ldr r1, [r1]
 	cmp r0, r1
-	blt _skipMoveAdvance
+	blt _skipMoveAIAdvance
 		mov r0, cellIndexX_r
 		mov r1, cellIndexY_r
 		mov r2, aiValue_r
 		mov r3, mapAddress_r
 		bl _f_moveBasicLeftRight
 
-	_skipMoveAdvanceAI:
+	_skipMoveAIAdvance:
 
 	pop {r4-r10, pc}
 
@@ -424,14 +420,14 @@ _f_moveBasicAI:
 	ldr r1, =_d_nextClockValueBasic
 	ldr r1, [r1]
 	cmp r0, r1
-	blt _skipMoveAdvance
+	blt _skipMoveAIBasic
 		mov r0, cellIndexX_r
 		mov r1, cellIndexY_r
 		mov r2, aiValue_r
 		mov r3, mapAddress_r
 		bl _f_moveBasicLeftRight
 
-	_skipMoveAdvanceAI:
+	_skipMoveAIBasic:
 
 	pop {r4-r10, pc}
 

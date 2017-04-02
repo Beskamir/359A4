@@ -120,7 +120,7 @@ _f_updateHUD:
 	//display score below it
 	ldr r0, =_d_gameScore
 	ldr r1, [r0]
-	ldr r0, d_numToPrint
+	ldr r0, =d_numToPrint
 	str r1, [r0]
 	ldr r0, =d_numToPrint
 	mov r1, #170
@@ -138,7 +138,7 @@ _f_updateHUD:
 	//display coins beside it
 	ldr r0, =_d_gameState
 	ldrb r1, [r0]
-	ldr r0, d_numToPrint
+	ldr r0, =d_numToPrint
 	str r1, [r0]
 	ldr r0, =d_numToPrint
 	mov r1, #355
@@ -156,7 +156,7 @@ _f_updateHUD:
 	//display lives beside it
 	ldr r0, =_d_gameState
 	ldrb r1, [r0, #1]
-	ldr r0, d_numToPrint
+	ldr r0, =d_numToPrint
 	str r1, [r0]
 	ldr r0, =d_numToPrint
 	mov r1, #1000

@@ -113,7 +113,7 @@ _f_drawSelection:
 		//draw regular quit option
 		ldr r0, =t_PauseQuitNormal
 		mov r1, #440
-		ldr r2, #400
+		mov r2, #400
 		mov r3, #1
 		bl f_drawElement
 
@@ -132,7 +132,7 @@ _f_drawSelection:
 		//draw selected quit option
 		ldr r0, =t_PauseQuitSelected
 		mov r1, #440
-		ldr r2, #400
+		mov r2, #400
 		mov r3, #1
 		bl f_drawElement
 
