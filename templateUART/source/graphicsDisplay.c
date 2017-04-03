@@ -5,7 +5,6 @@
 
 extern unsigned short * FrameBufferPointer;
 
-
 int screenCurrent[ screenArraySize ];
 int screenOld[ screenArraySize ];
 

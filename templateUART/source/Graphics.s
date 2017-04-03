@@ -41,7 +41,7 @@ use: changes colour of text to be displayed.
 .globl d_textColour
 
 
-.extern c_f_storePixel
+// .extern c_f_storePixel
 /*
 input: null
 output: null

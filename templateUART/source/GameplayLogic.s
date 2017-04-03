@@ -66,13 +66,13 @@ f_playingState:
 	_gameMode: 
 		//only reason for the above label is to execute following 
 		//line when user unpauses the game
-		bl f_clearAllCompareMaps
-		ldr r0, =0x64FE
-		bl f_colourScreen
+		// bl f_clearAllCompareMaps
+		// ldr r0, =0x64FE
+		// bl f_colourScreen
 
 
 		_inGame: //loop here every frame
-			bl f_clearAllCompareMaps
+			// bl f_clearAllCompareMaps
 			ldr r0, =0x64FE
 			bl f_colourScreen
 
@@ -103,10 +103,10 @@ f_playingState:
 			bl f_drawMap
 
 			bl _f_displayHUDLabels
-			bl f_refreshScreen	//refresh the screen
 
 			bl _f_updateHUD // draw HUD
 
+			bl f_refreshScreen	//refresh the screen
 
 			//player input
 			

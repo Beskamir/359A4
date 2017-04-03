@@ -435,15 +435,15 @@ f_drawMap:
 	// _drawMapLoopY:
 	_drawMapLoop:
 		// _drawMapLoopX:
-			mov r0, counterX_r
-			add r0, camera_r
-			mov r1, counterY_r
-			ldr r2, =d_cellsChangedAll
-			// ldr r2, [r2]
-			mov r3, #1
-			bl f_getCellElement
-			cmp r0, #1
-			bne _skipDrawing
+			// mov r0, counterX_r
+			// add r0, camera_r
+			// mov r1, counterY_r
+			// ldr r2, =d_cellsChangedAll
+			// // ldr r2, [r2]
+			// mov r3, #1
+			// bl f_getCellElement
+			// cmp r0, #1
+			// bne _skipDrawing
 
 			mov r0, counterX_r
 			add r0, camera_r
@@ -452,7 +452,6 @@ f_drawMap:
 			mov r3, #0
 			bl f_getCellElement
 			//r0 contains the element from map cell
-
 			cmp r0, #10
 			blt _skipDrawing //skip drawing process if equal. 0 means theres no image there
 
