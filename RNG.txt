@@ -1,0 +1,30 @@
+
+Hello Everyone,
+
+Kindly find below how to write the code for the random number generator function:
+
+    Create 4 labels in the data section each having an integer value
+        example: x: .int 5000
+        Make sure the number you chose is less than 2^64
+        You should create labels for y, z and w each with different integer value
+    Random Generator Function (No need for Parameters):
+        Push r4 to r8 ( you need 5 registers for x,y,z,w and t)
+        load x,y,z,and w integer values from memory
+        move x to t 
+        xor t by using the following instruction (eor t, t, t, lsl #11)
+        xor it again using 8 instead of 11
+        move y to x
+        move z to y
+        move w to z
+        then xor w (eor t, t, t, lsl #19)
+        xor w with t
+        then store value of x in its place in memory( do the same for y z and w)
+            This is made so that they are updated every time and to make it randomly and not every time is based on their initialized
+        return w as the returned value
+
+You can add more things to make your your number more randomized. Also make sure when you draw the value pack, the number returned from the random generator function is within the boundaries of your game border.
+
+I tried to simplify it the best I can and hope this will make it easier for you to implement.
+
+Good luck,
+Abed
