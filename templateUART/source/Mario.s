@@ -218,6 +218,8 @@ f_moveMario:
 	doneMovingMario:
 	
 	bl		_f_collectItems					//Collect any items in Mario's new location
+
+	bl		_f_didMarioWin					//Check if Mario won
 	
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
@@ -516,6 +518,42 @@ _f_collectItems:
 	bl		f_setCellElement				//Remove the item
 	
 	doneCollectItems:
+	
+	pop		{r4-r10, pc}					//Return all the previous registers and return
+	
+	
+//Input: Null
+//Output: Null
+//Effect: If Mario won, set the win flag
+_f_didMarioWin:
+	push	{r4-r10, lr}						//Push all the general purpose registers along with fp and lr to the stack
+
+	ldr		r10, =_d_marioPositionX			//Store the address of Mario's X position
+	ldrh	r4, [r6]						//Load Mario's X position
+	ldr		r10, =_d_marioPositionY			//Store the address of Mario's Y position
+	ldrh	r5, [r7]						//Load Mario's Y position
+	
+	//Get the block's code
+	//r8 = Block's Code
+	mov		r0, r4							//Move in Mario's X position
+	mov		r1, r5							//Move in Mario's Y position
+	ldr		r2, =d_mapMiddleground			//Load the address of the middleground
+	mov		r3, #1							//Only look cells in the screen
+	bl		f_getCellElement				//Get the block's code
+	mov		r8, r0							//Store the block's code in a safe register
+	
+	cmp		r8, #10							//Compare the block ID to the first castle block ID
+	blt		noWin							//If the ID is less than, then it's not a castle block
+	cmp		r8, #34							//Compare the block ID to the last castle block ID
+	bgt		noWin							//If the ID is greater than, then it's not a castle block
+	//Otherwise, it's a castle block, so Mario wins
+	
+	//Set the win flag
+	ldr		r9, =d_win						//Load the address of the win flag
+	mov		r10, #1							//Move in a 1
+	strb	r10, [r9]						//Set the win flag
+	
+	noWin:
 	
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	

@@ -79,7 +79,7 @@ f_pauseMenu:
 		bl		_f_drawSelection	//Call drawSelection
 		
 		selectionLoopTest:
-		tst		r5, r6				//AND the input with r5 
+		tst		r5, r6				//AND the input with r6 
 		bne		SLtop				//If A hasn't been pressed, move back into the loop
 	
 	selectionLoopEnd:				//Branched to if Start is pressed
