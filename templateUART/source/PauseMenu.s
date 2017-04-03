@@ -21,7 +21,7 @@ f_pauseMenu:
 	
 	push	{r4-r10, lr}			//Push all the general purpose registers along with fp and lr to the stack
 	
-	ldr		r4, =isPaused			//Load the paused boolean register
+	ldr		r4, =d_isPaused			//Load the paused boolean register
 	mov		r5, #1					//r5 = 1
 	str		r5, [r4]				//isPaused = 1
 	
@@ -84,7 +84,7 @@ f_pauseMenu:
 	
 	selectionLoopEnd:				//Branched to if Start is pressed
 	mov		r0, r4					//Return the menu state
-	ldr		r4, =isPaused			//Load the paused boolean register
+	ldr		r4, =d_isPaused			//Load the paused boolean register
 	mov		r5, #0					//r5 = 0
 	str		r5, [r4]				//isPaused = 0
 	
