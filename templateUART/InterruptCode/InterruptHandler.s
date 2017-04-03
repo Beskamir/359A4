@@ -13,8 +13,8 @@
 //Usage: Should be the first instruction in the program
 InitInterrupts:
 	push	{r4-r10, lr}		//Push registers onto stack
-	bl		InstallIntTable			//Install the interrupt tabel
-	bl		EnableIRQ				//Enable IRQ interrupt
+	bl		InstallIntTable		//Install the interrupt tabel
+	bl		EnableIRQ			//Enable IRQ interrupt
 	pop		{r4-r10, pc}		//Pop registers from stack
 
 //Input: null
@@ -49,8 +49,8 @@ _InstallIntTable:
 //Input: null
 //Output: null
 //Effect: enables IRQ
-_EnableIRQ:
-	push	{r4-r10, lr}		//Push registers onto stack
+_f_EnableIRQ:
+	push	{r4-r10, lr}			//Push registers onto stack
 	
 	//a		Update timer value
 	ldr		r4, =0x20003004			//Load address of CLO
@@ -73,14 +73,14 @@ _EnableIRQ:
 	str		r1, [r0]				//Store the value of r1 in r0
 	//d.	For cpsr_c register
 	//cpsr_c is not defined/equated anywhere. Gonna have to disable this code -SK
-	mrs			r0, cpscr			//mrs r0,cpscr
-	bic			r0, #0x80			//bic r0, #0x80
-	msr			cpsr_c, r0			//msr cpsr_c, r0
+	mrs		r0, cpscr				//mrs r0,cpscr
+	bic		r0, #0x80				//bic r0, #0x80
+	msr		cpsr_c, r0				//msr cpsr_c, r0
 	
-	pop		{r4-r10, pc}		//Pop register from the stack
+	pop		{r4-r10, pc}			//Pop register from the stack
 	
-_Doirq:
-	push	{r4-r10, lr}		//Push registers from the stack
+_f_DoIRQ:
+	push	{r4-r10, lr}			//Push registers from the stack
 	
 	// a. Test if timer1 did the interrupt
 		// i. Load the values stored in 0x3F00B204 to r1
@@ -108,10 +108,17 @@ _Doirq:
 		mov		r6, #2
 		str		r6, [r4]		//Not sure if this should be [r4] or [r5]
 	// e. Update time in C1
-		
 	e:
+	ldr		r4, =0x20003004			//Load address of CLO
+	ldr		r5, [r4]				//Load CLO
+	ldr		r6, =30000000			//Load the number 30 million
+	add		r5, r6					//Add a delay of 30 million microseconds (30 seconds)
+	add		r4, #12					//Add 12 to get to timer compare 1
+	str		r5, [r4]				//Store the address
 	// f. Repeat (2)
+	bl		_f_DoIRQ
 	// g. Then subs pc, lr, #4
+	subs	pc, lr, #4
 	
 	pop		{r4-r10, pc}		//Pop register from the stack
 	
@@ -134,5 +141,5 @@ swi_handler:		.word hang
 prefetch_handler:	.word hang
 data_handler:		.word hang
 unused_handler:		.word hang
-irq_handler:		.word _Doirq
+irq_handler:		.word _f_DoIRQ
 fiq_handler:		.word hang
