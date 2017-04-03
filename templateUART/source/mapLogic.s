@@ -94,10 +94,10 @@ Effect:
 .globl f_moveElement
 
 
-.globl f_resetCompareMap
-.globl f_compareMaps
-.globl f_drawBackground
-.globl f_clearAllCompareMaps
+// .globl f_resetCompareMap
+// .globl f_compareMaps
+// .globl f_drawBackground
+// .globl f_clearAllCompareMaps
 
 /*
 **single int**
@@ -159,253 +159,253 @@ f_copyMap:
 
 	pop {r4-r6, pc}
 
-/*
-Input: address of screen based compare map to wipe
-Return: null
-Effect: resets all elements d_cellsChangedAll to 0
-*/
-f_resetCompareMap:
-	push {r4-r7, lr}
+// /*
+// Input: address of screen based compare map to wipe
+// Return: null
+// Effect: resets all elements d_cellsChangedAll to 0
+// */
+// f_resetCompareMap:
+// 	push {r4-r7, lr}
 
-	counterX_r 		.req r4 //counts which x cell is being accessed
-	counterY_r 		.req r5 //counts which y cell is being accessed
-	camera_r 		.req r6 //camera position in the world space
-	mapToReset_r	.req r7 //map to wipe
+// 	counterX_r 		.req r4 //counts which x cell is being accessed
+// 	counterY_r 		.req r5 //counts which y cell is being accessed
+// 	camera_r 		.req r6 //camera position in the world space
+// 	mapToReset_r	.req r7 //map to wipe
 
-	mov mapToReset_r, r0
+// 	mov mapToReset_r, r0
 
-	_resetCompareMapLoop:
-		//get each cell address from the array that keeps track of changed cells
-		mov r0, counterX_r
-		add r0, camera_r
-		mov r1, counterY_r
-		ldr r2, =d_cellsChangedAll
-		// ldr r2, [r2]
-		mov r3, #1
-		bl _f_getCellMemAddress
-		mov  r2, #0 	//prepare r2
-		strb r2, [r0] 	//store r2 in cells changed array
+// 	_resetCompareMapLoop:
+// 		//get each cell address from the array that keeps track of changed cells
+// 		mov r0, counterX_r
+// 		add r0, camera_r
+// 		mov r1, counterY_r
+// 		ldr r2, =d_cellsChangedAll
+// 		// ldr r2, [r2]
+// 		mov r3, #1
+// 		bl _f_getCellMemAddress
+// 		mov  r2, #0 	//prepare r2
+// 		strb r2, [r0] 	//store r2 in cells changed array
 
-		add counterX_r, #1	//increment x cell count by 1
-		cmp counterX_r, #32	//x screen size is 32 cells 
-		blt _resetCompareMapLoop
+// 		add counterX_r, #1	//increment x cell count by 1
+// 		cmp counterX_r, #32	//x screen size is 32 cells 
+// 		blt _resetCompareMapLoop
 
-	mov counterX_r, #0 //reset x loop counter to 0
-	add counterY_r, #1 //increment y cell count by 1
-	cmp counterY_r, #24 //y screen size is 24 cells
-	blt _resetCompareMapLoop
+// 	mov counterX_r, #0 //reset x loop counter to 0
+// 	add counterY_r, #1 //increment y cell count by 1
+// 	cmp counterY_r, #24 //y screen size is 24 cells
+// 	blt _resetCompareMapLoop
 
-	.unreq counterX_r 
-	.unreq counterY_r 
-	.unreq camera_r
-	.unreq mapToReset_r
+// 	.unreq counterX_r 
+// 	.unreq counterY_r 
+// 	.unreq camera_r
+// 	.unreq mapToReset_r
 
-	pop {r4-r7, pc}
-/*
-Input: null
-Return: null
-Effect: resets all the arrays which remember what changed on screen
-*/
-f_clearAllCompareMaps:
-	push {lr}
+// 	pop {r4-r7, pc}
+// /*
+// Input: null
+// Return: null
+// Effect: resets all the arrays which remember what changed on screen
+// */
+// f_clearAllCompareMaps:
+// 	push {lr}
 
-	ldr r0, =d_cellsChangedAll
-	bl f_resetCompareMap	
-	ldr r0, =d_cellsOldBackground
-	bl f_resetCompareMap	
-	ldr r0, =d_cellsOldMiddle
-	bl f_resetCompareMap
-	ldr r0, =d_cellsOldForeground
-	bl f_resetCompareMap
+// 	ldr r0, =d_cellsChangedAll
+// 	bl f_resetCompareMap	
+// 	ldr r0, =d_cellsOldBackground
+// 	bl f_resetCompareMap	
+// 	ldr r0, =d_cellsOldMiddle
+// 	bl f_resetCompareMap
+// 	ldr r0, =d_cellsOldForeground
+// 	bl f_resetCompareMap
 
-	pop {pc}
-/*
-Input: null
-Return: null
-Effect: compares all maps
-*/
-f_compareMaps:
-	push {lr}
+// 	pop {pc}
+// /*
+// Input: null
+// Return: null
+// Effect: compares all maps
+// */
+// f_compareMaps:
+// 	push {lr}
 
-	ldr r0, =d_mapBackground
-	ldr r1, =d_cameraPosition
-	ldr r2, =d_cellsOldBackground
-	bl _f_compareMapElements	
+// 	ldr r0, =d_mapBackground
+// 	ldr r1, =d_cameraPosition
+// 	ldr r2, =d_cellsOldBackground
+// 	bl _f_compareMapElements	
 
-	ldr r0, =d_mapMiddleground
-	ldr r1, =d_cameraPosition
-	ldr r2, =d_cellsOldMiddle
-	bl _f_compareMapElements
+// 	ldr r0, =d_mapMiddleground
+// 	ldr r1, =d_cameraPosition
+// 	ldr r2, =d_cellsOldMiddle
+// 	bl _f_compareMapElements
 
-	ldr r0, =d_mapForeground
-	ldr r1, =d_cameraPosition
-	ldr r2, =d_cellsOldForeground
-	bl _f_compareMapElements
+// 	ldr r0, =d_mapForeground
+// 	ldr r1, =d_cameraPosition
+// 	ldr r2, =d_cellsOldForeground
+// 	bl _f_compareMapElements
 
-	pop {pc}
-/*
-Input: 
-	r0: address of map to compare
-	r1: address to camera position int
-	r2: address to data that was last displayed to screen
-Return: null
-Effect: compares the maps
-*/
-_f_compareMapElements:
-	push {r4-r10, lr}
+// 	pop {pc}
+// /*
+// Input: 
+// 	r0: address of map to compare
+// 	r1: address to camera position int
+// 	r2: address to data that was last displayed to screen
+// Return: null
+// Effect: compares the maps
+// */
+// _f_compareMapElements:
+// 	push {r4-r10, lr}
 
-	counterX_r 		.req r4 //counts which x cell is being accessed
-	counterY_r 		.req r5 //counts which y cell is being accessed
-	mapToCheck_r 	.req r6 //address of the map that will be compared to the old map
-	oldMapAddress_r	.req r7 //address to map containing which elements were last displayed
-	camera_r 		.req r8 //camera position in the world space
-	newElement_r	.req r9 //element from the most recent map
+// 	counterX_r 		.req r4 //counts which x cell is being accessed
+// 	counterY_r 		.req r5 //counts which y cell is being accessed
+// 	mapToCheck_r 	.req r6 //address of the map that will be compared to the old map
+// 	oldMapAddress_r	.req r7 //address to map containing which elements were last displayed
+// 	camera_r 		.req r8 //camera position in the world space
+// 	newElement_r	.req r9 //element from the most recent map
 
-	mov mapToCheck_r, r0	//load the map to use for drawing
-	ldr camera_r,	[r1] 	//get camera position based on input parameter
-	mov oldMapAddress_r, r2
+// 	mov mapToCheck_r, r0	//load the map to use for drawing
+// 	ldr camera_r,	[r1] 	//get camera position based on input parameter
+// 	mov oldMapAddress_r, r2
 
-	mov counterX_r, #0 	//set x loop counter to 0
-	mov counterY_r, #0 	//set y loop counter to 0
-
-
-	// _drawMapLoopY:
-	_compareMapLoop:
-		// _drawMapLoopX:
-			//get each cell element from the entire map
-			mov r0, counterX_r
-			add r0, camera_r
-			mov r1, counterY_r
-			mov r2, mapToCheck_r
-			mov r3, #0
-			bl f_getCellElement
-			mov newElement_r, r0
+// 	mov counterX_r, #0 	//set x loop counter to 0
+// 	mov counterY_r, #0 	//set y loop counter to 0
 
 
-			//get each cell element from previous screen
-			mov r0, counterX_r
-			add r0, camera_r
-			mov r1, counterY_r
-			mov r2, oldMapAddress_r
-			mov r3, #1
-			bl f_getCellElement
-			//r0 contains the element from map cell
-
-			cmp r0, newElement_r
-			beq _sameElement
-
-			breakPoint1:
-				//get each cell address from previous screen
-				mov r0, counterX_r
-				add r0, camera_r
-				mov r1, counterY_r
-				mov r2, oldMapAddress_r
-				mov r3, #1
-				bl _f_getCellMemAddress
-				strb newElement_r, [r0] //store the element at it's "cell" address
-
-				//get each cell address from the array that keeps track of changed cells
-				mov r0, counterX_r
-				add r0, camera_r
-				mov r1, counterY_r
-				ldr r2, =d_cellsChangedAll
-				// ldr r2, [r2]
-				mov r3, #1
-				bl _f_getCellMemAddress
-				mov  r2, #1		//prepare r2
-				strb r2, [r0] 	//store r2 in cells changed array
-
-			_sameElement:
-
-			add counterX_r, #1	//increment x cell count by 1
-			cmp counterX_r, #32	//x screen size is 32 cells 
-			blt _compareMapLoop
-
-		mov counterX_r, #0 //reset x loop counter to 0
-		add counterY_r, #1 //increment y cell count by 1
-		cmp counterY_r, #24 //y screen size is 24 cells
-		blt _compareMapLoop
-
-	//only need it for the above stuff, so unreq everything that was used in this subroutine
-	.unreq counterX_r 
-	.unreq counterY_r 
-	.unreq mapToCheck_r
-	.unreq oldMapAddress_r
-	.unreq newElement_r
-	.unreq camera_r
-
-	pop {r4-r10, pc}
-/*
-Input: 
-	r0: colour to be used for drawing the background
-	r1: camera position
-Return: null
-Effect: draws the map
-*/
-f_drawBackground:
-	push {r4-r10, lr}
-
-	counterX_r 		.req r4 //counts which x cell is being accessed
-	counterY_r 		.req r5 //counts which y cell is being accessed
-	camera_r 		.req r6 //camera position in the world space
-	xSize_r 		.req r7 //address of the map that will be drawn.
-	ySize_r 		.req r8 //address of the map that will be drawn.
-	colour_r 		.req r9 //address of the map that will be drawn.
+// 	// _drawMapLoopY:
+// 	_compareMapLoop:
+// 		// _drawMapLoopX:
+// 			//get each cell element from the entire map
+// 			mov r0, counterX_r
+// 			add r0, camera_r
+// 			mov r1, counterY_r
+// 			mov r2, mapToCheck_r
+// 			mov r3, #0
+// 			bl f_getCellElement
+// 			mov newElement_r, r0
 
 
-	mov colour_r,	 r0	 //load the map to use for drawing
+// 			//get each cell element from previous screen
+// 			mov r0, counterX_r
+// 			add r0, camera_r
+// 			mov r1, counterY_r
+// 			mov r2, oldMapAddress_r
+// 			mov r3, #1
+// 			bl f_getCellElement
+// 			//r0 contains the element from map cell
 
-	ldr camera_r,	[r1] //get camera position based on input parameter
+// 			cmp r0, newElement_r
+// 			beq _sameElement
 
-	mov counterX_r, #0 	//set x loop counter to 0
-	mov counterY_r, #0 	//set y loop counter to 0
+// 			breakPoint1:
+// 				//get each cell address from previous screen
+// 				mov r0, counterX_r
+// 				add r0, camera_r
+// 				mov r1, counterY_r
+// 				mov r2, oldMapAddress_r
+// 				mov r3, #1
+// 				bl _f_getCellMemAddress
+// 				strb newElement_r, [r0] //store the element at it's "cell" address
 
-	mov xSize_r, #32
-	mov ySize_r, #32
+// 				//get each cell address from the array that keeps track of changed cells
+// 				mov r0, counterX_r
+// 				add r0, camera_r
+// 				mov r1, counterY_r
+// 				ldr r2, =d_cellsChangedAll
+// 				// ldr r2, [r2]
+// 				mov r3, #1
+// 				bl _f_getCellMemAddress
+// 				mov  r2, #1		//prepare r2
+// 				strb r2, [r0] 	//store r2 in cells changed array
 
-	// _drawMapLoopY:
-	_drawBackgroundLoop:
-		// _drawMapLoopX:
-			mov r0, counterX_r
-			add r0, camera_r
-			mov r1, counterY_r
-			ldr r2, =d_cellsChangedAll
-			// ldr r2, [r2]
-			mov r3, #1
-			bl f_getCellElement
-			cmp r0, #1
-			bne _skipBackgroundDrawing	
-				//set up rectangle for drawing a background cell
-				ldr r10, =d_rectangle	
-				stmia r10, {r7-r9}	//store in order of x end, y end, colour 
+// 			_sameElement:
 
-				mov r0, r10
-				mov r1, counterX_r
-				lsl r1, #5
-				mov r2, counterY_r
-				lsl r2, #5
-				mov r3, #0	//indicate that a rectangle of constant colour is being drawn
-				bl f_drawElement
+// 			add counterX_r, #1	//increment x cell count by 1
+// 			cmp counterX_r, #32	//x screen size is 32 cells 
+// 			blt _compareMapLoop
 
-			_skipBackgroundDrawing:
-			add counterX_r, #1	//increment x cell count by 1
-			cmp counterX_r, #32	//x screen size is 32 cells 
-			blt _drawBackgroundLoop
+// 		mov counterX_r, #0 //reset x loop counter to 0
+// 		add counterY_r, #1 //increment y cell count by 1
+// 		cmp counterY_r, #24 //y screen size is 24 cells
+// 		blt _compareMapLoop
 
-		mov counterX_r, #0 //reset x loop counter to 0
-		add counterY_r, #1 //increment y cell count by 1
-		cmp counterY_r, #24 //y screen size is 24 cells
-		blt _drawBackgroundLoop
+// 	//only need it for the above stuff, so unreq everything that was used in this subroutine
+// 	.unreq counterX_r 
+// 	.unreq counterY_r 
+// 	.unreq mapToCheck_r
+// 	.unreq oldMapAddress_r
+// 	.unreq newElement_r
+// 	.unreq camera_r
 
-	//only need it for the above stuff, so unreq everything that was used in this subroutine
-	.unreq counterX_r
-	.unreq counterY_r
-	.unreq camera_r
-	.unreq xSize_r
-	.unreq ySize_r
-	.unreq colour_r
+// 	pop {r4-r10, pc}
+// /*
+// Input: 
+// 	r0: colour to be used for drawing the background
+// 	r1: camera position
+// Return: null
+// Effect: draws the map
+// */
+// f_drawBackground:
+// 	push {r4-r10, lr}
 
-	pop {r4-r10, pc}
+// 	counterX_r 		.req r4 //counts which x cell is being accessed
+// 	counterY_r 		.req r5 //counts which y cell is being accessed
+// 	camera_r 		.req r6 //camera position in the world space
+// 	xSize_r 		.req r7 //address of the map that will be drawn.
+// 	ySize_r 		.req r8 //address of the map that will be drawn.
+// 	colour_r 		.req r9 //address of the map that will be drawn.
+
+
+// 	mov colour_r,	 r0	 //load the map to use for drawing
+
+// 	ldr camera_r,	[r1] //get camera position based on input parameter
+
+// 	mov counterX_r, #0 	//set x loop counter to 0
+// 	mov counterY_r, #0 	//set y loop counter to 0
+
+// 	mov xSize_r, #32
+// 	mov ySize_r, #32
+
+// 	// _drawMapLoopY:
+// 	_drawBackgroundLoop:
+// 		// _drawMapLoopX:
+// 			mov r0, counterX_r
+// 			add r0, camera_r
+// 			mov r1, counterY_r
+// 			ldr r2, =d_cellsChangedAll
+// 			// ldr r2, [r2]
+// 			mov r3, #1
+// 			bl f_getCellElement
+// 			cmp r0, #1
+// 			bne _skipBackgroundDrawing	
+// 				//set up rectangle for drawing a background cell
+// 				ldr r10, =d_rectangle	
+// 				stmia r10, {r7-r9}	//store in order of x end, y end, colour 
+
+// 				mov r0, r10
+// 				mov r1, counterX_r
+// 				lsl r1, #5
+// 				mov r2, counterY_r
+// 				lsl r2, #5
+// 				mov r3, #0	//indicate that a rectangle of constant colour is being drawn
+// 				bl f_drawElement
+
+// 			_skipBackgroundDrawing:
+// 			add counterX_r, #1	//increment x cell count by 1
+// 			cmp counterX_r, #32	//x screen size is 32 cells 
+// 			blt _drawBackgroundLoop
+
+// 		mov counterX_r, #0 //reset x loop counter to 0
+// 		add counterY_r, #1 //increment y cell count by 1
+// 		cmp counterY_r, #24 //y screen size is 24 cells
+// 		blt _drawBackgroundLoop
+
+// 	//only need it for the above stuff, so unreq everything that was used in this subroutine
+// 	.unreq counterX_r
+// 	.unreq counterY_r
+// 	.unreq camera_r
+// 	.unreq xSize_r
+// 	.unreq ySize_r
+// 	.unreq colour_r
+
+// 	pop {r4-r10, pc}
 /*
 Input: 
 	r0: address of map to draw
@@ -802,106 +802,106 @@ _f_updateMap:
 d_cameraPosition: //this contains the position of the left side of the camera. 
 	.int 0 //thus min value = 0 and max value = (size of map - 32)
 
-d_cellsChangedAll:
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// d_cellsChangedAll:
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
-d_cellsOldBackground:
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// d_cellsOldBackground:
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
-d_cellsOldMiddle:
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// d_cellsOldMiddle:
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
-d_cellsOldForeground:
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// d_cellsOldForeground:
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+// 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
