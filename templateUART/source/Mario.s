@@ -471,7 +471,7 @@ _f_clearTempCoin:
 //Output: Null
 //Effect: Collect any powerups that are in the cell Mario is standing in
 _f_collectItems:
-	push	{r4-r10, lr}						//Push all the general purpose registers along with fp and lr to the stack
+	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
 	
 	ldr		r6, =_d_marioPositionX			//Store the address of Mario's X position
 	ldrh	r4, [r6]						//Load Mario's X position

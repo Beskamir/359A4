@@ -81,14 +81,14 @@ f_playInput:
 	
 	noPause:
 	//Check if up was pressed to jump
-	
+	//r7 will store whether to jump or not
 	mov		r5, #1			//Move 1 into r5
 	lsl		r5, #4			//Shift to bit 4 (Joy-pad UP)
 	tst		r4, r5			//AND the two registers and set flags accordingly
-//TODO	bleq	f_moveMarioY	//If Joy-pad UP was pressed, jump!
+	moveq	r7, #1			//If Joy-pad UP was pressed, jump!
+	movne	r7, #0			//If Joy-pad UP was not pressed, don't jump
 	
 	//Check if left or right were pressed to move Mario
-	
 	mov		r6, #0			//r6 will store the move offset
 	mov		r5, #1			//Move 1 into r5
 	lsl		r5, #6			//Shift to bit 6 (Joy-pad LEFT)
@@ -97,10 +97,11 @@ f_playInput:
 	lsl		r5, #1			//Shift to bit 7 (Joy-pad RIGHT)
 	tst		r4, r5			//AND the two registers and set flags accordingly
 	addeq	r6, #1			//If right was pressed, add 1 to the move offset
-	cmp		r6, #0			//Compare r6 to 0
-	//If r6 =! 0 then we need to move Mario
-	movne	r0, r6			//Move the offset into r0
-//TODO	blne	f_moveMarioX	//Move Mario horizontally
+
+	//Move Mario
+	mov		r0, r6			//Move the X offset into r0
+	mov		r1, r7			//Move whether to jump into r1
+	bl		f_moveMario		//Move Mario
 	
 	end_playInput:
 	
