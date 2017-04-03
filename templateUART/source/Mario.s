@@ -103,6 +103,7 @@ f_moveMario:
 	
 	falling:
 	//Falling
+	//Increase Mario's fall speed
 	sub		r9, #1							//Increase Mario's fall speed by 1
 	strb	r9, [r8]						//Store Mario's new fall speed
 	//Move Mario in map
@@ -114,8 +115,8 @@ f_moveMario:
 		mov		r2, #-1						//Move Mario 1 space down
 		ldr		r3, =d_mapForeground		//Mario is in the foreground
 		bl		f_moveElement				//Move Mario
-
 		mov		r10, r0						//Store result in a safe register
+
 		cmp		r10, #2						//Did the move succeed?
 		beq		FallMarioTest				//If so, go to the test
 		cmp		r10, #1						//Did we fail to move due to an enemy?
@@ -125,7 +126,7 @@ f_moveMario:
 		//If neither, then we're done falling!
 		mov		r9, #0						//Set Mario's vertical speed to 0
 		strb	r9, [r8]					//Store Mario's vertical speed
-		b		doneYMap					//We're done Y movement
+		b		doneFallMap					//We're done falling in the map
 
 	FallMarioTest:							//Loop test
 		sub		r9, #1						//Subtract 1 from the loop counter
@@ -158,16 +159,19 @@ f_moveMario:
 		ldr		r3, =d_mapForeground		//Mario is in the foreground
 		bl		f_moveElement				//Move Mario
 		mov		r10, r0						//Store result in a safe register
+		
 		cmp		r10, #2						//Did the move succeed?
 		beq		FallMarioTest				//If so, go to the test
 		cmp		r10, #1						//Did we fail to move due to an enemy?
 		bleq	f_killMario					//If so, kill Mario!
 		beq		doneMovingMario				//Then stop moving
+
 		//If neither, then we've hit a block!
 		mov		r9, #0						//Set Mario's vertical speed to 0
 		strb	r9, [r8]					//Store Mario's vertical speed
 		bl		_f_hitBlock					//Handle hitting a block
-		b		doneYMap					//We're done Y movement
+		b		doneJumpMap					//We're done jumping in the map
+
 	JumpMarioTest:							//Loop test
 		sub		r9, #1						//Subtract 1 from the loop counter
 		sub		r7, #1						//Add 1 to Mario's Y position (by subtracting because opposite)
@@ -177,10 +181,10 @@ f_moveMario:
 	sub		r9, #1							//Decrease Mario's jump speed by 1
 	strb	r9, [r8]						//Store Mario's new jump speed
 	//Move Mario in data register
-	doneYMap:
+	doneJumpMap:
 	ldr		r10, =_d_marioPositionY			//Load the address of Mario's Y position
 	strh	r7, [r10]						//Store Mario's new Y position
-	b		doneYMovement					//We're done moving Mario vertically
+	//We're done moving Mario vertically
 	
 	doneYMovement:
 	
