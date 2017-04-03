@@ -8,7 +8,7 @@ from PIL import ImageColor
 import os
 import random
 
-FOLDERNAME="\\PauseMenu\\Complete\\" #folder containing images
+FOLDERNAME="\\EndScreens\\Complete\\" #folder containing images
 OUTPUTNAMEFILENAME="imageOutputsTitle.txt" #creates an assembly file with all the image data
 KEYOUTPUTFILENAME="keyOutputsTitle.txt" #stores the dictionary for generating the map tiles
 SPLIT=False #Change this to either generate several 32*32 images or 1 unspecified image size. 
