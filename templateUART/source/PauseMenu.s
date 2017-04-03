@@ -3,7 +3,7 @@
 .section	.init
 
 .globl	f_pauseMenu								//Menu is the only public function in this file
-.globl	isPaused								//Public boolean whether game is paused or not
+.globl	d_isPaused								//Public boolean whether game is paused or not
 
 .section	.text
 
@@ -158,4 +158,4 @@ _f_drawMenu:
 	
 .section	.data
 
-isPaused:	.byte
+d_isPaused:	.byte

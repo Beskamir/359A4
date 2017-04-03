@@ -60,7 +60,7 @@
 	
 	// pop {r4-r10, pc}	//Pop the previous registers from the stack
 
-//Input: Input from the player in r0	
+//Input: Null
 //Ouput: Null
 //Effect: Handle all input from the player
 f_playInput:
