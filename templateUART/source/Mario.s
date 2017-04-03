@@ -3,8 +3,7 @@
 .section		.init
 
 .globl			f_resetMarioPosition		//Reset Mario's position (in registers, not in the map)
-.globl			f_moveMarioX				//Move Mario horizontally (in map and registers)
-.globl			f_moveMarioY				//Move Mario Vertically
+.globl			f_moveMario					//Move Mario (in map and registers)
 .globl			f_killMario					//Kill Mario
 
 .section		.text
