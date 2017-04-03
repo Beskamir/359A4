@@ -17,10 +17,6 @@ _start:
     
 .section .text
 
-_t_core_stack1: .word 0
-_t_core_stack2: .word 0
-_t_core_stack3: .word 0
-
 main:
 
 	//Idea for initing cores, move this code after they've been activated. Also test using print console debugging
@@ -46,11 +42,11 @@ main:
 		bl f_mainMenu
 		cmp r0, #0
 		beq haltLoop$ 
-			bl f_playingState //third test file
+			bl f_playingState 
 			b _core0_loop
 
 	b _core0_loop
-////End of Actual coreLoop
+	////End of Actual coreLoop
 
 
 haltLoop$:	//Halts the program

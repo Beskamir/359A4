@@ -259,13 +259,22 @@ _f_drawChar:
 
 /*
 input: 
-	image address. (if drawing rectangle store x end, y end, colour in "rectangle: .int 0 0 0")
-	top leftmost x coordinate indicating beginning of image
-	top leftmost y coordinate indicating beginning of image
-	whether the colour is uniform. 
-	0 if uniform colour, 1 if image(sprite), 
-	2 if ascii text, 3 if int to text and number will have 6 digits,
-	4 if int to text and number will have 2 digits, 5 if int to text and number will have 1 digit
+	r0, image address. 
+		(if drawing rectangle store x end, y end, colour in "rectangle: .int 0 0 0")
+	r1, top leftmost x coordinate indicating beginning of image
+	r2, top leftmost y coordinate indicating beginning of image
+	r3, whether the colour is uniform. 
+		0 if uniform colour, 
+		1 if image(sprite), 
+		2 if ascii text, 
+
+		//further values reserved for digits only
+		3 if int to text and number will have 1 digit,
+		4 if int to text and number will have 2 digits,
+		5 if int to text and number will have 3 digits,
+		...
+		8 if int to text and number will have 6 digits,
+		... etc
 return: null
 effect: display an image at specified coordinates on the screen
 */
@@ -277,23 +286,20 @@ f_drawElement:
 	mov r6, r2      //y coordinate
 	mov r7, r3		//info for what to draw
 
-	// //r3 contains info for what is being drawn. Image vs rectangle
-	// ldr r10, =_d_type
-	// str r3, [r10]	//store it for when it matters
-
+	//check if drawing text
 	cmp r3, #2
 	beq _textDrawTest
 
-	//preferably only above comparison would be needed. 
-	//AKA lets figure out a way to pass in ints as strings rather than as ints.
+	//check if drawing an image or rectangle
 	cmp r3, #1
 	ble _imageToDraw
+
 		//restore all even though most should still be unchanged
 		mov r0, r4 		//image address
 		mov r1, r5 		//x coordinate
 		mov r2, r6      //y coordinate
 		mov r3, r7		//info for what to draw
-		bl intToScreen
+		bl _f_intToScreen
 		b _doneDraw
 
 	_isText:
@@ -340,12 +346,15 @@ input:
 	top leftmost y coordinate indicating beginning of image
 	how many digits to draw
 		3 if int to text and number will have 1 digit,
-		4 if int to text and number will have 2 digits, 
-		5 if int to text and number will have 6 digits
+		4 if int to text and number will have 2 digits,
+		5 if int to text and number will have 3 digits,
+		...
+		8 if int to text and number will have 6 digits,
+		...
 return: null
 effect: display an image at specified coordinates on the screen
 */
-intToScreen:
+_f_intToScreen:
 	push {r4-r10, lr}
 
 	numAddress_r	.req	r4  //character to be displayed
@@ -363,11 +372,8 @@ intToScreen:
 
 	mov loopCounter_r, #0
 
-	sub numDigits_r, #2 //subtract 2 so that 3 becomes 1 and 4 becomes 2 thus mapping onto the number of digits being shown
-
-	//then set 3 to 6 thus making it so that numDigits represents the number of digits that string will contain
-	cmp numDigits_r, #3 
-	moveq numDigits_r, #6
+	sub numDigits_r, #2 //subtract 2 so that 3 becomes 1, 4 becomes 2, 8 becomes 6
+	// thus specified parameter maps directly onto the number of digits to be displayed
 
 
 	ldr number_r, [numAddress_r]

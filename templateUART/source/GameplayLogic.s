@@ -63,53 +63,65 @@ f_playingState:
 
 	bl _f_newGame //reset all the stored data to the initial states
 
-	_playingLoop:	//Keep looping until game is over
-		//each loop is a frame
-		ldr r0, =0x64FE		//Blueish colour based on an image of the original game.
-		bl f_colourScreen	//drawing over the entire screen is sort of inefficent
-		// ldr r0, =0x0FF0
-		// bl f_colourScreen
-		//draw the sprites located on the background map
-		ldr r0, =d_mapBackground
-		ldr r1, =d_cameraPosition
-		bl f_drawMap		
-		//draw the sprites located on the middle map
-		ldr r0, =d_mapMiddleground
-		ldr r1, =d_cameraPosition
-		bl f_drawMap
-		//draw the sprites located on the foreground map
-		ldr r0, =d_mapForeground
-		ldr r1, =d_cameraPosition
-		bl f_drawMap
-		
-		bl _f_updateHUD // draw HUD
-		bl f_refreshScreen	//refresh the screen
+	_gameMode: 
+		//only reason for the above label is to execute following 
+		//line when user unpauses the game
+		bl f_clearAllCompareMaps
 
-		bl f_updateAIs
+		_inGame: //loop here every frame
 
-		//player input
-		
-		bl	Read_SNES		//Get input from the player
-		bl	f_playInput		//Handle input
+			ldr r0, =d_cellsChangedAll
+			bl f_resetCompareMap
+
+			//compare current maps with previous maps
+			bl f_compareMaps
+
+			ldr r0, =0x64FE		//Blueish colour based on an image of the original game.
+			ldr r1, =d_cameraPosition
+			bl f_drawBackground //will only draw where stuff changed.
+			// ldr r0, =0x64FE
+			// bl f_colourScreen
+			//draw the sprites located on the background map
+			ldr r0, =d_mapBackground
+			ldr r1, =d_cameraPosition
+			bl f_drawMap		
+			//draw the sprites located on the middle map
+			ldr r0, =d_mapMiddleground
+			ldr r1, =d_cameraPosition
+			bl f_drawMap
+			//draw the sprites located on the foreground map
+			ldr r0, =d_mapForeground
+			ldr r1, =d_cameraPosition
+			bl f_drawMap
 			
-		//check collisions
-		//update map
-		//update score/coins
+			bl _f_updateHUD // draw HUD
+			bl f_refreshScreen	//refresh the screen
 
-		//AI input
-		//check collisions
-		//update map
+			bl f_updateAIs
 
-		//check end state
-		//loop or break
+			//player input
+			
+			bl	Read_SNES		//Get input from the player
+			bl	f_playInput		//Handle input
+				
+			//check collisions
+			//update map
+			//update score/coins
 
-		ldr r0, =d_cameraPosition
-		ldr r4, [r0]
-		add r4, #1
-		str r4, [r0]
+			//AI input
+			//check collisions
+			//update map
 
-		cmp r4, #288
-		blt _playingLoop
+			//check end state
+			//loop or break
+
+			ldr r0, =d_cameraPosition
+			ldr r4, [r0]
+			add r4, #1
+			str r4, [r0]
+
+			cmp r4, #288
+			blt _inGame
 
 	// b PlayingLoop
 
@@ -136,7 +148,7 @@ _f_updateHUD:
 	ldr r0, =d_numToPrint
 	mov r1, #110
 	mov r2, #65
-	mov r3, #5
+	mov r3, #8
 	bl f_drawElement
 
 	//display correct HUD labels

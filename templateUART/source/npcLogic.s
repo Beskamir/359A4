@@ -221,6 +221,7 @@ _f_moveBasicLeftRight:
 			mov r1, cellIndexY_r
 			add r1, #1 //go down a row
 			mov r2, mapAddress_r
+			mov r3, #0
 			bl f_getCellElement
 			//97 to 108 represent the solid foreground elements that don't move
 			cmp r0, #97 
@@ -254,6 +255,7 @@ _f_moveBasicLeftRight:
 			mov r1, cellIndexY_r
 			add r1, #1 //go down a row
 			mov r2, mapAddress_r
+			mov r3, #0
 			bl f_getCellElement
 			//97 to 108 represent the solid foreground elements that don't move
 			cmp r0, #97 
@@ -331,6 +333,7 @@ _f_changeDirection:
 	mov r0, cellIndexX_r
 	mov r1, cellIndexY_r
 	mov r2, mapAddress_r
+	mov r3, #0
 	bl f_getCellElement
 	mov aiValue_r, r0
 
@@ -552,6 +555,7 @@ _f_findItemOrNPC:
 		add r0, cameraOffset_r
 		mov r1, cellCheckY_r
 		mov r2, mapAddress_r
+		mov r3, #0
 		bl f_getCellElement
 		mov aiType_r, r0 //store that cell element in aiType_r
 
