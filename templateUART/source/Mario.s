@@ -389,7 +389,7 @@ _f_hitBlock:
 
 	//Update Mario's position in memory registers
 	sub		r5, #1							//Subtract 1 from Mario's Y position to move him up one cell
-	strh	r5, r7							//Store Mario's new Y position
+	strh	r5, [r7]						//Store Mario's new Y position
 	b		doneHitBlock
 		
 	value:
