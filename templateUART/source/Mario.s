@@ -5,6 +5,7 @@
 .globl			f_resetMarioPosition		//Reset Mario's position (in registers, not in the map)
 .globl			f_moveMarioX				//Move Mario horizontally (in map and registers)
 .globl			f_moveMarioY				//Move Mario Vertically
+.globl			f_killMario					//Kill Mario
 
 .section		.text
 
@@ -53,7 +54,6 @@ f_resetMarioPosition:
 	mov		r5, #0							//Store a 0
 	strb	r5, [r4]						//Store that 0 as the vertical state
 
-	
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
 	
@@ -77,7 +77,7 @@ f_moveMario:
 	ldr		r8, =tempCoin					//Load the address of tempCoin
 	ldrb	r9, [r8]						//Load tempCoin
 	cmp		r9, #1							//Is tempCoin set?
-	bleq	_f_clearTempCoin				//If so, give Mario the tempCoin
+	bleq	_f_clearTempCoin				//If so, remove the tempCoin
 	
 	//r6 = X position
 	//r7 = Y position
@@ -114,16 +114,19 @@ f_moveMario:
 		mov		r2, #-1						//Move Mario 1 space down
 		ldr		r3, =d_mapForeground		//Mario is in the foreground
 		bl		f_moveElement				//Move Mario
+
 		mov		r10, r0						//Store result in a safe register
 		cmp		r10, #2						//Did the move succeed?
 		beq		FallMarioTest				//If so, go to the test
 		cmp		r10, #1						//Did we fail to move due to an enemy?
 		bleq	_f_killEnemy				//If so, kill the enemy!
 		beq		FallMarioTest				//Then go to the loop test
+
 		//If neither, then we're done falling!
 		mov		r9, #0						//Set Mario's vertical speed to 0
 		strb	r9, [r8]					//Store Mario's vertical speed
 		b		doneYMap					//We're done Y movement
+
 	FallMarioTest:							//Loop test
 		sub		r9, #1						//Subtract 1 from the loop counter
 		add		r7, #1						//Subtract 1 from Mario's Y position (by adding because opposite)
@@ -158,7 +161,7 @@ f_moveMario:
 		cmp		r10, #2						//Did the move succeed?
 		beq		FallMarioTest				//If so, go to the test
 		cmp		r10, #1						//Did we fail to move due to an enemy?
-		bleq	_f_killMario				//If so, kill Mario!
+		bleq	f_killMario					//If so, kill Mario!
 		beq		doneMovingMario				//Then stop moving
 		//If neither, then we've hit a block!
 		mov		r9, #0						//Set Mario's vertical speed to 0
@@ -179,18 +182,39 @@ f_moveMario:
 	strh	r7, [r10]						//Store Mario's new Y position
 	b		doneYMovement					//We're done moving Mario vertically
 	
-
-	
 	doneYMovement:
+	
+	bl		_f_collectItems					//Collect any items in Mario's new location
 	
 	//X movement
 	//Check if Mario should be moved horizontally
 	cmp		r4, #0							//Compare X offset to 0
 	beq		doneMovingMario					//If they're equal, branch to skip the X movement
 	
-	//X movement here
+	//Move Mario in map
+	lsl		r0, r6, #16						//Move X position to top half of r0
+	orr		r0, r7							//Add Y position to bottom half of r0
+	mov		r1, r4							//Move Mario horizontally
+	mov		r2, #-1							//Don't move Mario vertically
+	ldr		r3, =d_mapForeground			//Mario is in the foreground
+	bl		f_moveElement					//Move Mario
+	
+	mov		r10, r0							//Save the feedback in a safe register
+	cmp		r10, #0							//Did the move fail because we hit terrain?
+	beq		doneMovingMario					//If so, we're done X movement
+	cmp		r10, #1							//Did the move fail because we hit an enemy?
+	bleq	f_killMario						//If so, kill Mario
+	beq		doneMovingMario					//Then stop moving Mario
+	//Otherwise, move was successful
+	
+	//Since move was successful, move Mario in memory registers
+	ldr		r10, =_d_MarioPositionX			//Load the address of Mario's X position
+	add		r6, r4							//Add the offset to Mario's X position
+	strh	r6, [r10]						//Store Mario's new position
 	
 	doneMovingMario:
+	
+	bl		_f_collectItems					//Collect any items in Mario's new location
 	
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
@@ -205,7 +229,8 @@ _f_isMarioOnGround:
 	ldr		r5, =_d_marioPositionY			//Load the address of Mario's Y position
 	ldrh	r1, [r5]						//Load Mario's Y position
 	sub		r1, #1							//Subtract 1 from Mario's Y position to check the cell below him
-	ldr		r6, =d_mapForeground			//Load the address of the foreground map
+	ldr		r2, =d_mapForeground			//Load the address of the foreground map
+	mov		r3, #1							//Only look cells in the screen
 	bl		f_getCellElement				//Find out which cell is below Mario
 	tst		r0, #0							//Is there empty space beneath Mario?
 	moveq	r0, #1							//If yes, move a 1 into r0
@@ -273,7 +298,7 @@ _f_killEnemy:
 //Input: Null
 //Output: 0 if Mario has more lives
 //Effect: Handle Mario hitting dying (from hitting an enemy), sets lose flag if no more lives
-_f_killMario:
+f_killMario:
 	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
 	
 	//r4 = life address
@@ -332,6 +357,7 @@ _f_hitBlock:
 	mov		r0, r4							//Move in Mario's/Block's X position
 	sub		r1, r5, #1						//Subtract 1 to get the Block's Y address (above Mario)
 	ldr		r2, =d_mapForeground			//Load the address of the foreground
+	mov		r3, #1							//Only look cells in the screen
 	bl		f_getCellElement				//Get the block's code
 	mov		r8, r0							//Store the block's code in a safe register
 	
@@ -368,6 +394,7 @@ _f_hitBlock:
 	mov		r0, r4							//Move in Mario's/Block's X position
 	sub		r1, r5, #1						//Subtract 1 to get the Block's Y address (above Mario)
 	ldr		r2, =d_mapMiddleground			//Load the address of the middle map
+	mov		r3, #1							//Only look cells in the screen
 	bl		f_getCellElement				//Get the ID of the object inside the block
 	mov		r8, r0							//Store the item's code in a safe register
 	
@@ -416,8 +443,6 @@ _f_hitBlock:
 _f_clearTempCoin:
 	push	{r4-r5, lr}						//Push all the general purpose registers along with fp and lr to the stack
 	
-
-	
 	//Load the tempCoin address
 	ldr		r4, =tempCoinX					//Address of the temporary coin's X value
 	ldr		r5, =tempCoinY					//Address of the temporary coin's Y value
@@ -436,6 +461,16 @@ _f_clearTempCoin:
 	
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
+
+//Input: Null
+//Output: Null
+//Effect: Collect any powerups that are in the cell Mario is standing in
+_f_collectItems:
+	push	{r4-r5, lr}						//Push all the general purpose registers along with fp and lr to the stack
+	
+	//Todo
+	
+	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
 //Mario's default map coordinates, used to place him at the start of the game
 _t_marioDefaultPosition:
