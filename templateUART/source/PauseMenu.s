@@ -24,7 +24,6 @@ f_pauseMenu:
 	ldr		r4, =d_isPaused			//Load the paused boolean register
 	mov		r5, #1					//r5 = 1
 	str		r5, [r4]				//isPaused = 1
-	
 	bl		_f_drawMenu				//Draw the menu
 	
 	mov		r4, #1					//By default, hover over "Start Game"
@@ -51,13 +50,14 @@ f_pauseMenu:
 		mov		r5, r0				//Move the output into r5
 		
 		checkStart:
-		tst		r5, r7				//Check if Start was pressed
+		tst		r5, r9				//Check if Start was pressed
 		//If Start wasn't pressed
 		movne	r10, #1				//If it wasn't, indicate Start button was released
 		bne		checkUp				//and then go to checkUp
 		//If Start was pressed
-		teqeq	r10, #0				//Check if r10 is set
-		bne		selectionLoopEnd	//If it is, instantly end the loop
+		tsteq	r10, #0				//Check if r10 is clear
+		mov		r4, #2				//If it's isn't, set the state to resume the game
+		bne		selectionLoopEnd	//If it isn't, instantly end the loop
 		
 		checkUp:
 		tst		r5, r7				//Check if joy-pad UP was pressed
