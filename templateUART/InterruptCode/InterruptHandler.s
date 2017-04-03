@@ -55,8 +55,8 @@ _EnableIRQ:
 	//a		Update timer value
 	ldr		r4, =0x20003004			//Load address of CLO
 	ldr		r5, [r4]				//Load CLO
-	ldr		r6, =5000000			//Load the number 5 million
-	add		r5, r6					//Add a delay of 5 million microseconds
+	ldr		r6, =30000000			//Load the number 30 million
+	add		r5, r6					//Add a delay of 30 million microseconds (30 seconds)
 	add		r4, #12					//Add 12 to get to timer compare 1
 	str		r5, [r4]				//Store the address
 	
@@ -73,16 +73,14 @@ _EnableIRQ:
 	str		r1, [r0]				//Store the value of r1 in r0
 	//d.	For cpsr_c register
 	//cpsr_c is not defined/equated anywhere. Gonna have to disable this code -SK
-	// mrs		r0, cpsr_c				//mrs r0,cpscr		Possible typo?
-	// bic		r0, #0x80				//bic r0, #0x80
-	// msr		cpsr_c, r0				//msr cpsr_c, r0
+	mrs			r0, cpscr			//mrs r0,cpscr
+	bic			r0, #0x80			//bic r0, #0x80
+	msr			cpsr_c, r0			//msr cpsr_c, r0
 	
 	pop		{r4-r10, pc}		//Pop register from the stack
 	
 _Doirq:
 	push	{r4-r10, lr}		//Push registers from the stack
-	
-	//IRQ interrupt code here
 	
 	// a. Test if timer1 did the interrupt
 		// i. Load the values stored in 0x3F00B204 to r1
@@ -96,7 +94,7 @@ _Doirq:
 		beq		e
 	// b. Check if the game was paused
 		// i. You should have a label in memory where you store in it if the game is paused or not
-		ldr		r4, =isPaused
+		ldr		r4, =d_isPaused
 		ldrb	r5, [r4]
 		cmp		r5, #1
 		// ii. If paused you go to e
@@ -105,8 +103,12 @@ _Doirq:
 //TODO		f_drawValuePack
 	// d. Enable CS timer Control
 		// i. Load the value stored in 0x3F003000
+		ldr		r4, =0x3F003000
 		// ii. Put 1 in bit 1 and the rest are zeroes
+		mov		r6, #2
+		str		r6, [r4]		//Not sure if this should be [r4] or [r5]
 	// e. Update time in C1
+		
 	e:
 	// f. Repeat (2)
 	// g. Then subs pc, lr, #4
