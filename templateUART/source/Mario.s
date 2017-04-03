@@ -417,7 +417,7 @@ _f_hitBlock:
 	//What item was it?
 	cmp		r8, #109						//Was it a super (jump) mushroom?
 	ble		doneHitBlock					//If it was, then we can just end the function
-	//Otherwise, it must be a coin, so we have to give it to Mario automatically next move interval
+	//Otherwise, it must be a coin, so we give it to Mario and remove it in the next interval
 	
 	//Set tempCoin
 	ldr		r8, =tempCoin					//Load the address of tempCoin
@@ -441,7 +441,7 @@ _f_hitBlock:
 //Output: Null
 //Effect: Gives Mario the temporary coin
 _f_clearTempCoin:
-	push	{r4-r5, lr}						//Push all the general purpose registers along with fp and lr to the stack
+	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
 	
 	//Load the tempCoin address
 	ldr		r4, =tempCoinX					//Address of the temporary coin's X value
@@ -466,9 +466,53 @@ _f_clearTempCoin:
 //Output: Null
 //Effect: Collect any powerups that are in the cell Mario is standing in
 _f_collectItems:
-	push	{r4-r5, lr}						//Push all the general purpose registers along with fp and lr to the stack
+	push	{r4-r10, lr}						//Push all the general purpose registers along with fp and lr to the stack
 	
-	//Todo
+	ldr		r6, =_d_marioPositionX			//Store the address of Mario's X position
+	ldrh	r4, [r6]						//Load Mario's X position
+	ldr		r6, =_d_marioPositionY			//Store the address of Mario's Y position
+	ldrh	r5, [r6]						//Load Mario's Y position
+
+	mov		r0, r4							//Move in Mario's X position
+	mov		r1, r5							//Move in Mario's Y position
+	ldr		r2, =d_mapMiddleground			//Load the address of the middle map
+	mov		r3, #1							//Only look cells in the screen
+	bl		f_getCellElement				//See what object is under Mario
+	mov		r8, r0							//Store the item's code in a safe register
+	
+	cmp		r8, #0							//Is there nothing under Mario?
+	beq		doneCollectItems				//If so, we're done
+	cmp		r8, #109						//Is there a super (jump) mushroom under Mario?
+	beq		superMushroom					//If so, handle it
+	cmp		r8, #110						//Is there a life (1-up) mushroom under Mario?
+	beq		lifeMushroom					//If so, handle it
+	//Otherwise, it must be a coin!
+	
+	//Coin
+	bl		f_addCoin						//Give Mario the coin
+	b		removeItem						//Remove the coin
+	
+	superMushroom:							//Super (jump) Mushroom
+	ldr		r6, =_d_jumpBoost				//Load the address of jumpBoost
+	mov		r7, #1							//Move in a 1
+	strb	r7, [r6]						//Set jumpBoost
+	b		removeItem						//Remove the super (jump) mushroom
+	
+	lifeMushroom:							//Life (1-up) Mushroom
+	ldr		r6, =d_lives					//Load the address of Mario's lives
+	ldr		r7, [r6]						//Load the number of lives
+	add		r7, #1							//Add an extra life
+	strb	r7, [r6]						//Store the new number of lives
+	b		removeItem						//Remove the life (1-up) mushroom
+
+	removeItem:								//Remove the item under Mario once it has been collected
+	mov		r0, r4							//Move in Mario's/Item's X position
+	mov		r1, r5							//Move in Mario's/Item's Y position
+	ldr		r2, =d_mapMiddleground			//Load the middleground's address
+	mov		r3, #0							//Set an empty cell
+	bl		d_setCellElement				//Remove the item
+	
+	doneCollectItems:
 	
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
