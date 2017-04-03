@@ -439,7 +439,7 @@ _f_hitBlock:
 	
 //Input: Null
 //Output: Null
-//Effect: Gives Mario the temporary coin
+//Effect: Clears the temporary coin
 _f_clearTempCoin:
 	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
 	
