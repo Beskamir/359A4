@@ -674,6 +674,7 @@ Return:
 		0 = something prevented from moving (cell had something in it)
 		1 = wasn't able to move, element there was enemy. **useful for Mario**
 		2 = was able to move without issues (cell was empty)
+		3 = cell contained mario and thus couldn't move
 Effect:
 	move or animate the element 
 */
@@ -728,7 +729,9 @@ f_moveElement:
 	
 	//set flage somewhere that mario died
 	cmp r0, #114
+	movge hasMoved_r, #3
 	bge _cellFull
+
 
 	//check that cell contains an enemy
 	cmp r0, #83 

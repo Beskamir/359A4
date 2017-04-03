@@ -136,6 +136,7 @@ _f_updateNPCsOnSpecifiedMap:
 					b _AIsearchLoop
 					//return to top of loop
 
+			//TODO (want feature): make items have animations and maybe movement 
 			_isItem:
 				//is item
 				cmp isAI_r, #110 //isAI_r > 110: branch _isStaticItem
@@ -196,6 +197,8 @@ _f_moveBasicLeftRight:
 
 	checkCellX_r 	.req r9 //stores x cell to move character too
 
+	hasMoved_r		.req r10 //stores what the output from moveElement was
+
 
 	mov cellIndexX_r, r0
 	mov cellIndexY_r, r1
@@ -241,7 +244,8 @@ _f_moveBasicLeftRight:
 					mov r2, #0 //vertical delta set to 0 since this is just left/right movement
 					mov r3, mapAddress_r
 					bl f_moveElement
-					cmp r0, #2
+					mov hasMoved_r, r0
+					cmp hasMoved_r, #2
 					bne _cellFull
 					b _animate
 
@@ -275,11 +279,15 @@ _f_moveBasicLeftRight:
 					mov r2, #0 //vertical delta set to 0 since this is just left/right movement
 					mov r3, mapAddress_r
 					bl f_moveElement
-					cmp r0, #2
+					mov hasMoved_r, r0
+					cmp hasMoved_r, #2
 					bne _cellFull
 					b _animate
 
 	_cellFull:
+		cmp hasMoved_r, #3
+		bleq f_killMario
+
 		ldr r0, =_d_cellXCheckOffset
 		mov r1, #1
 		str r1, [r0]

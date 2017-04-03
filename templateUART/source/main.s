@@ -27,8 +27,6 @@ main:
 	bl 		InitFrameBuffer //Enable Frame Buffer
 	bl		init_GPIO	//Enable the GPIO pins
 	
-	bl 		initGraphics //initialize needed arrays
-
 	bl _f_enableCache
 
 	//TestCode

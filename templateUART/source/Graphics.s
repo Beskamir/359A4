@@ -68,42 +68,10 @@ effect: draw an individual pixel
 */
 // .globl c_f_storePixel
 .extern c_f_storePixel
-.extern c_f_refreshScreen
-.extern c_f_displaceFrame
 
-// .section .init
-// .include "map.s"
-// .include "art.s" Not needed, everything's global
-// .globl 		UpdateScreen	//makes update screen visible to all
+
     
 .section .text
-/*
-input: null
-output: null
-effect: Init previous and current screen arrays in graphics display to be all 0s
-*/
-initGraphics:
-	push {lr}
-
-	// bl c_f_refreshScreen
-	ldr r0, =0x0		//black inital screen
-	bl f_colourScreen	//drawing over the entire screen is sort of inefficent
-	bl f_refreshScreen	//refresh the screen
-
-
-	pop {pc}
-
-/*
-input: null
-output: null
-effect: writes changes to framebuffer
-*/
-f_refreshScreen:
-	push {lr}
-
-	bl c_f_displaceFrame
-
-	pop {pc}
 
 /*
 input: 

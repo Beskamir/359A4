@@ -93,28 +93,28 @@ f_playingState:
 			ldr r0, =d_mapForeground
 			ldr r1, =d_cameraPosition
 			bl f_drawMap
-			
-			bl _f_updateHUD // draw HUD
-			bl f_refreshScreen	//refresh the screen
 
-			bl f_updateAIs
+			bl _f_updateHUD // draw HUD
+
 
 			//player input
 			
-			bl	Read_SNES		//Get input from the player
-			bl	f_playInput		//Handle input
-				
 			//check collisions
 			//update map
 			//update score/coins
+			bl	Read_SNES		//Get input from the player
+			bl	f_playInput		//Handle input
+			
 
-			//AI input
-			//check collisions
-			//update map
+			//updates AI positions.
+			//	includes collisions, movement, map updating, etc
+			bl f_updateAIs
+
 
 			//check end state
 			//loop or break
 
+			///Tester feature: scrolls through game world
 			ldr r0, =d_cameraPosition
 			ldr r4, [r0]
 			add r4, #1
@@ -122,8 +122,8 @@ f_playingState:
 
 			cmp r4, #288
 			blt _inGame
+			///\\Tester feature: scrolls through game world
 
-	// b PlayingLoop
 
 	pop {r4-r10, pc}
 
