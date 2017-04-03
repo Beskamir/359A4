@@ -459,7 +459,7 @@ _f_clearTempCoin:
 	bl		f_setCellElement				//Remove the coin
 	
 	//Clear tempCoin
-	ldr		r4, =tempCoin					//Load the address of tempCoin
+	ldr		r4, =_d_tempCoin				//Load the address of tempCoin
 	mov		r5, #0							//Move in a 0
 	strb	r5, [r4]						//Clear tempCoin
 	
