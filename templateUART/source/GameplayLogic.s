@@ -59,14 +59,14 @@ effect: main loop function in gameplay logic.
 f_playingState:
 	push {r4-r10, lr}
 
-	mov r4, #0
-
-	bl _f_newGame //reset all the stored data to the initial states
+	// mov r4, #0
 
 	_gameMode: 
 
+		bl _f_newGame //reset all the stored data to the initial states
+
 		ldr r0, =d_quiteGame
-		mov r1, #1
+		mov r1, #2
 		str r1, [r0]
 
 		//only reason for the above label is to execute following 
@@ -81,7 +81,7 @@ f_playingState:
 			ldr r0, =0x0
 			bl f_colourScreen
 			bl f_refreshScreen	//refresh the screen
-			
+
 			
 			ldr r0, =0x64FE
 			bl f_colourScreen
@@ -125,30 +125,34 @@ f_playingState:
 			//update score/coins
 			// bl	Read_SNES		//Get input from the player
 			bl	f_playInput		//Handle input
-			
+			cmp r0, #1
+			beq _gameMode
+			cmp r0, #0
+			beq _gameModeEnd
 
 			//updates AI positions.
 			//	includes collisions, movement, map updating, etc
 			bl f_updateAIs
 
 
-			//check end state
-			//loop or break
 
 			///Tester feature: scrolls through game world
 			// ldr r0, =d_cameraPosition
 			// ldr r4, [r0]
 			// add r4, #1
 			// str r4, [r0]
-
-
 			// cmp r4, #288
+
+			//check end state
+			//loop or break
 			ldr r0, =d_quiteGame
 			ldr r0, [r0]
-			cmp r0, #0
-			bne _inGame
-			///\\Tester feature: scrolls through game world
-
+			cmp r0, #2
+			beq _inGame
+			// cmp r0, #2
+			// beq _inGame
+			
+	_gameModeEnd:
 
 	pop {r4-r10, pc}
 
@@ -318,7 +322,6 @@ _f_newGame:
 	ldr r0, =_d_gameScore
 	str r4, [r0]
 
-	
 	// bl	f_resetMarioPosition	//Reset Mario's position
 
 	pop {r4-r7, pc}

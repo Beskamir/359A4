@@ -22,7 +22,7 @@ main:
 	//Idea for initing cores, move this code after they've been activated. Also test using print console debugging
     mov		sp, #0x8000 // Initializing the stack pointer
 	bl		EnableJTAG 	// Enable JTAG
-	bl		InitUART 	//This is important to be  able to use UART
+	// bl		InitUART 	//This is important to be  able to use UART
 
 	bl 		InitFrameBuffer //Enable Frame Buffer
 	bl		init_GPIO	//Enable the GPIO pins
