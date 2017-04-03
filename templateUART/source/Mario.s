@@ -74,14 +74,18 @@ f_moveMario:
 	tst		r0, #1							//Is the answer yes?
 	bne		doneMovingMario					//If not, don't move Mario, just skip to the end
 	
+	ldr		r8, =tempCoin					//Load the address of tempCoin
+	ldrb	r9, [r8]						//Load tempCoin
+	cmp		r9, #1							//Is tempCoin set?
+	bleq	_f_clearTempCoin				//If so, give Mario the tempCoin
+	
 	//r6 = X position
 	//r7 = Y position
 	ldr		r10, =_d_marioPositionX			//Store the address of Mario's X position
-	ldrh	r6, [r10]						//Load Mario's X address
+	ldrh	r6, [r10]						//Load Mario's X position
 	ldr		r10, =_d_marioPositionY			//Store the address of Mario's Y position
-	ldrh	r7, [r10]						//Load Mario's Y address
+	ldrh	r7, [r10]						//Load Mario's Y position
 	
-
 	
 	//Y movement
 	//r8 = verticalState address
@@ -177,8 +181,8 @@ f_moveMario:
 	
 
 	
-	
 	doneYMovement:
+	
 	//X movement
 	//Check if Mario should be moved horizontally
 	cmp		r4, #0							//Compare X offset to 0
@@ -299,7 +303,6 @@ _f_killMario:
 	
 	endKillMario:
 	
-	
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 
 	
@@ -309,8 +312,128 @@ _f_killMario:
 //Effect: Handle Mario hitting a block above his head by jumping
 _f_hitBlock:
 	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
-		//Special case: breaking a block
-		//Special case: hitting a value block
+	
+	//Set Mario's vertical state to 0
+	ldr		r4, =verticalState				//Load the address of Mario's vertical state
+	mov		r5, #0							//Move in a 0
+	strb	r5, [r4]						//Store 0 as Mario's new vertical state
+	
+	//r4 = X position
+	//r5 = Y position
+	//r6 = X position address
+	//r7 = Y position address
+	ldr		r10, =_d_marioPositionX			//Store the address of Mario's X position
+	ldrh	r4, [r6]						//Load Mario's X position
+	ldr		r10, =_d_marioPositionY			//Store the address of Mario's Y position
+	ldrh	r5, [r7]						//Load Mario's Y position
+	
+	//Get the block's code
+	//r8 = Block's Code
+	mov		r0, r4							//Move in Mario's/Block's X position
+	sub		r1, r5, #1						//Subtract 1 to get the Block's Y address (above Mario)
+	ldr		r2, =d_mapForeground			//Load the address of the foreground
+	bl		f_getCellElement				//Get the block's code
+	mov		r8, r0							//Store the block's code in a safe register
+	
+	//What block do we have?
+	cmp		r8, #98							//Compare the block's code to 98
+	ble		breakable						//If it's less than or equal to 98, it's breakable
+	cmp		r8, #101						//Compare the block's code to 101
+	ble		value							//If 98 < block code <= 101 then it's a value/"?" block
+	b		doneHitBlock					//Otherwise it's just a solid block, so we don't do anything to it
+
+	breakable:
+	mov		r0, r4							//Move in Mario's/Block's X position
+	sub		r1, r5, #1						//Subtract 1 to get the Block's Y address (above Mario)
+	ldr		r2, =d_mapForeground			//Load the address of the foreground
+	mov		r3, #0							//Code for an empty cell
+	bl		f_setCellElement				//Replace the breakable block with an empty cell		
+	
+	mov		r0, r4							//Move in Mario's X position
+	lsl		r0, #16							//Move it to the top half of the register
+	orr		r0, r5							//Move Mario's Y position into the bottom half of r0
+	mov		r1, #0							//Don't move Mario horizontally
+	mov		r2, #1							//Move Mario one cell up
+	ldr		r2, =d_mapForeground			//Load the address of the foreground
+	bl		f_moveElement					//Replace the breakable block with an empty cell
+
+	//Update Mario's position in memory registers
+	sub		r5, #1							//Subtract 1 from Mario's Y position to move him up one cell
+	strh	r5, r7							//Store Mario's new Y position
+	b		doneHitBlock
+		
+	value:
+	//Get the object
+	//r8 = object ID
+	mov		r0, r4							//Move in Mario's/Block's X position
+	sub		r1, r5, #1						//Subtract 1 to get the Block's Y address (above Mario)
+	ldr		r2, =d_mapMiddleground			//Load the address of the middle map
+	bl		f_getCellElement				//Get the ID of the object inside the block
+	mov		r8, r0							//Store the item's code in a safe register
+	
+	//Move the item above the block
+	mov		r0, r4							//Move in Mario's/Block's X position
+	lsl		r0, #16							//Move it to the top half of the register
+	sub		r1, r5, #1						//Subtract 1 from Mario's Y position to get the position of the block
+	orr		r0, r1							//Move the Block's Y position into the bottom half of r0
+	mov		r1, #0							//Don't move the item horizontally
+	mov		r2, #1							//Move the item one cell up
+	ldr		r2, =d_mapMiddleground			//Load the address of the middleground
+	
+	//Turn the value block into an empty block
+	mov		r0, r4							//Move in Mario's/Block's X position
+	sub		r1, r5, #1						//Subtract 1 to get the Block's Y address (above Mario)
+	ldr		r2, =d_mapForeground			//Load the address of the foreground
+	mov		r3, #102						//Code for an empty block
+	bl		f_setCellElement				//Replace the value block with an empty block
+	
+	//What item was it?
+	cmp		r8, #109						//Was it a super (jump) mushroom?
+	ble		doneHitBlock					//If it was, then we can just end the function
+	//Otherwise, it must be a coin, so we have to give it to Mario automatically next move interval
+	
+	//Set tempCoin
+	ldr		r8, =tempCoin					//Load the address of tempCoin
+	mov		r9, #1							//Move in a 1
+	strb	r9, [r8]						//Set tempCoin
+	
+	//Store the tempCoin address
+	ldr		r8, =tempCoinX					//Address of the temporary coin's X value
+	ldr		r9, =tempCoinY					//Address of the temporary coin's Y value
+	strh	r4, [r8]						//Store Mario's X value as the temporary coin's X value
+	sub		r10, r5, #2						//Temp coin Y value = 2 above Mario = Mario's Y value - 2
+	strh	r10, [r9]						//Store the temporary coin's Y value
+	
+	bl		f_addCoin						//Give Mario the coin value and bonus score
+	
+	doneHitBlock:
+	
+	pop		{r4-r10, pc}					//Return all the previous registers and return
+	
+//Input: Null
+//Output: Null
+//Effect: Gives Mario the temporary coin
+_f_clearTempCoin:
+	push	{r4-r5, lr}						//Push all the general purpose registers along with fp and lr to the stack
+	
+
+	
+	//Load the tempCoin address
+	ldr		r4, =tempCoinX					//Address of the temporary coin's X value
+	ldr		r5, =tempCoinY					//Address of the temporary coin's Y value
+
+	//Remove the coin
+	ldrh	r0, [r4]						//Load the tempCoin's X address
+	ldrh	r1, [r5]						//Load the tempCoin's Y address
+	ldr		r2, =d_mapMiddleground			//Load the address of the middleground
+	mov		r3, #0							//Replace coin with an empty cell
+	bl		f_setCellElement				//Remove the coin
+	
+	//Clear tempCoin
+	ldr		r4, =tempCoin					//Load the address of tempCoin
+	mov		r5, #0							//Move in a 0
+	strb	r5, [r4]						//Clear tempCoin
+	
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
 	
@@ -337,3 +460,8 @@ _d_marioPositionY:			.hword 21
 
 //Does Mario have a jump boost powerup?
 _d_jumpBoost:				.byte 0
+
+//If Mario hits a coin block, we need to remove the coin and give it to him in the next interval
+_d_tempCoin:				.byte 0			//Is there a temp coin to remove?
+_d_tempCoinX:				.hword 0		//Temp coin's X position
+_d_tempCoinY:				.hword 0		//Tempo coin's Y position
