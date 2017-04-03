@@ -31,7 +31,7 @@ f_randomlyDisplayValuePack:
 		mov r1, randomNumberY_r
 		ldr r2, =d_mapForeground
 		mov r3, #0
-		f_getCellElement
+		bl f_getCellElement
 		cmp r0, #0
 		bne ensureValuePackIsAccessable
 
@@ -39,7 +39,7 @@ f_randomlyDisplayValuePack:
 		mov r1, randomNumberY_r
 		ldr r2, =d_mapMiddleground
 		mov r3, #0
-		f_getCellElement
+		bl f_getCellElement
 		cmp r0, #0
 		bne ensureValuePackIsAccessable
 
@@ -48,7 +48,7 @@ f_randomlyDisplayValuePack:
 	mov r1, randomNumberY_r
 	ldr r2, =d_mapMiddleground
 	mov r3, #110
-	f_setCellElement
+	bl f_setCellElement
 
 	.unreq randomNumberX_r
 	.unreq randomNumberY_r
