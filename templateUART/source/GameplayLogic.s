@@ -64,6 +64,11 @@ f_playingState:
 	bl _f_newGame //reset all the stored data to the initial states
 
 	_gameMode: 
+
+		ldr r0, =d_quiteGame
+		mov r1, #1
+		str r1, [r0]
+
 		//only reason for the above label is to execute following 
 		//line when user unpauses the game
 		// bl f_clearAllCompareMaps
@@ -73,6 +78,11 @@ f_playingState:
 
 		_inGame: //loop here every frame
 			// bl f_clearAllCompareMaps
+			ldr r0, =0x0
+			bl f_colourScreen
+			bl f_refreshScreen	//refresh the screen
+			
+			
 			ldr r0, =0x64FE
 			bl f_colourScreen
 
@@ -113,7 +123,7 @@ f_playingState:
 			//check collisions
 			//update map
 			//update score/coins
-			bl	Read_SNES		//Get input from the player
+			// bl	Read_SNES		//Get input from the player
 			bl	f_playInput		//Handle input
 			
 
@@ -126,13 +136,17 @@ f_playingState:
 			//loop or break
 
 			///Tester feature: scrolls through game world
-			ldr r0, =d_cameraPosition
-			ldr r4, [r0]
-			add r4, #1
-			str r4, [r0]
+			// ldr r0, =d_cameraPosition
+			// ldr r4, [r0]
+			// add r4, #1
+			// str r4, [r0]
 
-			cmp r4, #288
-			blt _inGame
+
+			// cmp r4, #288
+			ldr r0, =d_quiteGame
+			ldr r0, [r0]
+			cmp r0, #0
+			bne _inGame
 			///\\Tester feature: scrolls through game world
 
 
@@ -226,34 +240,34 @@ _f_updateHUD:
 
 	pop {r4-r10, pc}
 
-//Input: null
-//Output: null
-//Effect: store hud state variables in backups
-_f_storeHUDstates:
-	push {r4-r10, lr}
+// //Input: null
+// //Output: null
+// //Effect: store hud state variables in backups
+// _f_storeHUDstates:
+// 	push {r4-r10, lr}
 	
-	//display score below it
-	ldr r0, =_d_gameScore
-	ldr r1, [r0]
-	ldr r2, =_d_scorePast
-	str r1, [r2]
+// 	//display score below it
+// 	ldr r0, =_d_gameScore
+// 	ldr r1, [r0]
+// 	ldr r2, =_d_scorePast
+// 	str r1, [r2]
 
 
-	//display coins beside it
-	ldr r0, =_d_coins
-	ldrb r1, [r0]
-	ldr r2, =_d_coinPast
-	strb r1, [r2]
+// 	//display coins beside it
+// 	ldr r0, =_d_coins
+// 	ldrb r1, [r0]
+// 	ldr r2, =_d_coinPast
+// 	strb r1, [r2]
 	
 
-	//display lives beside it
-	ldr r0, =d_lives
-	ldrb r1, [r0]
-	ldr r2, =_d_livesPast
-	strb r1, [r2]
+// 	//display lives beside it
+// 	ldr r0, =d_lives
+// 	ldrb r1, [r0]
+// 	ldr r2, =_d_livesPast
+// 	strb r1, [r2]
 
 
-	pop {r4-r10, pc}
+// 	pop {r4-r10, pc}
 /*
 Input: null
 Return: null
@@ -380,14 +394,17 @@ d_win:
 _d_gameScore:
 	.word 0
 
-.align 4
-_d_scorePast:
-	.word -1
+// .align 4
+// _d_scorePast:
+// 	.word -1
 
-.align 4
-_d_coinPast:
-	.byte -1
+// .align 4
+// _d_coinPast:
+// 	.byte -1
 
-.align 4
-_d_livesPast:
-	.byte -1
+// .align 4
+// _d_livesPast:
+// 	.byte -1
+
+d_quiteGame:
+	.byte 0

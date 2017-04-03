@@ -68,8 +68,7 @@ effect: draw an individual pixel
 */
 // .globl c_f_storePixel
 .extern c_f_storePixel
-.extern c_f_refreshScreen
-.extern c_f_displaceFrame
+.extern c_f_displayFrame
 
 // .section .init
 // .include "map.s"
@@ -101,7 +100,7 @@ effect: writes changes to framebuffer
 f_refreshScreen:
 	push {lr}
 
-	bl c_f_displaceFrame
+	bl c_f_displayFrame
 
 	pop {pc}
 /*

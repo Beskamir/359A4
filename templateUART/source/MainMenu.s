@@ -112,6 +112,7 @@ _f_drawSelection:
 		bl f_drawElement
 
 	_drawSelectionEnd:
+	bl f_refreshScreen
 	
 	pop		{pc}	//Return to caller popping pc
 

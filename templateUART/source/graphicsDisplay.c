@@ -6,23 +6,11 @@
 extern unsigned short * FrameBufferPointer;
 
 int screenCurrent[ screenArraySize ];
-int screenOld[ screenArraySize ];
+// int screenOld[ screenArraySize ];
 
-void c_f_refreshScreen(){
-	int screenCurrent[ screenArraySize ];
-	int screenOld[ screenArraySize ];
-	int i = 0;
-
-	// for (int i = 0; i < screenArraySize; ++i)
-	while (i<screenArraySize)
-	{
-		screenCurrent[i] = 0;
-		screenOld[i] = 0;
-		i++;
-	}
-}
-// 
-// 
+/*
+	writes pixels to a very large array
+*/
 void c_f_storePixel(int x_int, int y_int, int colour_int){
 	//calculate the offset at which to write to the frame buffer
 	/*
@@ -48,21 +36,23 @@ void c_f_storePixel(int x_int, int y_int, int colour_int){
     screenCurrent[offest_int] = colour_int;
 };
 
-
-void c_f_displaceFrame(){
+/*
+	writes pixels to frame buffer
+*/
+void c_f_displayFrame(){
 	int colourNew;
 	int colourOld;
 	int i = 0;
 	// for (int i = 0; i < screenArraySize; ++i)
 	while (i<screenArraySize)
 	{
-		colourNew = screenCurrent[i];
-		colourOld = screenOld[i];
-		if (colourNew!=colourOld)
-		{
-    		FrameBufferPointer[i] = colourNew;
-    		screenOld[i] = colourNew;
-		}
+		// colourNew = screenCurrent[i];
+		// colourOld = screenOld[i];
+		// if (colourNew!=colourOld)
+		// {
+		FrameBufferPointer[i] =  screenCurrent[i];
+  //   		screenOld[i] = colourNew;
+		// }
 		i++;
 	}
 }
