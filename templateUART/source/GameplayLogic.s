@@ -24,6 +24,7 @@ effect: main loop function in gameplay logic.
 .globl d_lives
 .globl d_lose
 .globl d_win
+.globl d_quitGame
 
 .section    .init
     
