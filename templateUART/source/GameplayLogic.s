@@ -322,7 +322,7 @@ _f_newGame:
 	ldr r0, =_d_gameScore
 	str r4, [r0]
 
-	// bl	f_resetMarioPosition	//Reset Mario's position
+	bl	f_resetMarioPosition	//Reset Mario's position
 
 	pop {r4-r7, pc}
 

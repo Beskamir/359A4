@@ -20,7 +20,7 @@ f_resetMarioPosition:
 	ldr		r5, =_d_marioPositionY			//Store the address of Mario's current Y posiion
 	ldrh	r0, [r4]						//Load Mario's current X position
 	ldrh	r1, [r5]						//Load Mario's current Y position
-	mov		r2, =d_mapForeground 			//Move in the address of the foreground
+	ldr		r2, =d_mapForeground 			//Move in the address of the foreground
 	mov		r3, #0							//Load the code for an empty cell
 	bl		f_setCellElement				//Replace Mario with an empty cell
 	
@@ -39,7 +39,7 @@ f_resetMarioPosition:
 	//Add Mario to his default location on the map
 	mov		r0, r7							//Move in Mario's default X position
 	mov		r1, r8							//Move in Mario's default Y position
-	mov		r2, =d_mapForeground 			//Move in the address of the foreground
+	ldr		r2, =d_mapForeground 			//Move in the address of the foreground
 	mov		r3, #0							//Load the code for an empty cell
 	bl		f_setCellElement				//Replace Mario with an empty cell
 	
