@@ -173,28 +173,26 @@ f_resetCompareMap:
 
 	mov mapToReset_r, r0
 
-	_compareMapLoop:
+	_resetCompareMapLoop:
 		//get each cell address from the array that keeps track of changed cells
 		mov r0, counterX_r
 		add r0, camera_r
 		mov r1, counterY_r
 		ldr r2, =d_cellsChangedAll
-		mov r2, [r2]
+		ldr r2, [r2]
 		mov r3, #1
 		bl _f_getCellMemAddress
 		mov  r2, #0 	//prepare r2
 		strb r2, [r0] 	//store r2 in cells changed array
 
-		_sameElement:
-
 		add counterX_r, #1	//increment x cell count by 1
 		cmp counterX_r, #32	//x screen size is 32 cells 
-		blt _compareMapLoop
+		blt _resetCompareMapLoop
 
 	mov counterX_r, #0 //reset x loop counter to 0
 	add counterY_r, #1 //increment y cell count by 1
 	cmp counterY_r, #24 //y screen size is 24 cells
-	blt _compareMapLoop
+	blt _resetCompareMapLoop
 
 	.unreq counterX_r 
 	.unreq counterY_r 
@@ -309,7 +307,7 @@ _f_compareMapElements:
 				add r0, camera_r
 				mov r1, counterY_r
 				ldr r2, =d_cellsChangedAll
-				mov r2, [r2]
+				ldr r2, [r2]
 				mov r3, #1
 				bl _f_getCellMemAddress
 				mov  r2, #1		//prepare r2
@@ -364,17 +362,17 @@ f_drawBackground:
 	mov ySize_r, #32
 
 	// _drawMapLoopY:
-	_drawMapLoop:
+	_drawBackgroundLoop:
 		// _drawMapLoopX:
 			mov r0, counterX_r
 			add r0, camera_r
 			mov r1, counterY_r
 			ldr r2, =d_cellsChangedAll
-			mov r2, [r2]
+			ldr r2, [r2]
 			mov r3, #1
 			bl f_getCellElement
 			cmp r0, #1
-			bne _skipDrawing	
+			bne _skipBackgroundDrawing	
 				//set up rectangle for drawing a background cell
 				ldr r10, =d_rectangle	
 				stmia r10, {r7-r9}	//store in order of x end, y end, colour 
@@ -387,15 +385,15 @@ f_drawBackground:
 				mov r3, #0	//indicate that a rectangle of constant colour is being drawn
 				bl f_drawElement
 
-			_skipDrawing:
+			_skipBackgroundDrawing:
 			add counterX_r, #1	//increment x cell count by 1
 			cmp counterX_r, #32	//x screen size is 32 cells 
-			blt _drawMapLoop
+			blt _drawBackgroundLoop
 
 		mov counterX_r, #0 //reset x loop counter to 0
 		add counterY_r, #1 //increment y cell count by 1
 		cmp counterY_r, #24 //y screen size is 24 cells
-		blt _drawMapLoop
+		blt _drawBackgroundLoop
 
 	//only need it for the above stuff, so unreq everything that was used in this subroutine
 	.unreq counterX_r
@@ -439,7 +437,7 @@ f_drawMap:
 			add r0, camera_r
 			mov r1, counterY_r
 			ldr r2, =d_cellsChangedAll
-			mov r2, [r2]
+			ldr r2, [r2]
 			mov r3, #1
 			bl f_getCellElement
 			cmp r0, #1
