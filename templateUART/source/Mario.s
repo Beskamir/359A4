@@ -343,7 +343,7 @@ _f_hitBlock:
 	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
 	
 	//Set Mario's vertical state to 0
-	ldr		r4, =verticalState				//Load the address of Mario's vertical state
+	ldr		r4, =_d_verticalState			//Load the address of Mario's vertical state
 	mov		r5, #0							//Move in a 0
 	strb	r5, [r4]						//Store 0 as Mario's new vertical state
 	
@@ -424,7 +424,7 @@ _f_hitBlock:
 	//Otherwise, it must be a coin, so we give it to Mario and remove it in the next interval
 	
 	//Set tempCoin
-	ldr		r8, =tempCoin					//Load the address of tempCoin
+	ldr		r8, =_d_tempCoin				//Load the address of tempCoin
 	mov		r9, #1							//Move in a 1
 	strb	r9, [r8]						//Set tempCoin
 	
@@ -448,8 +448,8 @@ _f_clearTempCoin:
 	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
 	
 	//Load the tempCoin address
-	ldr		r4, =tempCoinX					//Address of the temporary coin's X value
-	ldr		r5, =tempCoinY					//Address of the temporary coin's Y value
+	ldr		r4, =_d_tempCoinX				//Address of the temporary coin's X value
+	ldr		r5, =_d_tempCoinY				//Address of the temporary coin's Y value
 
 	//Remove the coin
 	ldrh	r0, [r4]						//Load the tempCoin's X address
