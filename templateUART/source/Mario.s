@@ -197,7 +197,7 @@ f_moveMario:
 	lsl		r0, r6, #16						//Move X position to top half of r0
 	orr		r0, r7							//Add Y position to bottom half of r0
 	mov		r1, r4							//Move Mario horizontally
-	mov		r2, #-1							//Don't move Mario vertically
+	mov		r2, #0							//Don't move Mario vertically
 	ldr		r3, =d_mapForeground			//Mario is in the foreground
 	bl		f_moveElement					//Move Mario
 	
@@ -528,9 +528,9 @@ _f_didMarioWin:
 	push	{r4-r10, lr}						//Push all the general purpose registers along with fp and lr to the stack
 
 	ldr		r10, =_d_marioPositionX			//Store the address of Mario's X position
-	ldrh	r4, [r6]						//Load Mario's X position
+	ldrh	r4, [r10]						//Load Mario's X position
 	ldr		r10, =_d_marioPositionY			//Store the address of Mario's Y position
-	ldrh	r5, [r7]						//Load Mario's Y position
+	ldrh	r5, [r10]						//Load Mario's Y position
 	
 	//Get the block's code
 	//r8 = Block's Code
@@ -557,30 +557,43 @@ _f_didMarioWin:
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
 //Mario's default map coordinates, used to place him at the start of the game
+.align 4
 _t_marioDefaultPosition:
+.align 4
 _t_marioDefaultPositionX:	.hword 2
+.align 4
 _t_marioDefaultPositionY:	.hword 21
 
+.align 4
 //Minimum number of clock ticks between movements
-_t_marioMoveDelay:			.byte 1			//Change this to change how often Mario moves
+_t_marioMoveDelay:			.byte 0			//Change this to change how often Mario moves
 	
 .section					.data
 
+.align 4
 //Jump/Fall state register, stores whether Mario
 _d_verticalState:			.byte 0
 
+.align 4
 //Last tick in which Mario moved
 _d_lastMoveTick:			.word 0
 
+.align 4
 //Mario's coordinates in the map
 _d_marioPosition:
+.align 4
 _d_marioPositionX:			.hword 2
+.align 4
 _d_marioPositionY:			.hword 21
 
+.align 4
 //Does Mario have a jump boost powerup?
 _d_jumpBoost:				.byte 0
 
+.align 4
 //If Mario hits a coin block, we need to remove the coin and give it to him in the next interval
 _d_tempCoin:				.byte 0			//Is there a temp coin to remove?
+.align 4
 _d_tempCoinX:				.hword 0		//Temp coin's X position
+.align 4
 _d_tempCoinY:				.hword 0		//Tempo coin's Y position
