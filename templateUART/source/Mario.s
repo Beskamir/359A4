@@ -70,11 +70,11 @@ f_moveMario:
 	mov		r4, r0							//Save the X offset in a safe register
 	mov		r5, r1							//Save the Y instruction in a safe register
 	
-	bl		shouldMarioMove					//Should we be moving Mario right now?
+	bl		_f_shouldMarioMove				//Should we be moving Mario right now?
 	tst		r0, #1							//Is the answer yes?
 	bne		doneMovingMario					//If not, don't move Mario, just skip to the end
 	
-	ldr		r8, =tempCoin					//Load the address of tempCoin
+	ldr		r8, =_d_tempCoin				//Load the address of tempCoin
 	ldrb	r9, [r8]						//Load tempCoin
 	cmp		r9, #1							//Is tempCoin set?
 	bleq	_f_clearTempCoin				//If so, remove the tempCoin
@@ -90,7 +90,7 @@ f_moveMario:
 	//Y movement
 	//r8 = verticalState address
 	//r9 = vertical state
-	ldr		r8, =verticalState				//Load the address of the vertical state
+	ldr		r8, =_d_verticalState			//Load the address of the vertical state
 	ldrb	r9, [r8]						//Load the value of the vertical state
 	cmp		r9, #0							//Compare the vertical state to 0
 	bgt		jumping							//If the value is positive, Mario is jumping, so no need to worry about falling
@@ -134,7 +134,7 @@ f_moveMario:
 		cmp		r9, #0						//Compare the loop counter to 0
 		bgt		FallMarioTop				//If r9 is still greater than 0, we need to move Mario down again
 	//Move Mario in data register
-	doneYMap:
+	doneFallMap:
 	ldr		r10, =_d_marioPositionY			//Load the address of Mario's Y position
 	strh	r7, [r10]						//Store Mario's new Y position
 	b		doneYMovement					//We're done moving Mario vertically
@@ -142,7 +142,7 @@ f_moveMario:
 	//Jumping
 	startJump:
 	//Does Mario have the jump boost powerup?
-	ldr		r10, =jumpBoost					//Load the address of jumpBoost
+	ldr		r10, =_d_jumpBoost				//Load the address of jumpBoost
 	ldrb	r0, [r10]						//Load the value of jumpBoost
 	tst		r0, #1							//Is jumpBoost activated?
 	moveq	r9, #4							//If so, load the boosted jump value as the current jump speed
@@ -212,7 +212,7 @@ f_moveMario:
 	//Otherwise, move was successful
 	
 	//Since move was successful, move Mario in memory registers
-	ldr		r10, =_d_MarioPositionX			//Load the address of Mario's X position
+	ldr		r10, =_d_marioPositionX			//Load the address of Mario's X position
 	add		r6, r4							//Add the offset to Mario's X position
 	strh	r6, [r10]						//Store Mario's new position
 	
@@ -284,7 +284,7 @@ _f_killEnemy:
 	add		r1, #1							//Add 1 to get the enemy's Y position below Mario
 	ldr		r2, =d_mapForeground			//Load the foreground's address
 	mov		r3, #0							//Set an empty cell
-	bl		d_setCellElement				//Set the cell under Mario (the enemy) to a blank
+	bl		f_setCellElement				//Set the cell under Mario (the enemy) to a blank
 	
 	//Move Mario
 	ldr		r0, [r4]						//Load Mario's X position
@@ -294,7 +294,7 @@ _f_killEnemy:
 	mov		r1, #0							//Don't move Mario horizontally
 	mov		r2, #-1							//Move Mario down one cell
 	ldr		r3, =d_mapForeground			//Load the foreground's address
-	bl		d_moveElement					//Move Mario
+	bl		f_moveElement					//Move Mario
 	
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
@@ -429,8 +429,8 @@ _f_hitBlock:
 	strb	r9, [r8]						//Set tempCoin
 	
 	//Store the tempCoin address
-	ldr		r8, =tempCoinX					//Address of the temporary coin's X value
-	ldr		r9, =tempCoinY					//Address of the temporary coin's Y value
+	ldr		r8, =_d_tempCoinX				//Address of the temporary coin's X value
+	ldr		r9, =_d_tempCoinY				//Address of the temporary coin's Y value
 	strh	r4, [r8]						//Store Mario's X value as the temporary coin's X value
 	sub		r10, r5, #2						//Temp coin Y value = 2 above Mario = Mario's Y value - 2
 	strh	r10, [r9]						//Store the temporary coin's Y value
@@ -514,7 +514,7 @@ _f_collectItems:
 	mov		r1, r5							//Move in Mario's/Item's Y position
 	ldr		r2, =d_mapMiddleground			//Load the middleground's address
 	mov		r3, #0							//Set an empty cell
-	bl		d_setCellElement				//Remove the item
+	bl		f_setCellElement				//Remove the item
 	
 	doneCollectItems:
 	
