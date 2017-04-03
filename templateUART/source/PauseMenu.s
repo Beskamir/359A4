@@ -8,8 +8,9 @@
 .section	.text
 
 //input: null
-//return: r0 - 0 if user wants to quit, 1 if user wants to restart the game, 2 if user wants to close the menu and resume the game
-//effect: Runs the menu
+//return: null
+//effect: Runs the menu. 
+//		if quit game chosen then set quiteGame
 f_pauseMenu:
 	//r4 = Menu state
 	//r5 = SNES output
@@ -83,7 +84,9 @@ f_pauseMenu:
 		bne		SLtop				//If A hasn't been pressed, move back into the loop
 	
 	selectionLoopEnd:				//Branched to if Start is pressed
-	mov		r0, r4					//Return the menu state
+	// mov		r0, r4					//Return the menu state
+	ldr 	r1, =d_quitGame
+	ldr 	r4, [r1]
 	ldr		r4, =d_isPaused			//Load the paused boolean register
 	mov		r5, #0					//r5 = 0
 	str		r5, [r4]				//isPaused = 0

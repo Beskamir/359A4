@@ -65,7 +65,7 @@ f_playingState:
 
 		bl _f_newGame //reset all the stored data to the initial states
 
-		ldr r0, =d_quiteGame
+		ldr r0, =d_quitGame
 		mov r1, #2
 		str r1, [r0]
 
@@ -125,6 +125,8 @@ f_playingState:
 			//update score/coins
 			// bl	Read_SNES		//Get input from the player
 			bl	f_playInput		//Handle input
+			ldr r0, =d_quitGame
+			ldr r0, [r0]
 			cmp r0, #1
 			beq _gameMode
 			cmp r0, #0
@@ -145,7 +147,7 @@ f_playingState:
 
 			//check end state
 			//loop or break
-			ldr r0, =d_quiteGame
+			ldr r0, =d_quitGame
 			ldr r0, [r0]
 			cmp r0, #2
 			beq _inGame
@@ -409,5 +411,5 @@ _d_gameScore:
 // _d_livesPast:
 // 	.byte -1
 
-d_quiteGame:
+d_quitGame:
 	.byte 0
