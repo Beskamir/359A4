@@ -97,6 +97,7 @@ Effect:
 .globl f_resetCompareMap
 .globl f_compareMaps
 .globl f_drawBackground
+.globl f_clearAllCompareMaps
 
 /*
 **single int**
@@ -179,7 +180,7 @@ f_resetCompareMap:
 		add r0, camera_r
 		mov r1, counterY_r
 		ldr r2, =d_cellsChangedAll
-		ldr r2, [r2]
+		// ldr r2, [r2]
 		mov r3, #1
 		bl _f_getCellMemAddress
 		mov  r2, #0 	//prepare r2
@@ -293,6 +294,7 @@ _f_compareMapElements:
 			cmp r0, newElement_r
 			beq _sameElement
 
+			breakPoint1:
 				//get each cell address from previous screen
 				mov r0, counterX_r
 				add r0, camera_r
@@ -307,7 +309,7 @@ _f_compareMapElements:
 				add r0, camera_r
 				mov r1, counterY_r
 				ldr r2, =d_cellsChangedAll
-				ldr r2, [r2]
+				// ldr r2, [r2]
 				mov r3, #1
 				bl _f_getCellMemAddress
 				mov  r2, #1		//prepare r2
@@ -368,7 +370,7 @@ f_drawBackground:
 			add r0, camera_r
 			mov r1, counterY_r
 			ldr r2, =d_cellsChangedAll
-			ldr r2, [r2]
+			// ldr r2, [r2]
 			mov r3, #1
 			bl f_getCellElement
 			cmp r0, #1
@@ -437,7 +439,7 @@ f_drawMap:
 			add r0, camera_r
 			mov r1, counterY_r
 			ldr r2, =d_cellsChangedAll
-			ldr r2, [r2]
+			// ldr r2, [r2]
 			mov r3, #1
 			bl f_getCellElement
 			cmp r0, #1

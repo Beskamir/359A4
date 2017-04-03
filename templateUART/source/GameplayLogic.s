@@ -67,20 +67,28 @@ f_playingState:
 		//only reason for the above label is to execute following 
 		//line when user unpauses the game
 		bl f_clearAllCompareMaps
+		ldr r0, =0x64FE
+		bl f_colourScreen
+
 
 		_inGame: //loop here every frame
+			bl f_clearAllCompareMaps
+			ldr r0, =0x64FE
+			bl f_colourScreen
 
-			ldr r0, =d_cellsChangedAll
-			bl f_resetCompareMap
+			// ldr r0, =d_cellsChangedAll
+			// bl f_resetCompareMap
+			// bl f_clearAllCompareMaps
 
 			//compare current maps with previous maps
-			bl f_compareMaps
+			// bl f_compareMaps
 
-			ldr r0, =0x64FE		//Blueish colour based on an image of the original game.
-			ldr r1, =d_cameraPosition
-			bl f_drawBackground //will only draw where stuff changed.
+			// ldr r0, =0x64FE		//Blueish colour based on an image of the original game.
+			// ldr r1, =d_cameraPosition
+			// bl f_drawBackground //will only draw where stuff changed.
 			// ldr r0, =0x64FE
 			// bl f_colourScreen
+
 			//draw the sprites located on the background map
 			ldr r0, =d_mapBackground
 			ldr r1, =d_cameraPosition
@@ -93,6 +101,9 @@ f_playingState:
 			ldr r0, =d_mapForeground
 			ldr r1, =d_cameraPosition
 			bl f_drawMap
+
+			bl _f_displayHUDLabels
+			bl f_refreshScreen	//refresh the screen
 
 			bl _f_updateHUD // draw HUD
 
@@ -130,7 +141,7 @@ f_playingState:
 //Input: null
 //Output: null
 //Effect: displays HUD elements
-_f_updateHUD:
+_f_displayHUDLabels:
 	push {r4-r10, lr}
 	
 	//display correct HUD labels
@@ -138,17 +149,6 @@ _f_updateHUD:
 	mov r1, #50
 	mov r2, #50
 	mov r3, #2
-	bl f_drawElement
-	
-	//display score below it
-	ldr r0, =_d_gameScore
-	ldr r1, [r0]
-	ldr r0, =d_numToPrint
-	str r1, [r0]
-	ldr r0, =d_numToPrint
-	mov r1, #110
-	mov r2, #65
-	mov r3, #8
 	bl f_drawElement
 
 	//display correct HUD labels
@@ -158,38 +158,102 @@ _f_updateHUD:
 	mov r3, #2
 	bl f_drawElement
 
-	//display coins beside it
-	ldr r0, =_d_gameState
-	ldrb r1, [r0]
-	ldr r0, =d_numToPrint
-	str r1, [r0]
-	ldr r0, =d_numToPrint
-	ldr r1, =350
-	mov r2, #65
-	mov r3, #4
-	bl f_drawElement
-	
 	//display correct HUD labels
 	ldr r0, =t_livesLabel
 	mov r1, #860
 	mov r2, #50
 	mov r3, #2
 	bl f_drawElement
-
-	//display lives beside it
-	ldr r0, =_d_gameState
-	ldrb r1, [r0, #1]
-	ldr r0, =d_numToPrint
-	str r1, [r0]
-	ldr r0, =d_numToPrint
-	ldr r1, =960
-	mov r2, #50
-	mov r3, #3
-	bl f_drawElement
 	
 	pop {r4-r10, pc}
 
+//Input: null
+//Output: null
+//Effect: displays HUD elements
+_f_updateHUD:
+	push {r4-r10, lr}
+	
+	//display score below it
+	ldr r0, =_d_gameScore
+	ldr r1, [r0]
+	// ldr r2, =_d_scorePast
+	// ldr r2, [r2]
+	// cmp r1, r2
+	// beq _skipScoreUpdate
+		ldr r0, =d_numToPrint
+		str r1, [r0]
+		ldr r0, =d_numToPrint
+		mov r1, #110
+		mov r2, #65
+		mov r3, #8
+		bl f_drawElement
+	_skipScoreUpdate:
 
+	//display coins beside it
+	ldr r0, =_d_coins
+	ldrb r1, [r0]
+	// ldr r2, =_d_coinPast
+	// ldrb r2, [r2]
+	// cmp r1, r2
+	// beq _skipCoinUpdate
+		ldr r0, =d_numToPrint
+		str r1, [r0]
+		ldr r0, =d_numToPrint
+		ldr r1, =350
+		mov r2, #65
+		mov r3, #4
+		bl f_drawElement
+	_skipCoinUpdate:
+
+	//display lives beside it
+	ldr r0, =d_lives
+	ldrb r1, [r0]
+	// ldr r2, =_d_livesPast
+	// ldrb r2, [r2]
+	// cmp r1, r2
+	// beq _skipLivesUpdate
+		ldr r0, =d_numToPrint
+		str r1, [r0]
+		ldr r0, =d_numToPrint
+		ldr r1, =960
+		mov r2, #50
+		mov r3, #3
+		bl f_drawElement
+	_skipLivesUpdate:
+
+	// bl _f_storeHUDstates
+
+
+	pop {r4-r10, pc}
+
+//Input: null
+//Output: null
+//Effect: store hud state variables in backups
+_f_storeHUDstates:
+	push {r4-r10, lr}
+	
+	//display score below it
+	ldr r0, =_d_gameScore
+	ldr r1, [r0]
+	ldr r2, =_d_scorePast
+	str r1, [r2]
+
+
+	//display coins beside it
+	ldr r0, =_d_coins
+	ldrb r1, [r0]
+	ldr r2, =_d_coinPast
+	strb r1, [r2]
+	
+
+	//display lives beside it
+	ldr r0, =d_lives
+	ldrb r1, [r0]
+	ldr r2, =_d_livesPast
+	strb r1, [r2]
+
+
+	pop {r4-r10, pc}
 /*
 Input: null
 Return: null
@@ -315,4 +379,15 @@ d_win:
 //Word stores the score
 _d_gameScore:
 	.word 0
-	.align
+
+.align 4
+_d_scorePast:
+	.word -1
+
+.align 4
+_d_coinPast:
+	.byte -1
+
+.align 4
+_d_livesPast:
+	.byte -1
