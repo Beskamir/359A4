@@ -122,6 +122,10 @@ _f_drawSelection:
 _f_drawMenu:
 	push	{lr}	//only need to push lr
 	
+	//Need to reset these so that everything is drawn rather than the fps friendly version
+	bl f_clearAllCompareMaps
+	bl f_compareMaps
+
 	//Draw the initial map
 	ldr r0, =0x64FE		//Blueish colour based on an image of the original game.
 	bl f_colourScreen	//drawing over the entire screen is sort of inefficent
