@@ -338,14 +338,26 @@ _f_newGame:
 	str r4, [r0]
 
 	//reset win/lose flags
+	
+	//Sebastian's broken version
+	// ldr r0, =_t_lose
+	// ldr r1, =d_lose
+	// ldr r0, [r0]
+	// str r0, [r1]
+	// ldr r0, =_t_win
+	// ldr r1, =d_win
+	// ldr r0, [r0]
+	// str r0, [r1]
+
+	//Yohohonatan's awesome version
 	ldr r0, =_t_lose
 	ldr r1, =d_lose
-	ldr r0, [r0]
-	str r0, [r1]
+	ldrb r0, [r0]
+	strb r0, [r1]
 	ldr r0, =_t_win
 	ldr r1, =d_win
-	ldr r0, [r0]
-	str r0, [r1]
+	ldrb r0, [r0]
+	strb r0, [r1]
 
 	bl	f_resetMarioPosition	//Reset Mario's position
 

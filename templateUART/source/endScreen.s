@@ -1,6 +1,6 @@
-//This file handles the main menu
+//This file handles the end screen
 
-.globl f_mainMenu								//Menu is the only public function in this file
+.globl f_endScreen		//end screen is the only public function in this file
 
 .section .text
 
@@ -9,7 +9,7 @@
 //	0 = lose
 //return: null
 //effect: Runs the menu
-f_mainMenu:
+f_endScreen:
 	push	{r4-r10, lr}			//Push all the general purpose registers along with fp and lr to the stack
 
 	cmp r0, #0
@@ -18,16 +18,16 @@ f_mainMenu:
 	mov		r6, #1					//Move 1 into r6
 	lsl		r6, #8					//Shift that 1 to bit 8 (A)
 
-	b	selectionLoopTest
+	b	_checkInput
 	
-	SLtop:						//Top of the loop
+	_displayLabel:						//Top of the loop
 		
 			bl		Read_SNES			//Read input
 			mov		r5, r0				//Move the output into r5
 				
-		selectionLoopTest:
+		_checkInput:
 			tst		r5, r6				//AND the input with r5 
-			bne		SLtop				//If A hasn't been pressed, move back into the loop
+			bne		_displayLabel				//If A hasn't been pressed, move back into the loop
 
 
 	pop		{r4-r10, pc}		//Return all the previous registers
