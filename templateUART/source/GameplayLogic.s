@@ -137,7 +137,7 @@ f_playingState:
 			
 			//check lose flag
 			ldr r1, =d_lose
-			ldr r1, [r1]
+			ldrb r1, [r1]
 			//if lose flag true break
 			cmp r1, #1
 			moveq r0, #0
@@ -146,7 +146,7 @@ f_playingState:
 
 			//check win flag
 			ldr r1, =d_win
-			ldr r1, [r1]
+			ldrb r1, [r1]
 			//if win flag true break
 			cmp r1, #1
 			moveq r0, #1
