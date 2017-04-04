@@ -39,7 +39,7 @@ _t_gameState:
 _t_coins:
 	.byte 0
 _t_lives:
-	.byte 3
+	.byte 2
 _t_lose:
 	.byte 0
 _t_win:
