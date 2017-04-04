@@ -252,8 +252,8 @@ _f_inHole:
 	ldr		r0, =_d_marioPositionY			//Load the address of Mario's Y position
 	ldrh	r1, [r0]						//Load Mario's Y position
 	
-	cmp		r1, #0							//Is the cell ID too low?
-	ble		notInHole						//Then Mario is not on the ground
+	cmp		r1, #23							//Is the cell ID too low?
+	blt		notInHole						//if Mario is not in a hole
 		bl		f_killMario					//End the function
 	
 	notInHole:
