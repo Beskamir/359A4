@@ -53,7 +53,7 @@ f_EnableIRQ:
 	//a		Update timer value
 	ldr		r4, =0x20003004			//Load address of CLO
 	ldr		r5, [r4]				//Load CLO
-	ldr		r6, =30000			//Load the number 30 million
+	ldr		r6, =30000000			//Load the number 30 million
 	add		r5, r6					//Add a delay of 30 million microseconds (30 seconds)
 	add		r4, #12					//Add 12 to get to timer compare 1
 	str		r5, [r4]				//Store the address
