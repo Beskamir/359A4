@@ -86,7 +86,8 @@ f_pauseMenu:
 	selectionLoopEnd:				//Branched to if Start is pressed
 	// mov		r0, r4					//Return the menu state
 	ldr 	r1, =d_quitGame
-	ldr 	r4, [r1]
+	str 	r4, [r1]
+
 	ldr		r4, =d_isPaused			//Load the paused boolean register
 	mov		r5, #0					//r5 = 0
 	str		r5, [r4]				//isPaused = 0
