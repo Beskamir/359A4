@@ -98,7 +98,7 @@ _f_DoIRQ:
 		// ii. If paused you go to e
 		beq		e
 	// c. If a,b,c are all valid you draw your value pack.
-		bl 		f_randomlyDisplayValuePack
+		bl 		f_valuePack
 	// d. Enable CS timer Control
 		// i. Load the value stored in 0x3F003000
 		ldr		r4, =0x3F003000

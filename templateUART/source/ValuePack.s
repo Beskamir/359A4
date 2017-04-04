@@ -2,12 +2,12 @@
 
 .section		.init
 
-.globl			f_randomlyDisplayValuePack
+.globl			f_valuePack
 
 .section		.text
 
 
-f_randomlyDisplayValuePack:
+f_valuePack:
 	push	{r4-r10, lr}	//Push the registers onto the stack
 
 	randomNumberX_r .req r4

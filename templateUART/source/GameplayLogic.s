@@ -138,6 +138,10 @@ f_playingState:
 			//updates AI positions.
 			//	includes collisions, movement, map updating, etc
 			bl f_updateAIs
+
+
+
+			bl f_valuePack
 			
 			//check lose flag
 			ldr r1, =d_lose
