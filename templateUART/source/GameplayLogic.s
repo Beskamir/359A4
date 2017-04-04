@@ -398,8 +398,7 @@ f_addScore:
 	
 	mov	r4, r0				//Store the score to be added in a safe register
 	
-	ldr r5, =_d_gameState	//Load the address of the number of coins
-	add	r5, #3				//Load the address of the score
+	ldr r5, =_d_gameScore	//Load the address of the score
 	ldr	r6, [r5]			//Load the score
 	
 	add	r6, r4				//Increase the score
