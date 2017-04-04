@@ -2,6 +2,8 @@
 
 .section		.init
 
+.globl			f_randomlyDisplayValuePack
+
 .section		.text
 
 
