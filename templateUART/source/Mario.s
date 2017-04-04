@@ -5,7 +5,7 @@
 .globl			f_resetMarioPosition		//Reset Mario's position (in registers, not in the map)
 .globl			f_moveMario					//Move Mario (in map and registers)
 .globl			f_killMario					//Kill Mario
-
+.globl			d_marioPositionX
 .section		.text
 
 //Input: Null
@@ -15,7 +15,7 @@ f_resetMarioPosition:
 	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
 	
 	//Clear Mario from the map
-	ldr		r4, =_d_marioPositionX			//Store the address of Mario's current X position
+	ldr		r4, =d_marioPositionX			//Store the address of Mario's current X position
 	ldr		r5, =_d_marioPositionY			//Store the address of Mario's current Y posiion
 	ldrh	r0, [r4]						//Load Mario's current X position
 	ldrh	r1, [r5]						//Load Mario's current Y position
@@ -30,7 +30,7 @@ f_resetMarioPosition:
 	ldrh	r8, [r5]						//Load Mario's default y position
 	
 	//Store Mario's default position values
-	ldr		r4, =_d_marioPositionX			//Store the address of Mario's current X position
+	ldr		r4, =d_marioPositionX			//Store the address of Mario's current X position
 	ldr		r5, =_d_marioPositionY			//Store the address of Mario's current Y posiion
 	strh	r7, [r4]						//Set Mario's X position to the default
 	strh	r8, [r5]						//Set Mario's Y position to the default
@@ -79,7 +79,7 @@ f_moveMario:
 	
 	//r6 = X position
 	//r7 = Y position
-	ldr		r10, =_d_marioPositionX			//Store the address of Mario's X position
+	ldr		r10, =d_marioPositionX			//Store the address of Mario's X position
 	ldrh	r6, [r10]						//Load Mario's X position
 	ldr		r10, =_d_marioPositionY			//Store the address of Mario's Y position
 	ldrh	r7, [r10]						//Load Mario's Y position
@@ -107,7 +107,11 @@ f_moveMario:
 	//Move Mario in map
 	//r9 = Mario's fall speed = loop counter = Number of times Mario is moved down until he hits terrain
 	FallMarioTop:							//Top of the loop, r9 is the loop counter as it is Mario's fall speed
-		lsl		r0, r6, #16					//Move X position to top half of r0
+		ldr 	r1, =d_cameraPosition
+		ldr 	r1, [r1]
+		mov 	r0, r6
+		sub 	r0, r1
+		lsl		r0, #16						//Move X position to top half of r0
 		orr		r0, r7						//Add Y position to bottom half of r0
 		mov		r1, #0						//Don't move Mario horizontally
 		mov		r2, #-1						//Move Mario 1 space down
@@ -150,7 +154,11 @@ f_moveMario:
 	//Move Mario in map
 	//r9 = Mario's jump speed = loop counter = Number of times Mario is moved up until he hits terrain
 	JumpMarioTop:							//Top of the loop, r9 is the loop counter as it is Mario's jump speed
-		lsl		r0, r6, #16					//Move X position to top half of r0
+		ldr 	r1, =d_cameraPosition
+		ldr 	r1, [r1]
+		mov 	r0, r6
+		sub 	r0, r1		
+		lsl		r0, #16						//Move X position to top half of r0
 		orr		r0, r7						//Add Y position to bottom half of r0
 		mov		r1, #0						//Don't move Mario horizontally
 		mov		r2, #1						//Move Mario 1 space up
@@ -195,7 +203,11 @@ f_moveMario:
 	beq		doneMovingMario					//If they're equal, branch to skip the X movement
 	
 	//Move Mario in map
-	lsl		r0, r6, #16						//Move X position to top half of r0
+	ldr 	r1, =d_cameraPosition
+	ldr 	r1, [r1]
+	mov 	r0, r6
+	sub 	r0, r1
+	lsl		r0, #16							//Move X position to top half of r0
 	orr		r0, r7							//Add Y position to bottom half of r0
 	mov		r1, r4							//Move Mario horizontally
 	mov		r2, #0							//Don't move Mario vertically
@@ -211,7 +223,7 @@ f_moveMario:
 	//Otherwise, move was successful
 	
 	//Since move was successful, move Mario in memory registers
-	ldr		r10, =_d_marioPositionX			//Load the address of Mario's X position
+	ldr		r10, =d_marioPositionX			//Load the address of Mario's X position
 	add		r6, r4							//Add the offset to Mario's X position
 	strh	r6, [r10]						//Store Mario's new position
 	
@@ -221,9 +233,9 @@ f_moveMario:
 
 	bl		_f_didMarioWin					//Check if Mario won
 	
-	ldr		r10, =_d_marioPositionX			//Load Mario's X position address
-	ldrh	r0, [r10]						//Load Mario's X position
-	bl		f_updateCameraPosition			//Update the camera position
+	// ldr		r10, =d_marioPositionX			//Load Mario's X position address
+	// ldrh	r0, [r10]						//Load Mario's X position
+	// bl		f_updateCameraPosition			//Update the camera position
 
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
@@ -233,7 +245,7 @@ f_moveMario:
 _f_isMarioOnGround:
 	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
 
-	ldr		r4, =_d_marioPositionX			//Load the address of Mario's X position
+	ldr		r4, =d_marioPositionX			//Load the address of Mario's X position
 	ldrh	r0, [r4]						//Load Mario's X position
 	ldr		r5, =_d_marioPositionY			//Load the address of Mario's Y position
 	ldrh	r1, [r5]						//Load Mario's Y position
@@ -293,7 +305,7 @@ _f_killEnemy:
 	//Code to move enemy to seperate layer and do stuff with them here
 	
 	//Remove enemy from foreground
-	ldr		r4, =_d_marioPositionX			//Load the address of Mario's X position
+	ldr		r4, =d_marioPositionX			//Load the address of Mario's X position
 	ldr		r5, =_d_marioPositionY			//Load the address of Mario's Y position
 	ldrh	r0, [r4]						//Load Mario's X position
 	ldrh	r1, [r5]						//Load Mario's Y position
@@ -304,6 +316,9 @@ _f_killEnemy:
 	
 	//Move Mario
 	ldr		r0, [r4]						//Load Mario's X position
+	ldr 	r1, =d_cameraPosition
+	ldr 	r1, [r1]
+	sub 	r0, r1
 	lsl		r0, #16							//Move Mario's x position to the top half of the register
 	ldr		r6, [r5]						//Load Mario's Y position
 	orr		r0, r6							//Move Mario's Y position into the bottom half of r0
@@ -367,7 +382,7 @@ _f_hitBlock:
 	//r5 = Y position
 	//r6 = X position address
 	//r7 = Y position address
-	ldr		r10, =_d_marioPositionX			//Store the address of Mario's X position
+	ldr		r10, =d_marioPositionX			//Store the address of Mario's X position
 	ldrh	r4, [r6]						//Load Mario's X position
 	ldr		r10, =_d_marioPositionY			//Store the address of Mario's Y position
 	ldrh	r5, [r7]						//Load Mario's Y position
@@ -396,6 +411,9 @@ _f_hitBlock:
 	bl		f_setCellElement				//Replace the breakable block with an empty cell		
 	
 	mov		r0, r4							//Move in Mario's X position
+	ldr 	r1, =d_cameraPosition
+	ldr 	r1, [r1]
+	sub 	r0, r1
 	lsl		r0, #16							//Move it to the top half of the register
 	orr		r0, r5							//Move Mario's Y position into the bottom half of r0
 	mov		r1, #0							//Don't move Mario horizontally
@@ -488,7 +506,7 @@ _f_clearTempCoin:
 _f_collectItems:
 	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
 	
-	ldr		r6, =_d_marioPositionX			//Store the address of Mario's X position
+	ldr		r6, =d_marioPositionX			//Store the address of Mario's X position
 	ldrh	r4, [r6]						//Load Mario's X position
 	ldr		r6, =_d_marioPositionY			//Store the address of Mario's Y position
 	ldrh	r5, [r6]						//Load Mario's Y position
@@ -543,7 +561,7 @@ _f_collectItems:
 _f_didMarioWin:
 	push	{r4-r10, lr}						//Push all the general purpose registers along with fp and lr to the stack
 
-	ldr		r10, =_d_marioPositionX			//Store the address of Mario's X position
+	ldr		r10, =d_marioPositionX			//Store the address of Mario's X position
 	ldrh	r4, [r10]						//Load Mario's X position
 	ldr		r10, =_d_marioPositionY			//Store the address of Mario's Y position
 	ldrh	r5, [r10]						//Load Mario's Y position
@@ -598,7 +616,7 @@ _d_lastMoveTick:			.word 0
 //Mario's coordinates in the map
 _d_marioPosition:
 .align 4
-_d_marioPositionX:			.hword 2
+d_marioPositionX:			.hword 2
 .align 4
 _d_marioPositionY:			.hword 21
 

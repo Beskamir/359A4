@@ -137,12 +137,15 @@ Effect: copies map in r0 to map in r1
 */
 f_updateCameraPosition:
 	push {r4-r10, lr}
-	
 	marioX_r .req r4
 	cameraMem_r .req r5
+	marioMemX_r .req r6
+
+	ldr marioMemX_r, =d_marioPositionX
+	ldrh marioX_r, [marioMemX_r]
 	// cameraLoc_r .req r6
 
-	mov marioX_r, r0
+	// mov marioX_r, r0
 	ldr cameraMem_r, =d_cameraPosition
 	// ldr cameraLoc_r, [cameraMem_r]
 	cmp marioX_r, #14
