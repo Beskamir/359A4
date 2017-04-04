@@ -159,7 +159,7 @@ f_moveMario:
 		mov		r10, r0						//Store result in a safe register
 		
 		cmp		r10, #2						//Did the move succeed?
-		beq		FallMarioTest				//If so, go to the test
+		beq		JumpMarioTest				//If so, go to the test
 		cmp		r10, #1						//Did we fail to move due to an enemy?
 		bleq	f_killMario					//If so, kill Mario!
 		beq		doneMovingMario				//Then stop moving
@@ -176,6 +176,7 @@ f_moveMario:
 		cmp		r9, #0						//Compare the loop counter to 0
 		bgt		JumpMarioTop				//If r9 is still greater than 0, we need to move Mario down again
 	//Lower Mario's jump speed
+	ldrb	r9, [r8]						//Store the jump speed in r9
 	sub		r9, #1							//Decrease Mario's jump speed by 1
 	strb	r9, [r8]						//Store Mario's new jump speed
 	//Move Mario in data register
