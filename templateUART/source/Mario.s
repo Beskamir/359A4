@@ -233,7 +233,7 @@ f_moveMario:
 
 	bl		_f_didMarioWin					//Check if Mario won
 	
-	bl 		_f_inHole						//check if mario in hole
+	// bl 		_f_inHole						//check if mario in hole
 	// ldr		r10, =d_marioPositionX			//Load Mario's X position address
 	// ldrh	r0, [r10]						//Load Mario's X position
 	// bl		f_updateCameraPosition			//Update the camera position
@@ -249,15 +249,11 @@ _f_inHole:
 	ldr		r0, =_d_marioPositionY			//Load the address of Mario's Y position
 	ldrh	r1, [r0]						//Load Mario's Y position
 	
-	cmp		r1, #23							//Is the cell ID too low?
-	beq		notInHole						//Then Mario is not on the ground
-		mov		r0, #1							//Mario is on the ground
-		b		endIsInHole					//End the function
+	cmp		r1, #0							//Is the cell ID too low?
+	ble		notInHole						//Then Mario is not on the ground
+		bl		f_killMario					//End the function
 	
 	notInHole:
-		mov r0, #0
-
-	endIsInHole:
 
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 		
