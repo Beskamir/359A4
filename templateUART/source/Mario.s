@@ -45,7 +45,7 @@ f_resetMarioPosition:
 	//Reset Mario's vertical state
 	ldr		r4, =_d_verticalState			//Load the address of the vertical state
 	mov		r5, #0							//Store a 0
-	strb	r5, [r4]						//Store that 0 as the vertical state
+	str		r5, [r4]						//Store that 0 as the vertical state
 
 	//Reset Mario's jump boost
 	ldr		r4, =_d_jumpBoost				//Load the address of the vertical state
@@ -89,7 +89,7 @@ f_moveMario:
 	//r8 = verticalState address
 	//r9 = vertical state
 	ldr		r8, =_d_verticalState			//Load the address of the vertical state
-	ldrb	r9, [r8]						//Load the value of the vertical state
+	ldr		r9, [r8]						//Load the value of the vertical state
 	cmp		r9, #0							//Compare the vertical state to 0
 	bgt		jumping							//If the value is positive, Mario is jumping, so no need to worry about falling
 	bl		_f_isMarioOnGround				//Check whether Mario is on the ground or if he should be falling
@@ -103,7 +103,7 @@ f_moveMario:
 	//Falling
 	//Increase Mario's fall speed
 	sub		r9, #1							//Increase Mario's fall speed by 1
-	strb	r9, [r8]						//Store Mario's new fall speed
+	str		r9, [r8]						//Store Mario's new fall speed
 	//Move Mario in map
 	//r9 = Mario's fall speed = loop counter = Number of times Mario is moved down until he hits terrain
 	FallMarioTop:							//Top of the loop, r9 is the loop counter as it is Mario's fall speed
@@ -123,7 +123,7 @@ f_moveMario:
 
 		//If neither, then we're done falling!
 		mov		r9, #0						//Set Mario's vertical speed to 0
-		strb	r9, [r8]					//Store Mario's vertical speed
+		str		r9, [r8]					//Store Mario's vertical speed
 		b		doneFallMap					//We're done falling in the map
 
 	FallMarioTest:							//Loop test
@@ -145,7 +145,7 @@ f_moveMario:
 	cmp		r0, #1							//Is jumpBoost activated?
 	moveq	r9, #4							//If so, load the boosted jump value as the current jump speed
 	movne	r9, #3							//Otherwise, load the normal jump value as the current jump speed
-	strb	r9, [r8]						//Store the current jump speed as the new vertical state
+	str		r9, [r8]						//Store the current jump speed as the new vertical state
 	jumping:
 	//Move Mario in map
 	//r9 = Mario's jump speed = loop counter = Number of times Mario is moved up until he hits terrain
@@ -166,7 +166,7 @@ f_moveMario:
 
 		//If neither, then we've hit a block!
 		mov		r9, #0						//Set Mario's vertical speed to 0
-		strb	r9, [r8]					//Store Mario's vertical speed
+		str		r9, [r8]					//Store Mario's vertical speed
 		bl		_f_hitBlock					//Handle hitting a block
 		b		doneJumpMap					//We're done jumping in the map
 
@@ -176,9 +176,9 @@ f_moveMario:
 		cmp		r9, #0						//Compare the loop counter to 0
 		bgt		JumpMarioTop				//If r9 is still greater than 0, we need to move Mario down again
 	//Lower Mario's jump speed
-	ldrb	r9, [r8]						//Store the jump speed in r9
+	ldr		r9, [r8]						//Store the jump speed in r9
 	sub		r9, #1							//Decrease Mario's jump speed by 1
-	strb	r9, [r8]						//Store Mario's new jump speed
+	str		r9, [r8]						//Store Mario's new jump speed
 	//Move Mario in data register
 	doneJumpMap:
 	ldr		r10, =_d_marioPositionY			//Load the address of Mario's Y position
@@ -361,7 +361,7 @@ _f_hitBlock:
 	//Set Mario's vertical state to 0
 	ldr		r4, =_d_verticalState			//Load the address of Mario's vertical state
 	mov		r5, #0							//Move in a 0
-	strb	r5, [r4]						//Store 0 as Mario's new vertical state
+	str		r5, [r4]						//Store 0 as Mario's new vertical state
 	
 	//r4 = X position
 	//r5 = Y position
@@ -588,7 +588,7 @@ _t_marioMoveDelay:			.byte 0			//Change this to change how often Mario moves
 
 .align 4
 //Jump/Fall state register, stores whether Mario
-_d_verticalState:			.byte 0
+_d_verticalState:			.word 0
 
 .align 4
 //Last tick in which Mario moved
