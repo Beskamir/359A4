@@ -131,6 +131,7 @@ f_moveMario:
 		b		doneFallMap					//We're done falling in the map
 
 	FallMarioTest:							//Loop test
+		bl		_f_inHole					//Check if Mario is in a hole
 		add		r9, #1						//Add 1 to the loop counter (counting up to 0)
 		add		r7, #1						//Subtract 1 from Mario's Y position (by adding because opposite)
 		cmp		r9, #0						//Compare the loop counter to 0
@@ -344,6 +345,11 @@ _f_killEnemy:
 	mov		r2, #-1							//Move Mario down one cell
 	ldr		r3, =d_mapForeground			//Load the foreground's address
 	bl		f_moveElement					//Move Mario
+
+	//Set enemyKilled flag
+	ldr		r4, =_d_enemyKilled				//Load the address
+	mov		r5, #1							//Move 1 into r5
+	str		r5, [r4]						//Set enemyKilled
 	
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
@@ -354,6 +360,13 @@ _f_killEnemy:
 f_killMario:
 	push	{r4-r10, lr}					//Push all the general purpose registers along with fp and lr to the stack
 	
+	ldr		r4, =_d_enemyKilled				//Load the address
+	ldr		r5, [r4]						//Load the value
+	cmp		r5, #1							//Is enemyKilled set?
+	moveq	r5, #0							//Set to 0
+	streq	r5, [r4]						//Clear it
+	beq		endKillMario					//End the method
+
 	//r4 = life address
 	//r5 = number of lives
 	ldr		r4, =d_lives					//Load the address of Mario's lives
@@ -401,9 +414,9 @@ _f_hitBlock:
 	//r6 = X position address
 	//r7 = Y position address
 	ldr		r10, =d_marioPositionX			//Store the address of Mario's X position
-	ldrh	r4, [r6]						//Load Mario's X position
+	ldrh	r4, [r10]						//Load Mario's X position
 	ldr		r10, =_d_marioPositionY			//Store the address of Mario's Y position
-	ldrh	r5, [r7]						//Load Mario's Y position
+	ldrh	r5, [r10]						//Load Mario's Y position
 	
 	//Get the block's code
 	//r8 = Block's Code
@@ -649,3 +662,8 @@ _d_tempCoin:				.byte 0			//Is there a temp coin to remove?
 _d_tempCoinX:				.hword 0		//Temp coin's X position
 .align 4
 _d_tempCoinY:				.hword 0		//Tempo coin's Y position
+
+.align 4
+//enemyKilled flag
+_d_enemyKilled:				.word 0
+.align 4
