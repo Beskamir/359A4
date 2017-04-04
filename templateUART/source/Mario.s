@@ -233,14 +233,25 @@ _f_isMarioOnGround:
 	ldrh	r0, [r4]						//Load Mario's X position
 	ldr		r5, =_d_marioPositionY			//Load the address of Mario's Y position
 	ldrh	r1, [r5]						//Load Mario's Y position
-	sub		r1, #1							//Subtract 1 from Mario's Y position to check the cell below him
+	add		r1, #1							//Add 1 to Mario's Y position to check the cell below him
 	ldr		r2, =d_mapForeground			//Load the address of the foreground map
 	mov		r3, #1							//Only look cells in the screen
 	bl		f_getCellElement				//Find out which cell is below Mario
-	tst		r0, #0							//Is there empty space beneath Mario?
-	moveq	r0, #1							//If yes, move a 1 into r0
-	movne	r0, #0							//If not, move a 0 into r0
+	mov		r6, r0							//Move the result to a safe register
+
+	cmp		r0, #97							//Is the cell ID too low?
+	blt		notOnGround						//Then Mario is not on the ground
+	cmp		r0, #108						//Is the cell ID too high?
+	bgt		notOnGround						//Then Mario is not on the ground
+	//Otherwise, Mario is on the ground
+	mov		r0, #1							//Mario is on the ground
+	b		endIsMarioOnGround				//End the function
 	
+	notOnGround:
+	mov		r0, #0							//Mario is not on the ground
+
+	endIsMarioOnGround:
+
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
 
