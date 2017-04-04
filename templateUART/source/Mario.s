@@ -392,7 +392,7 @@ _f_hitBlock:
 	mov		r0, r4							//Move in Mario's/Block's X position
 	sub		r1, r5, #1						//Subtract 1 to get the Block's Y address (above Mario)
 	ldr		r2, =d_mapForeground			//Load the address of the foreground
-	mov		r3, #1							//Only look cells in the screen
+	mov		r3, #0							//Only look cells in the screen
 	bl		f_getCellElement				//Get the block's code
 	mov		r8, r0							//Store the block's code in a safe register
 	
@@ -432,7 +432,7 @@ _f_hitBlock:
 	mov		r0, r4							//Move in Mario's/Block's X position
 	sub		r1, r5, #1						//Subtract 1 to get the Block's Y address (above Mario)
 	ldr		r2, =d_mapMiddleground			//Load the address of the middle map
-	mov		r3, #1							//Only look cells in the screen
+	mov		r3, #0							//Only look cells in the screen
 	bl		f_getCellElement				//Get the ID of the object inside the block
 	mov		r8, r0							//Store the item's code in a safe register
 	
@@ -514,7 +514,7 @@ _f_collectItems:
 	mov		r0, r4							//Move in Mario's X position
 	mov		r1, r5							//Move in Mario's Y position
 	ldr		r2, =d_mapMiddleground			//Load the address of the middle map
-	mov		r3, #1							//Only look cells in the screen
+	mov		r3, #0							//Only look cells in the screen
 	bl		f_getCellElement				//See what object is under Mario
 	mov		r8, r0							//Store the item's code in a safe register
 	
@@ -571,7 +571,7 @@ _f_didMarioWin:
 	mov		r0, r4							//Move in Mario's X position
 	mov		r1, r5							//Move in Mario's Y position
 	ldr		r2, =d_mapMiddleground			//Load the address of the middleground
-	mov		r3, #1							//Only look cells in the screen
+	mov		r3, #0							//Only look cells in the screen
 	bl		f_getCellElement				//Get the block's code
 	mov		r8, r0							//Store the block's code in a safe register
 	
