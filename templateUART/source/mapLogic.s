@@ -157,6 +157,11 @@ f_updateCameraPosition:
 		mov r1, #288
 		strge r1, [cameraMem_r]
 		bge _noCameraUpdate
+			// mov r1, #20 
+			// cmp marioX_r, r1
+			// blne skipCheat2
+			// 	ldr marioX_r, #255
+		//skipCheat2:
 			sub marioX_r, #14
 			str marioX_r, [cameraMem_r]
 	//branch here if mario out of camera range
