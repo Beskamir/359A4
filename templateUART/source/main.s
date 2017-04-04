@@ -22,13 +22,8 @@ main:
 
 	//Idea for initing cores, move this code after they've been activated. Also test using print console debugging
     mov		sp, #0x8000 // Initializing the stack pointer
-<<<<<<< HEAD
 	// bl 		InstallIntTable
 	// bl 		f_EnableIRQ
-=======
-	//bl 		InstallIntTable
-	//bl 		f_EnableIRQ
->>>>>>> 8a77a98f37192de51f333972c6f11263ba510f41
 	bl		EnableJTAG 	// Enable JTAG
 	bl		InitUART 	//This is important to be  able to use UART
 
