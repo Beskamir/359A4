@@ -221,6 +221,9 @@ f_moveMario:
 
 	bl		_f_didMarioWin					//Check if Mario won
 	
+	ldr		r0, =_d_marioPositionX			//Load Mario's X position address
+	bl		f_updateCameraPosition			//Update the camera position
+
 	pop		{r4-r10, pc}					//Return all the previous registers and return
 	
 //Input: Null
@@ -239,9 +242,9 @@ _f_isMarioOnGround:
 	bl		f_getCellElement				//Find out which cell is below Mario
 	mov		r6, r0							//Move the result to a safe register
 
-	cmp		r0, #97							//Is the cell ID too low?
+	cmp		r6, #97							//Is the cell ID too low?
 	blt		notOnGround						//Then Mario is not on the ground
-	cmp		r0, #108						//Is the cell ID too high?
+	cmp		r6, #108						//Is the cell ID too high?
 	bgt		notOnGround						//Then Mario is not on the ground
 	//Otherwise, Mario is on the ground
 	mov		r0, #1							//Mario is on the ground
