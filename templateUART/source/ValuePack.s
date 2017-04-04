@@ -30,7 +30,6 @@ f_valuePack:
 
 	//check that the value pack isn't in something else
 	ensureValuePackIsAccessable:
-		sub randomNumberY_r, #1
 
 		mov r0, randomNumberX_r
 		mov r1, randomNumberY_r
@@ -38,6 +37,7 @@ f_valuePack:
 		mov r3, #0
 		bl f_getCellElement
 		cmp r0, #0
+		subne randomNumberY_r, #1
 		bne ensureValuePackIsAccessable
 
 		mov r0, randomNumberX_r
@@ -46,6 +46,7 @@ f_valuePack:
 		mov r3, #0
 		bl f_getCellElement
 		cmp r0, #0
+		subne randomNumberY_r, #1
 		bne ensureValuePackIsAccessable
 
 	//store the value pack in the middle map for the next frame

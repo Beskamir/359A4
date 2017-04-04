@@ -157,11 +157,24 @@ f_updateCameraPosition:
 		mov r1, #288
 		strge r1, [cameraMem_r]
 		bge _noCameraUpdate
-			// mov r1, #20 
-			// cmp marioX_r, r1
-			// blne skipCheat2
-			// 	ldr marioX_r, #255
-		//skipCheat2:
+		// 	mov r1, #20 
+		// 	cmp marioX_r, r1
+		// 	bne skipCheat2
+		// 		mov r0, marioX_r
+		// 		ldr r1, [cameraMem_r]
+		// 		sub r0, r1
+		// 		ldr marioX_r, =260
+		// 		str marioX_r, [cameraMem_r]
+		// 		str marioX_r, [marioMemX_r]
+		// 		mov r1, #21
+		// 		bl f_combineRegisters
+		// 		//r0 contains merged x and y
+		// 		mov r1, marioX_r //moving left so set this to -1
+		// 		mov r2, #0 //vertical delta set to 0 since this is just left/right movement
+		// 		ldr r3, =d_mapForeground
+		// 		bl f_moveElement
+		// 		b _noCameraUpdate
+		// skipCheat2:
 			sub marioX_r, #14
 			str marioX_r, [cameraMem_r]
 	//branch here if mario out of camera range

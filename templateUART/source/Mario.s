@@ -603,7 +603,7 @@ _f_didMarioWin:
 	//r8 = Block's Code
 	mov		r0, r4							//Move in Mario's X position
 	mov		r1, r5							//Move in Mario's Y position
-	ldr		r2, =d_mapMiddleground			//Load the address of the middleground
+	ldr		r2, =d_mapBackground			//Load the address of the middleground
 	mov		r3, #0							//Only look cells in the screen
 	bl		f_getCellElement				//Get the block's code
 	mov		r8, r0							//Store the block's code in a safe register
