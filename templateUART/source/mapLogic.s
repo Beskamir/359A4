@@ -106,12 +106,20 @@ contains the position of the left most side of the camera.
 .globl d_cameraPosition
 
 /*
+Input: 
+	r0: mario's current X position
+Return: null
+Effect: copies map in r0 to map in r1
+*/
+.globl f_updateCameraPosition
+
+/*
  memory of what was on screen
 */
-.globl d_cellsChangedAll
-.globl d_cellsOldBackground
-.globl d_cellsOldMiddle
-.globl d_cellsOldForeground
+// .globl d_cellsChangedAll
+// .globl d_cellsOldBackground
+// .globl d_cellsOldMiddle
+// .globl d_cellsOldForeground
 
 .section    .init
     
