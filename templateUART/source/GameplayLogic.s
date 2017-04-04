@@ -156,6 +156,18 @@ f_playingState:
 			// beq _inGame
 			
 	_gameModeEnd:
+	//Following code sets up 
+	ldr r1, =d_lose
+	ldr r1, [r1]
+	cmp r1, #1
+	moveq r0, #0
+
+	ldr r1, =d_win
+	ldr r1, [r1]
+	cmp r1, #1
+	mov r0, #1
+
+	bl f_mainMenu
 
 	pop {r4-r10, pc}
 
@@ -324,6 +336,16 @@ _f_newGame:
 
 	ldr r0, =_d_gameScore
 	str r4, [r0]
+
+	//reset win/lose flags
+	ldr r0, =_t_lose
+	ldr r1, =d_lose
+	ldr r0, [r0]
+	str r0, [r1]
+	ldr r0, =_t_win
+	ldr r1, =d_win
+	ldr r0, [r0]
+	str r0, [r1]
 
 	bl	f_resetMarioPosition	//Reset Mario's position
 
