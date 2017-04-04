@@ -146,12 +146,12 @@ f_updateCameraPosition:
 	ldr cameraMem_r, =d_cameraPosition
 	// ldr cameraLoc_r, [cameraMem_r]
 	cmp marioX_r, #14
-	movlt #0, [cameraMem_r]
-	blt _noCameraUpdate
+	movle #0, [cameraMem_r]
+	ble _noCameraUpdate
 		ldr r1, =302
 		cmp marioX_r, r1
-		movgt #288, [cameraMem_r]
-		bgt _noCameraUpdate
+		movge #288, [cameraMem_r]
+		bge _noCameraUpdate
 			sub marioX_r, #14
 			str marioX_r, [cameraMem_r]
 	//branch here if mario out of camera range

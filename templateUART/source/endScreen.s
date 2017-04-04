@@ -15,9 +15,11 @@ f_endScreen:
 	cmp r0, #0
 	beq _f_drawLose
 	bne _f_drawWin
-	mov		r6, #1					//Move 1 into r6
-	lsl		r6, #8					//Shift that 1 to bit 8 (A)
+	bl f_refreshScreen		//refresh the screen
 
+	mov		r6, #1			//Move 1 into r6
+	lsl		r6, #8			//Shift that 1 to bit 8 (A)
+	
 	b	_checkInput
 	
 	_displayLabel:						//Top of the loop

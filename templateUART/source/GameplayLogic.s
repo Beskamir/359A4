@@ -60,8 +60,6 @@ effect: main loop function in gameplay logic.
 f_playingState:
 	push {r4-r10, lr}
 
-	// mov r4, #0
-
 	_gameMode: 
 
 		bl _f_newGame //reset all the stored data to the initial states
@@ -131,43 +129,40 @@ f_playingState:
 			cmp r0, #1
 			beq _gameMode
 			cmp r0, #0
-			beq _gameModeEnd
+			beq _exitToMainMenu
 
 			//updates AI positions.
 			//	includes collisions, movement, map updating, etc
 			bl f_updateAIs
+			
+			//check lose flag
+			ldr r1, =d_lose
+			ldr r1, [r1]
+			//if lose flag true break
+			cmp r1, #1
+			moveq r0, #0
+			bleq _gameModeEnd
 
 
+			//check win flag
+			ldr r1, =d_win
+			ldr r1, [r1]
+			//if win flag true break
+			cmp r1, #1
+			moveq r0, #1
+			bleq _gameModeEnd
 
-			///Tester feature: scrolls through game world
-			// ldr r0, =d_cameraPosition
-			// ldr r4, [r0]
-			// add r4, #1
-			// str r4, [r0]
-			// cmp r4, #288
 
-			//check end state
 			//loop or break
 			ldr r0, =d_quitGame
 			ldr r0, [r0]
 			cmp r0, #2
 			beq _inGame
-			// cmp r0, #2
-			// beq _inGame
 			
 	_gameModeEnd:
-	//Following code sets up 
-	ldr r1, =d_lose
-	ldr r1, [r1]
-	cmp r1, #1
-	moveq r0, #0
+		bl f_endScreen
 
-	ldr r1, =d_win
-	ldr r1, [r1]
-	cmp r1, #1
-	mov r0, #1
-
-	bl f_mainMenu
+	_exitToMainMenu:
 
 	pop {r4-r10, pc}
 
