@@ -147,12 +147,12 @@ f_updateCameraPosition:
 	// ldr cameraLoc_r, [cameraMem_r]
 	cmp marioX_r, #14
 	mov r1, #0
-	movle r1, [cameraMem_r]
+	strle r1, [cameraMem_r]
 	ble _noCameraUpdate
 		ldr r1, =302
 		cmp marioX_r, r1
 		mov r1, #288
-		movge r1, [cameraMem_r]
+		strge r1, [cameraMem_r]
 		bge _noCameraUpdate
 			sub marioX_r, #14
 			str marioX_r, [cameraMem_r]
