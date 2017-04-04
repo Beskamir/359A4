@@ -132,6 +132,7 @@ f_moveMario:
 
 	FallMarioTest:							//Loop test
 		// bl		_f_inHole					//Check if Mario is in a hole
+		bl		_f_collectItems					//Collect any items in Mario's new location
 		add		r9, #1						//Add 1 to the loop counter (counting up to 0)
 		add		r7, #1						//Subtract 1 from Mario's Y position (by adding because opposite)
 		cmp		r9, #0						//Compare the loop counter to 0
@@ -180,6 +181,7 @@ f_moveMario:
 		b		doneJumpMap					//We're done jumping in the map
 
 	JumpMarioTest:							//Loop test
+		bl		_f_collectItems					//Collect any items in Mario's new location
 		sub		r9, #1						//Subtract 1 from the loop counter
 		sub		r7, #1						//Add 1 to Mario's Y position (by subtracting because opposite)
 		cmp		r9, #0						//Compare the loop counter to 0
