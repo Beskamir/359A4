@@ -39,8 +39,8 @@ f_resetMarioPosition:
 	mov		r0, r7							//Move in Mario's default X position
 	mov		r1, r8							//Move in Mario's default Y position
 	ldr		r2, =d_mapForeground 			//Move in the address of the foreground
-	mov		r3, #0							//Load the code for an empty cell
-	bl		f_setCellElement				//Replace Mario with an empty cell
+	mov		r3, #114						//Load the code for Mario
+	bl		f_setCellElement				//Add Mario back to the map
 	
 	//Reset Mario's vertical state
 	ldr		r4, =_d_verticalState			//Load the address of the vertical state
@@ -68,9 +68,9 @@ f_moveMario:
 	mov		r4, r0							//Save the X offset in a safe register
 	mov		r5, r1							//Save the Y instruction in a safe register
 	
-	bl		_f_shouldMarioMove				//Should we be moving Mario right now?
-	tst		r0, #1							//Is the answer yes?
-	bne		doneMovingMario					//If not, don't move Mario, just skip to the end
+	// bl		_f_shouldMarioMove				//Should we be moving Mario right now?
+	// tst		r0, #1							//Is the answer yes?
+	// bne		doneMovingMario					//If not, don't move Mario, just skip to the end
 	
 	ldr		r8, =_d_tempCoin				//Load the address of tempCoin
 	ldrb	r9, [r8]						//Load tempCoin
@@ -142,7 +142,7 @@ f_moveMario:
 	//Does Mario have the jump boost powerup?
 	ldr		r10, =_d_jumpBoost				//Load the address of jumpBoost
 	ldrb	r0, [r10]						//Load the value of jumpBoost
-	tst		r0, #1							//Is jumpBoost activated?
+	cmp		r0, #1							//Is jumpBoost activated?
 	moveq	r9, #4							//If so, load the boosted jump value as the current jump speed
 	movne	r9, #3							//Otherwise, load the normal jump value as the current jump speed
 	strb	r9, [r8]						//Store the current jump speed as the new vertical state
