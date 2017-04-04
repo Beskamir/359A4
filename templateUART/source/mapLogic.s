@@ -119,8 +119,34 @@ contains the position of the left most side of the camera.
 
 .align 4
 t_cameraPosition: //this contains the position of the left side of the camera. 
-	.int 0 //thus min value = 0 and max value = (size of map - 32) 
+	.int 0 //thus min value = 0 and max value = 288 (number of cells in game) 
 	//actually this bound is completely wrong
+/*
+Input: 
+	r0: mario's current X position
+Return: null
+Effect: copies map in r0 to map in r1
+*/
+f_updateCameraPosition:
+	push {r4-r10, lr}
+	
+	marioX_r .req r4
+	cameraMem_r .req r5
+	// cameraLoc_r .req r6
+
+	mov marioX_r, r0
+	ldr cameraMem_r, =d_cameraPosition
+	// ldr cameraLoc_r, [cameraMem_r]
+	cmp marioX_r, #14
+	blt _noCameraUpdate
+		cmp marioX_r, #302
+		bgt _noCameraUpdate
+			sub marioX_r, #14
+			str marioX_r, [cameraMem_r]
+	//branch here if mario out of camera range
+	_noCameraUpdate:
+
+	pop {r4-r10, pc}
 
 /*
 Input: 
@@ -800,7 +826,7 @@ _f_updateMap:
 
 .align 4
 d_cameraPosition: //this contains the position of the left side of the camera. 
-	.int 0 //thus min value = 0 and max value = (size of map - 32)
+	.int 0 //thus min value = 0 and max value = 288 (number of cells in map minus 32)
 
 // d_cellsChangedAll:
 // 	.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
