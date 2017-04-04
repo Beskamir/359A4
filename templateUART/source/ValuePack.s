@@ -16,6 +16,9 @@ f_valuePack:
 
 	mov randomNumberY_r, #21
 
+
+	///Add timer to value pack
+
 	bl f_random
 	mov randomNumberX_r, r0
 

@@ -58,7 +58,7 @@ f_pauseMenu:
 		//If Start was pressed
 		tsteq	r10, #0				//Check if r10 is clear
 		mov		r4, #2				//If it's isn't, set the state to resume the game
-		bne		selectionLoopEnd	//If it isn't, instantly end the loop
+		b		selectionLoopEnd	//If it isn't, instantly end the loop
 		
 		checkUp:
 		tst		r5, r7				//Check if joy-pad UP was pressed

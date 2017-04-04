@@ -6,6 +6,7 @@
 .globl	f_getClock
 .globl	d_clock
 .globl	f_random
+.globl 	f_Wait
 
 /*Input: 
 	r0, first register to combine
@@ -169,6 +170,23 @@ f_random:
 	// return some value from 0 to 31
 	
 	pop		{r4-r9, pc}	//Pop register from the stack and return
+
+//input: number of micros to wait
+//return: null
+//output: wait for at least r0 micros
+f_Wait:
+	push	{r4-r10, lr}	//Push registers onto the stack
+
+	ldr r4, =0x3F003004 //address of CLO
+	ldr r5, [r4]		//read CLO
+	add r5, r0			//add micros to wait
+
+	waitLoop:
+		ldr	r6, [r4]	//load CLO value to r6
+		cmp r5, r6 		//stop when CLO = r5
+		bhi waitLoop	//loop back otherwise
+
+	pop		{r4-r10, pc}	//Load the original registers from the stack
 
 
 .section .data
