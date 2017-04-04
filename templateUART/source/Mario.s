@@ -131,7 +131,7 @@ f_moveMario:
 		b		doneFallMap					//We're done falling in the map
 
 	FallMarioTest:							//Loop test
-		bl		_f_inHole					//Check if Mario is in a hole
+		// bl		_f_inHole					//Check if Mario is in a hole
 		add		r9, #1						//Add 1 to the loop counter (counting up to 0)
 		add		r7, #1						//Subtract 1 from Mario's Y position (by adding because opposite)
 		cmp		r9, #0						//Compare the loop counter to 0
@@ -569,7 +569,7 @@ _f_collectItems:
 	
 	lifeMushroom:							//Life (1-up) Mushroom
 	ldr		r6, =d_lives					//Load the address of Mario's lives
-	ldr		r7, [r6]						//Load the number of lives
+	ldrb	r7, [r6]						//Load the number of lives
 	add		r7, #1							//Add an extra life
 	strb	r7, [r6]						//Store the new number of lives
 	b		removeItem						//Remove the life (1-up) mushroom
