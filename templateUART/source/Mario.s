@@ -127,10 +127,10 @@ f_moveMario:
 		b		doneFallMap					//We're done falling in the map
 
 	FallMarioTest:							//Loop test
-		sub		r9, #1						//Subtract 1 from the loop counter
+		add		r9, #1						//Add 1 to the loop counter (counting up to 0)
 		add		r7, #1						//Subtract 1 from Mario's Y position (by adding because opposite)
 		cmp		r9, #0						//Compare the loop counter to 0
-		bgt		FallMarioTop				//If r9 is still greater than 0, we need to move Mario down again
+		blt		FallMarioTop				//If r9 is still less than 0, we need to move Mario down again
 	//Move Mario in data register
 	doneFallMap:
 	ldr		r10, =_d_marioPositionY			//Load the address of Mario's Y position
@@ -239,7 +239,7 @@ _f_isMarioOnGround:
 	ldrh	r1, [r5]						//Load Mario's Y position
 	add		r1, #1							//Add 1 to Mario's Y position to check the cell below him
 	ldr		r2, =d_mapForeground			//Load the address of the foreground map
-	mov		r3, #1							//Only look cells in the screen
+	mov		r3, #0							//Only look cells in the screen
 	bl		f_getCellElement				//Find out which cell is below Mario
 	mov		r6, r0							//Move the result to a safe register
 
