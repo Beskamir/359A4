@@ -221,7 +221,8 @@ f_moveMario:
 
 	bl		_f_didMarioWin					//Check if Mario won
 	
-	ldr		r0, =_d_marioPositionX			//Load Mario's X position address
+	ldr		r10, =_d_marioPositionX			//Load Mario's X position address
+	ldrh	r0, [r10]						//Load Mario's X position
 	bl		f_updateCameraPosition			//Update the camera position
 
 	pop		{r4-r10, pc}					//Return all the previous registers and return
